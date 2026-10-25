@@ -934,6 +934,14 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .id-more[open]>summary{margin-bottom:6px;}
 .id-more[open] .idm-a .show{display:none;}
 .id-more[open] .idm-a .hide{display:inline;}
+
+/* =================== 3.3 =================== */
+.bec-bar{position:sticky;top:var(--wh,58px);z-index:15;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:-18px -16px 12px;padding:12px 16px 10px;background:var(--void);border-bottom:1px solid var(--edge-soft);}
+.add-q{min-height:36px;padding:0 14px;}
+.ident{scroll-margin-top:calc(var(--wh,58px) + 70px);}
+#goal-form{scroll-margin-top:calc(var(--wh,58px) + 70px);}
+#readd-banner .rbanner{margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -958,6 +966,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
   <div class="panel on" id="p-focus">
     <div id="now-head"></div>
     <div id="closeout-top"></div>
+    <div id="readd-banner"></div>
     <div id="review-banner"></div>
     <div id="habits"></div>
     <div id="attention"></div>
@@ -970,7 +979,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
   </div>
 
   <div class="panel" id="p-quests">
-    <div class="head"><h2>Becoming</h2><button class="link" data-a="new-goal">+ Add quest</button></div>
+    <div class="bec-bar"><h2>Becoming</h2><button class="btn sm add-q" data-a="new-goal">+ Add quest</button></div>
     <p class="sub becoming-sub">Who you’re working on becoming, and the quests that get you there. Up to 2 per identity in focus at once.</p>
 
     <div id="goal-form-home"><div class="form hide" id="goal-form">
@@ -1238,7 +1247,7 @@ var DEFCATS=['Career','Intellectual','Fitness','Money','Habits'];
 var DEFSHELVES=['Shoes','Tops','Pants','Golf','Music'];
 var S={goals:[],rewards:[],redemptions:[],log:[],seasons:[],journal:[],categories:DEFCATS.slice(),shelves:DEFSHELVES.slice(),
        settings:{rate:1,step:0.10,theme:'auto',palette:'brass',diffCurve:'standard',
-                 style:'plain',logo:'diamonds',logoColor:'cobalt'},seeded:false};
+                 style:'plain',logo:'diamonds',logoColor:'match'},seeded:false};
 var U={tab:'focus',filter:'all',cat:'all',editGoal:null,editReward:null,draft:[],expanded:{},q:'',reviewKept:{}};
 var UNDO=[];
 
@@ -1409,6 +1418,8 @@ async function load(){
   if(!S.seeded&&!S.goals.length&&!S.rewards.length){seed();S.seeded=true;}
   if(!Array.isArray(S.journal))S.journal=[];
   /* 3.0: the calmer journal look, once. Palette and style can be changed back in Settings. */
+  /* 3.3: the app mark follows the palette unless a colour was picked on purpose */
+  if(!S.settings.look33){S.settings.look33=1;if(!S.settings.logoColor||S.settings.logoColor==='cobalt')S.settings.logoColor='match';}
   if(!S.settings.look3){S.settings.look3=1;S.settings.palette='linen';S.settings.style='journal';S.settings.compact=true;}
   rollPeriods();  /* a new week or month may have started since last time */
   await save();   /* write back anything the migrations above filled in */
@@ -1963,7 +1974,7 @@ function logoSVG(key,acc,bg,size){
    constant brand while the rest of the app changes palette. 'match' hands it
    back to whatever palette is active. */
 function markAccent(){
-  var dark=isDarkNow(),lc=S.settings.logoColor||'cobalt';
+  var dark=isDarkNow(),lc=S.settings.logoColor||'match';
   if(lc==='match'||!PALETTES[lc])return curPalette()[dark?'dark':'light'].acc;
   return PALETTES[lc][dark?'dark':'light'].acc;
 }
@@ -2006,7 +2017,7 @@ function renderLogos(){
     sel.innerHTML='<option value="match">Match the palette</option>'+
       PORDER.map(function(k){return '<option value="'+k+'">'+esc(PALETTES[k].name)+'</option>';}).join('');
   }
-  if(sel)sel.value=S.settings.logoColor||'cobalt';
+  if(sel)sel.value=S.settings.logoColor||'match';
 }
 async function setLogoColor(v){
   S.settings.logoColor=v;await save();applyLogo();renderLogos();
@@ -3232,7 +3243,7 @@ function shelfToggle(){
    marked stale and redraw the moment you open them, so a tap costs one tab's
    worth of work instead of the whole app's. */
 var PANELS={
-  focus:   function(){renderNowHead();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
+  focus:   function(){renderNowHead();renderReaddBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
   quests:  function(){renderCatSelect();renderGoals();},
   rewards: function(){renderChase();renderRewards();renderTrophies();},
   progress:function(){renderProfile();renderJourney();renderProfSeason();renderTrends();renderPlaybook();renderCleared();},
@@ -3740,7 +3751,7 @@ function importBackup(file){
       S.shelves=(p.shelves&&p.shelves.length)?p.shelves.slice():DEFSHELVES.slice();
       S.rewards.forEach(function(r){if(S.shelves.indexOf(r.shelf)<0)S.shelves.push(r.shelf);});
       S.settings=Object.assign({rate:1,step:0.10,theme:'auto',palette:'brass',diffCurve:'standard',
-        style:'plain',logo:'diamonds',logoColor:'cobalt'},p.settings||{});S.seeded=true;
+        style:'plain',logo:'diamonds',logoColor:'match'},p.settings||{});S.seeded=true;
       S.goals.forEach(function(g){if(S.categories.indexOf(g.category)<0)g.category=S.categories[0];});
       S.seasons=Array.isArray(p.seasons)?p.seasons:[];S.journal=Array.isArray(p.journal)?p.journal:[];
       syncSettingsUI();await save();applyTheme();applyStyle();renderAll();toast('Backup restored.',true);
@@ -3845,6 +3856,8 @@ document.addEventListener('click',function(e){
   else if(a==='expand'){
     if(U.expanded[id])delete U.expanded[id];else U.expanded[id]=true;
     renderPanel('focus');}
+  else if(a==='readd-how')readdHow();
+  else if(a==='readd-later'){U.readdHide=true;renderReaddBanner();}
   else if(a==='next-line'){U.lineShift=(U.lineShift||0)+1;renderNowHead();}
   else if(a==='go-quests')showPanel('quests');
   else if(a==='closeout-save')saveCloseout();
@@ -3998,7 +4011,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.2';
+var APP_VERSION='3.3';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
@@ -4778,10 +4791,38 @@ function versionLine(){
   var el=document.getElementById('version-line');
   var off=('serviceWorker' in navigator)&&navigator.serviceWorker.controller;
   if(el)el.textContent='Quest Board '+APP_VERSION+(connected()?' · sheet connector v'+(Q.v||'?'):'')+
+    (oldInstall()?' · old home screen icon':'')+
     (off?' · works offline':'');
 }
 /* Offline launch: sw.js sits next to index.html on Netlify. Inside a preview
    or opened as a file it isn't there, and the app simply runs without it. */
+/* An icon added before 3.2 still runs with the see-through status bar, which
+   iOS blurs. The page can't change that; only re-adding the icon can. In that
+   mode the top safe-area inset is non-zero, which is how we spot it. */
+function topInset(){
+  try{var p=document.createElement('div');p.style.cssText='position:fixed;top:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
+    document.body.appendChild(p);var v=p.getBoundingClientRect().height||parseFloat(getComputedStyle(p).paddingTop)||0;p.parentNode.removeChild(p);return v;}catch(e){return 0;}
+}
+function oldInstall(){
+  var standalone=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+  return !!standalone&&topInset()>0;
+}
+function renderReaddBanner(){
+  var el=document.getElementById('readd-banner');if(!el)return;
+  if(U.readdHide||!oldInstall()){el.innerHTML='';return;}
+  el.innerHTML='<div class="rbanner"><div><b>One step left to remove the blur at the top</b>'+
+    '<span>Your home screen icon is from an older version. Re-add it once and the top bar turns solid.</span></div>'+
+    '<div class="acts"><button class="btn sm" data-a="readd-how">How</button><button class="btn2 sm" data-a="readd-later">Later</button></div></div>';
+}
+function readdHow(){
+  openModal('Re-add Quest Board',
+    '1. Check the gear shows a green dot, so everything is in your sheet. (Gear \u2192 Backups \u2192 Save a backup file, for extra safety.)\n'+
+    '2. Copy your sheet link and passphrase somewhere handy.\n'+
+    '3. Delete Quest Board from your home screen.\n'+
+    '4. In Safari, open your Quest Board link \u2192 Share \u2192 Add to Home Screen.\n'+
+    '5. Open the new icon \u2192 gear \u2192 Google Sheet \u2192 Connect \u2192 Use the sheet\u2019s board.',
+    [{label:'Got it',style:'pri'}]);
+}
 function registerOffline(){
   try{
     if(!('serviceWorker' in navigator))return;
@@ -4796,6 +4837,11 @@ function registerOffline(){
 /* read-only hooks for the test harness */
 window.__qb={pace:pace,periodNext:periodNext,weekStart:weekStart,lastPeriodResult:lastPeriodResult,
   sync:function(){return sync();},state:function(){return S;},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
+function measureWallet(){
+  var w=document.querySelector('.wallet');
+  if(w)document.documentElement.style.setProperty('--wh',w.offsetHeight+'px');
+}
+window.addEventListener('resize',measureWallet);
 (async function(){
   await load();
   await loadQ();
@@ -4805,6 +4851,7 @@ window.__qb={pace:pace,periodNext:periodNext,weekStart:weekStart,lastPeriodResul
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('app').classList.add('ready');
+  measureWallet();
   renderAll();
   if(connected())sync();
   registerOffline();
