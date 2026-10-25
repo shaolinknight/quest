@@ -866,6 +866,40 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .ptsline .chev,.openslots .chev{transform:rotate(-45deg);width:7px;height:7px;}
 .picks-hint{font-size:var(--t-meta);color:var(--dim);margin:-4px 0 0;}
 .trophy .eb{display:block;font-size:0.7rem;color:var(--dim);margin-top:3px;line-height:1.3;}
+
+/* =================== 3.1 — usability pass =================== */
+#now-head{margin:0 0 20px;}
+.now-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.now-rw{display:inline-flex;align-items:center;gap:6px;max-width:60%;background:none;border:none;padding:4px 0;font-family:inherit;
+  font-size:var(--t-meta);color:var(--dim);cursor:pointer;}
+.now-rw span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.now-rw.ok{color:var(--jade);font-weight:700;}
+.now-rw .chev{transform:rotate(-45deg);width:6px;height:6px;}
+.now-line{padding:4px 0 0;}
+.now-line .serif{font-size:1.42rem;line-height:1.2;}
+.votes{align-items:center;margin-top:10px;padding:0;border:none;background:none;gap:10px;}
+.vdots{max-width:none;padding:0;gap:4px;flex-wrap:nowrap;align-items:center;}
+.vdots i{width:10px;height:10px;}
+.vdots em{font-style:normal;font-size:0.72rem;color:var(--dim);margin-left:2px;}
+.vtxt{font-size:var(--t-meta);}
+.cs-reason.soft{color:var(--dim);font-weight:600;}
+#closeout-top .closeout{margin-top:0;border-color:var(--gold-dim);}
+.idchips{display:flex;gap:8px;overflow-x:auto;margin:0 calc(-1 * var(--gut,16px)) 18px;padding:0 var(--gut,16px) 2px;scrollbar-width:none;}
+.idchips::-webkit-scrollbar{display:none;}
+.idchip{flex-shrink:0;display:inline-flex;align-items:center;gap:0;padding:7px 12px;border-radius:999px;border:1px solid var(--edge-soft);
+  background:var(--panel);color:var(--chalk);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+.idchip span{margin-left:7px;color:var(--dim);font-weight:600;font-size:0.74rem;}
+.ident{scroll-margin-top:80px;}
+.row{align-items:center;}
+.row-main{display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:none;padding:2px 0;margin:0;
+  font-family:inherit;color:inherit;text-align:left;cursor:pointer;}
+.row-main .row-next{display:block;}
+.row.on{background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--c,var(--gold));border-radius:var(--r-card);
+  padding:11px 12px;margin-bottom:8px;}
+.row.on .row-name{font-weight:700;}
+.ident .row:not(.on){padding-left:2px;}
+.btn2.pick{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 45%,var(--edge));background:none;}
+.del-q{margin-left:auto;color:var(--ember);}
 </style>
 </head>
 <body>
@@ -889,6 +923,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 
   <div class="panel on" id="p-focus">
     <div id="now-head"></div>
+    <div id="closeout-top"></div>
     <div id="review-banner"></div>
     <div id="habits"></div>
     <div id="attention"></div>
@@ -961,7 +996,8 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
         </div>
       </details>
       <div class="hint" id="g-hint">Worth 90 points</div>
-      <div class="f-acts"><button class="btn" data-a="save-goal">Save quest</button><button class="btn2" data-a="cancel-goal">Cancel</button></div>
+      <div class="f-acts"><button class="btn" data-a="save-goal">Save quest</button><button class="btn2" data-a="cancel-goal">Cancel</button>
+        <button class="btn2 del-q" id="g-del" data-a="del-goal-form" style="display:none;">Delete quest</button></div>
     </div></div>
 
     <div class="search"><input type="search" id="q" placeholder="Search quests" autocomplete="off" enterkeyhint="search"></div>
@@ -2177,24 +2213,27 @@ function pointsLineHTML(){
 function renderNowHead(){
   var el=document.getElementById('now-head');if(!el)return;
   var vs=voteStats(),today=vs.days[dayKeyOf(Date.now())]||[],tl=todayLine();
-  var h='<div class="now-date">'+new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})+'</div>';
+  var r=nearestReward(),rl='';
+  if(r){var gap=costOf(r)-balance();
+    rl='<button class="now-rw'+(gap<=0?' ok':'')+'" data-a="go-rewards"><span>'+
+       (gap<=0?esc(r.name)+' is ready':nf(gap)+' to '+esc(r.name))+'</span><span class="chev"></span></button>';}
+  var h='<div class="now-top"><span class="now-date">'+
+        new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span>'+rl+'</div>';
   if(tl)h+='<button class="now-line" data-a="next-line" aria-label="Show another identity">'+
-    '<span class="serif">'+esc(tl.id.line)+'</span>'+
-    '<span class="now-who"><i class="iddot" style="background:'+idColor(tl.c)+'"></i>'+esc(tl.id.title)+'</span></button>';
+    '<span class="serif">'+esc(tl.id.line)+'</span></button>';
   h+='<div class="votes">';
   if(today.length){
-    h+='<span class="vdots" aria-hidden="true">'+today.slice(0,30).map(function(e){
-        return '<i style="background:'+idColor(e.cat)+'"></i>';}).join('')+'</span>'+
-       '<span class="vtxt"><b>'+today.length+' vote'+(today.length>1?'s':'')+' today</b> for who you’re becoming'+
-       '<span class="vsplit">'+voteSplit(today)+'</span></span>';
+    h+='<span class="vdots" aria-hidden="true">'+today.slice(0,12).map(function(e){
+        return '<i style="background:'+idColor(e.cat)+'"></i>';}).join('')+(today.length>12?'<em>+'+(today.length-12)+'</em>':'')+'</span>'+
+       '<span class="vtxt"><b>'+today.length+' vote'+(today.length>1?'s':'')+' today</b> \u00B7 '+voteSplit(today)+'</span>';
   }else{
     h+='<span class="vdots" aria-hidden="true"><i class="empty"></i></span>'+
-       '<span class="vtxt"><b>Nothing yet today.</b> One small thing counts as a vote.</span>';
+       '<span class="vtxt"><b>No votes yet today.</b> One small thing counts.</span>';
   }
-  h+='</div>'+pointsLineHTML();
+  h+='</div>';
   /* a won season waiting to be claimed is worth a line on Today */
   var cs=currentSeason();
-  if(cs&&!cs.claimedAt&&seasonPts(cs)>=cs.target)h+='<div class="top line" style="margin-top:8px;">'+seasonRowHTML('line')+'</div>';
+  if(cs&&!cs.claimedAt&&seasonPts(cs)>=cs.target)h+='<div class="top line" style="margin-top:10px;">'+seasonRowHTML('line')+'</div>';
   el.innerHTML=h;
 }
 
@@ -2221,14 +2260,14 @@ function renderHabits(){
 }
 
 /* ---------- Today: needs attention ---------- */
+var MAXATT=3;
 function attentionList(){
-  var tday=todayIds(),quiet={};
-  quietGoals().forEach(function(g){quiet[g.id]=1;});
-  return S.goals.filter(function(g){
-    if(!g.active||g.period||tday.indexOf(g.id)>=0)return false;
-    var p=pace(g);
-    return (p&&(p.cls==='bad'||p.cls==='warn'))||quiet[g.id];
-  }).sort(function(a,b){return (behind(b)?1:0)-(behind(a)?1:0);});
+  var late=S.goals.filter(function(g){
+    if(!g.active||g.period)return false;var p=pace(g);return p&&(p.cls==='bad'||p.cls==='warn');
+  }).sort(function(a,b){return (behind(b)?1:0)-(behind(a)?1:0)||(a.due||0)-(b.due||0);});
+  var out=late.slice(0,MAXATT);
+  quietGoals().forEach(function(g){if(out.length<MAXATT&&!g.period&&out.indexOf(g)<0)out.push(g);});
+  return out;
 }
 function renderAttention(){
   var el=document.getElementById('attention');if(!el)return;
@@ -2237,8 +2276,8 @@ function renderAttention(){
   var h='<div class="sec"><div class="sec-h"><h2>Needs attention</h2><span class="sec-n">'+list.length+'</span></div>';
   list.forEach(function(g){
     var p=pace(g),late=p&&(p.cls==='bad'||p.cls==='warn');
-    var reason=late?null:'Quiet for '+Math.max(7,Math.floor((Date.now()-lastMove(g))/DAY))+' days';
-    h+=U.expanded[g.id]?slotHTML(g,{tog:true}):compactHTML(g,{reason:reason,why:true});
+    var reason=late?null:'Untouched '+Math.max(7,Math.floor((Date.now()-lastMove(g))/DAY))+' days';
+    h+=U.expanded[g.id]?slotHTML(g,{tog:true}):compactHTML(g,{reason:reason,soft:!late,why:true,today:true});
   });
   el.innerHTML=h+'</div>';
 }
@@ -2246,9 +2285,12 @@ function renderAttention(){
 /* ---------- Today: evening close-out ---------- */
 function journalFor(key){return (S.journal||[]).find(function(j){return dayKeyOf(j.day)===key;});}
 function renderCloseout(){
-  var el=document.getElementById('closeout');if(!el)return;
+  var bottom=document.getElementById('closeout'),top=document.getElementById('closeout-top');if(!bottom)return;
   var old=document.getElementById('co-in'),draft=old?old.value:null;
-  var k=dayKeyOf(Date.now()),j=journalFor(k),late=new Date().getHours()>=17;
+  var k=dayKeyOf(Date.now()),j=journalFor(k),late=new Date(Date.now()).getHours()>=17;
+  /* after 7pm it's the main thing left to do, so it goes up top until it's written */
+  var up=top&&new Date(Date.now()).getHours()>=19&&(!j||U.closeEdit);
+  var el=up?top:bottom;(up?bottom:top||bottom).innerHTML='';
   var h='<div class="closeout'+(j&&!U.closeEdit?' done':'')+'">';
   if(j&&!U.closeEdit){
     h+='<div class="co-h"><span>Today, in your words</span><button class="link" data-a="closeout-edit">Edit</button></div>'+
@@ -2316,6 +2358,10 @@ function renderGoals(){
     h+='</section>';
   });
   if(!any)h='<div class="note">No open quests match “'+esc(q)+'”.</div>';
+  else if(!q)h='<div class="idchips" role="navigation" aria-label="Jump to identity">'+S.categories.map(function(c){
+      var n=activeIn(c).length;
+      return '<button class="idchip" data-a="jump-id" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+
+        esc(idOf(c).title)+'<span>'+n+'/'+PERCAT+'</span></button>';}).join('')+'</div>'+h;
   el.innerHTML=h;
   reDockGoal();
 }
@@ -2434,7 +2480,10 @@ function earnedByFor(cost){
    4. Everything else (Edit, Bench, Delete, Chase...) lives in a footer row of
       text buttons under a hairline, in the same order on every card.       */
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
-function todayIds(){
+/* 3.1: star picks are retired; Habits and Needs attention decide what's up next.
+   The old picks stay in storage but nothing reads them. */
+function todayIds(){return [];}
+function todayIds0(){
   var t=S.settings.today;
   if(!t||t.day!==todayKey())return [];
   return (t.ids||[]).filter(function(id){var g=S.goals.find(function(x){return x.id===id;});return g&&g.active;});
@@ -2459,7 +2508,8 @@ function movedToday(g){
   var d=new Date();d.setHours(0,0,0,0);
   return (g.touchedAt||0)>=d.getTime()||(g.completedAt||0)>=d.getTime();
 }
-function starBtn(g){
+function starBtn(g){return '';}
+function starBtn0(g){
   var on=isToday(g.id);
   return '<button class="ico star'+(on?' on':'')+'" data-a="today" data-id="'+g.id+'" aria-label="'+
     (on?'Remove from Today':'Add to Today')+'" aria-pressed="'+on+'">'+(on?'★':'☆')+'</button>';
@@ -2592,7 +2642,7 @@ function compactHTML(g,opts){
   return '<div class="cslot'+(moved?' moved':'')+(late?' late':'')+'" data-gid="'+g.id+'">'+
     '<button class="cs-main" data-a="expand" data-id="'+g.id+'" aria-label="Open '+esc(g.name)+'">'+
       '<span class="cs-name"><span>'+esc(g.name)+'</span>'+badgeHTML(g)+schedPill(g)+'</span>'+
-      '<span class="cs-line">'+(opts.reason?'<b class="cs-reason">'+esc(opts.reason)+'</b> \u00B7 ':'')+esc(compactLine(g))+'</span>'+
+      '<span class="cs-line">'+(opts.reason?'<b class="cs-reason'+(opts.soft?' soft':'')+'">'+esc(opts.reason)+'</b> \u00B7 ':'')+esc(compactLine(g))+'</span>'+
       (opts.why&&g.why?'<span class="cs-why">\u201C'+esc(g.why)+'\u201D</span>':'')+
       '<span class="cs-bar"><i style="width:'+compactPct(g)+'%"></i></span></button>'+
     starBtn(g)+quickHTML(g)+'</div>';
@@ -2601,6 +2651,7 @@ function compactHTML(g,opts){
 /* ---------- Today ---------- */
 function renderToday(){
   var el=document.getElementById('today');if(!el)return;
+  el.innerHTML='';return;
   var ids=todayIds(),goals=ids.map(function(id){return S.goals.find(function(g){return g.id===id;});});
   var anyActive=S.goals.some(function(g){return g.active;});
   if(!anyActive){el.innerHTML='';return;}
@@ -2646,7 +2697,7 @@ function renderSlots(){
     if(act.length<PERCAT)open.push(idOf(c).title+(PERCAT-act.length>1?' \u00D7'+(PERCAT-act.length):''));
     if(!shown.length)return;
     h+='<div class="fsec"><div class="fsec-h"><span class="cname"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'</span></div>';
-    shown.forEach(function(g){h+=(compact&&!U.expanded[g.id])?compactHTML(g):slotHTML(g);});
+    shown.forEach(function(g){h+=(compact&&!U.expanded[g.id])?compactHTML(g,{today:true}):slotHTML(g);});
     h+='</div>';
   });
   document.getElementById('compact-btn').style.display=h?'':'none';
@@ -2751,28 +2802,25 @@ function renderCatChips(){
   document.getElementById('cat-chips').innerHTML=h;
 }
 
+/* Rows are tappable to edit. The only button is the one you use when
+   planning: Focus or Bench. Delete lives inside Edit. */
 function goalRow(g){
   var prog;
   if(g.type==='steps')prog=(g.steps||[]).filter(function(s){return s.done;}).length+'/'+(g.steps||[]).length+' milestones';
   else if(g.type==='counter')prog=nf(clampCur(g))+'/'+nf(g.target)+' '+esc(g.unit||'');
-  else prog='pays on completion';
-  var lvn=(g.completedCount||0);
-  var lvtag=g.period?schedPill(g):g.repeatable?'<span class="pill">Lv '+(lvn+1)+'</span>':'';
-  var lvtxt=g.period?' \u00B7 every '+PER_WORD[g.period]+(lvn?' \u00B7 done '+lvn+'\u00D7':''):
-    g.repeatable?(' \u00B7 '+(lvn?lvn+' level'+(lvn>1?'s':'')+' cleared':'never cleared')):'';
-  var held=!g.active&&hasProgress(g);
-  var flag=g.active?'<span class="pill on">In focus</span>':(held?'<span class="pill ok">Held</span>':'');
-  var h='<div class="row" data-gid="'+g.id+'"><div class="row-main">'+
-    '<div class="row-name'+(g.active?'':' off')+'">'+esc(g.name)+lvtag+flag+'</div>'+
-    '<div class="row-meta">'+TIME[g.time]+' \u00B7 '+nf(worth(g))+' pts \u00B7 '+prog+lvtxt+'</div>'+
-    ((g.next||g.when)?'<div class="row-next"><b>'+(g.when?'Plan':'Next')+'</b> '+esc(nextText(g))+'</div>':'')+
-    (pace(g)?'<div class="row-next pace-'+(pace(g).cls||'n')+'"><b>'+esc(pace(g).label)+'</b> '+esc(pace(g).text)+'</div>':'')+
-    '</div><div class="row-side">';
-  if(g.active)h+='<button class="btn2" data-a="bench" data-id="'+g.id+'">Bench</button>';
-  else h+='<button class="btn" data-a="activate" data-id="'+g.id+'">Focus</button>';
-  h+='<div class="mini"><button data-a="edit-goal" data-id="'+g.id+'">Edit</button>'+
-     '<button data-a="del-goal" data-id="'+g.id+'">Delete</button></div></div></div>';
-  return h;
+  else prog=g.repeatable&&(g.completedCount||0)?'done '+g.completedCount+'\u00D7':'one-and-done';
+  var bits=[prog,nf(worth(g))+' pts'];
+  if(g.period)bits.push('every '+PER_WORD[g.period]);
+  var held=!g.active&&hasProgress(g),p=g.active?pace(g):null;
+  return '<div class="row'+(g.active?' on':'')+'" data-gid="'+g.id+'">'+
+    '<button class="row-main" data-a="edit-goal" data-id="'+g.id+'" aria-label="Edit '+esc(g.name)+'">'+
+    '<span class="row-name'+(g.active?'':' off')+'"><span>'+esc(g.name)+'</span>'+(held?'<span class="pill ok">Held</span>':'')+'</span>'+
+    '<span class="row-meta">'+bits.join(' \u00B7 ')+'</span>'+
+    (p&&(p.cls==='bad'||p.cls==='warn')?'<span class="row-next pace-'+p.cls+'"><b>'+esc(p.label)+'</b> '+esc(p.text)+'</span>':'')+
+    '</button><div class="row-side">'+
+    (g.active?'<button class="btn2 sm" data-a="bench" data-id="'+g.id+'">Bench</button>':
+              '<button class="btn2 sm pick" data-a="activate" data-id="'+g.id+'">Focus</button>')+
+    '</div></div>';
 }
 
 function matchQ(g){
@@ -3262,6 +3310,7 @@ function openGoal(g,forceType){
   document.getElementById('g-name').value=g?g.name:'';
   document.getElementById('g-next').value=g?(g.next||''):'';
   document.getElementById('g-when').value=g?(g.when||''):'';
+  var gd=document.getElementById('g-del');gd.style.display=g?'':'none';gd.textContent='Delete quest';gd.classList.remove('armed');
   document.getElementById('g-due').value=g?noonToDate(g.due):'';
   document.getElementById('g-period').value=g?(g.period||''):'';
   document.getElementById('g-identity').value=g?(g.identity||''):'';
@@ -3799,6 +3848,10 @@ document.addEventListener('click',function(e){
       toast('Drafted '+U.draft.length+' milestones \u2014 edit them to fit.');
     }}
   else if(a==='del-goal')danger(el,function(){delGoal(id);});
+  else if(a==='del-goal-form')danger(el,function(){var gid=U.editGoal;closeGoal();if(gid)delGoal(gid);});
+  else if(a==='jump-id'){
+    var sec=document.querySelector('.ident[data-cat="'+(el.getAttribute('data-c')||'').replace(/"/g,'\\"')+'"]');
+    if(sec&&sec.scrollIntoView)try{sec.scrollIntoView({behavior:'smooth',block:'start'});}catch(x){sec.scrollIntoView();}}
   else if(a==='del-reward')danger(el,function(){delReward(id);});
   else if(a==='save-cats')saveCats();
   else if(a==='save-settings')saveSettings();
@@ -3892,7 +3945,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.0';
+var APP_VERSION='3.1';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
