@@ -942,6 +942,27 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .ident{scroll-margin-top:calc(var(--wh,58px) + 70px);}
 #goal-form{scroll-margin-top:calc(var(--wh,58px) + 70px);}
 #readd-banner .rbanner{margin-bottom:16px;}
+
+/* =================== 3.4 =================== */
+.co-ok{display:inline-flex;align-items:center;gap:6px;color:var(--jade);text-transform:none;letter-spacing:0;font-size:var(--t-meta);}
+.co-tick{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--jade);flex-shrink:0;}
+.co-tick::after{content:'';width:5px;height:9px;border:solid var(--btnfg);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg);}
+.co-foot{margin-top:8px;font-size:var(--t-meta);color:var(--dim);}
+.co-acts{display:flex;gap:18px;margin-top:8px;}
+.co-acts .link{font-size:var(--t-meta);padding:4px 0;}
+.closeout.done{border-color:color-mix(in srgb,var(--jade) 40%,var(--edge-soft));}
+.closeout.just{animation:coIn .6s cubic-bezier(.2,.8,.2,1);}
+.closeout.just .co-tick{animation:tickPop .5s .15s cubic-bezier(.2,1.6,.4,1) both;}
+@keyframes coIn{0%{transform:scale(.97);opacity:.4;box-shadow:0 0 0 0 var(--jglow);}60%{transform:scale(1);opacity:1;box-shadow:0 0 0 8px transparent;}100%{box-shadow:0 0 0 0 transparent;}}
+@keyframes tickPop{0%{transform:scale(0);}100%{transform:scale(1);}}
+.jwords.flash{animation:flash 1.2s ease;}
+.rv-row.settling{overflow:hidden;pointer-events:none;transition:height .35s ease,opacity .35s ease,padding .35s ease,margin .35s ease;}
+.rv-row.settling.gone{opacity:0;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;border-width:0;}
+.rv-settled{display:flex;align-items:center;gap:10px;width:100%;font-size:0.88rem;color:var(--chalk);animation:settleIn .35s ease both;}
+.rv-settled b{font-weight:700;}
+.rv-settled .co-tick{animation:tickPop .4s cubic-bezier(.2,1.6,.4,1) both;}
+@keyframes settleIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion: reduce){.closeout.just,.closeout.just .co-tick,.rv-settled,.rv-settled .co-tick{animation:none;}}
 </style>
 </head>
 <body>
@@ -2329,23 +2350,35 @@ function renderAttention(){
 
 /* ---------- Today: evening close-out ---------- */
 function journalFor(key){return (S.journal||[]).find(function(j){return dayKeyOf(j.day)===key;});}
+function journalStreak(){
+  var n=0,t=dayStart(Date.now());
+  while(journalFor(dayKeyOf(t-n*DAY)))n++;
+  return n;
+}
 function renderCloseout(){
   var bottom=document.getElementById('closeout'),top=document.getElementById('closeout-top');if(!bottom)return;
   var old=document.getElementById('co-in'),draft=old?old.value:null;
-  var k=dayKeyOf(Date.now()),j=journalFor(k),late=new Date(Date.now()).getHours()>=17;
-  /* after 7pm it's the main thing left to do, so it goes up top until it's written */
-  var up=top&&new Date(Date.now()).getHours()>=19&&(!j||U.closeEdit);
+  var hr=new Date(Date.now()).getHours(),k=dayKeyOf(Date.now()),j=journalFor(k),late=hr>=17;
+  /* in the evening it's the main thing left, so it sits up top, and stays
+     there once written so the confirmation is right where you tapped */
+  var up=top&&hr>=19;
   var el=up?top:bottom;(up?bottom:top||bottom).innerHTML='';
-  var h='<div class="closeout'+(j&&!U.closeEdit?' done':'')+'">';
+  var past=(S.journal||[]).length-(j?1:0);
+  var pastBtn=past>0?'<button class="link co-past" data-a="journal-view">Past entries ('+past+')</button>':'';
+  var h='<div class="closeout'+(j&&!U.closeEdit?' done':'')+(U.coJust&&j&&!U.closeEdit?' just':'')+'">';
   if(j&&!U.closeEdit){
-    h+='<div class="co-h"><span>Today, in your words</span><button class="link" data-a="closeout-edit">Edit</button></div>'+
-       '<div class="co-t serif">'+esc(j.text)+'</div>';
+    var st=journalStreak();
+    h+='<div class="co-h"><span>Today, in your words</span><span class="co-ok"><i class="co-tick"></i>Saved</span></div>'+
+       '<div class="co-t serif">'+esc(j.text)+'</div>'+
+       '<div class="co-foot"><span>'+(st>1?st+' days in a row you\u2019ve closed out':'Today is on the record')+'</span></div>'+
+       '<div class="co-acts"><button class="link" data-a="closeout-edit">Edit</button>'+pastBtn+'</div>';
   }else{
     h+='<div class="co-h"><span>'+(late?'Close out today':'Before the day ends')+'</span></div>'+
-       '<label class="co-q serif" for="co-in">What did you do today that the person you’re becoming would do?</label>'+
+       '<label class="co-q serif" for="co-in">What did you do today that the person you\u2019re becoming would do?</label>'+
        '<textarea id="co-in" rows="2" maxlength="280" placeholder="Even something small."></textarea>'+
        '<div class="f-acts"><button class="btn sm" data-a="closeout-save">Save</button>'+
-       (j?'<button class="btn2 sm" data-a="closeout-cancel">Cancel</button>':'')+'</div>';
+       (j?'<button class="btn2 sm" data-a="closeout-cancel">Cancel</button>':'')+'</div>'+
+       (pastBtn?'<div class="co-acts">'+pastBtn+'</div>':'');
   }
   el.innerHTML=h+'</div>';
   var ta=document.getElementById('co-in');
@@ -2361,7 +2394,12 @@ async function saveCloseout(){
   else S.journal.push({id:uid(),day:dateToNoon(k),text:v,at:Date.now()});
   U.closeEdit=false;ta.value='';
   if(ta.blur)ta.blur();
+  U.coJust=true;
   await save();renderPanel(U.tab);
+  /* keep the saved card in view, so you see it land */
+  var card=document.querySelector('.closeout.done');
+  if(card&&card.scrollIntoView)try{card.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){}
+  U.coJust=false;   /* drawn once; a later redraw won't replay it */
   toast('Saved. That’s today on the record.',true);
 }
 
@@ -2447,7 +2485,7 @@ function renderJourney(){
   var lg=S.settings.letGo||{};
   if(jr.length){
     var shown=U.jAll?jr:jr.slice(0,5);
-    h+='<div class="card"><h3>In your own words</h3>';
+    h+='<div class="card jwords" id="j-words"><h3>In your own words</h3>';
     shown.forEach(function(e){
       h+='<div class="jr"><span class="jr-d">'+new Date(e.day).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span>'+
          '<span class="jr-t serif">'+esc(e.text)+'</span></div>';
@@ -3083,6 +3121,18 @@ function renderBanner(){
     '<button class="btn2 sm" data-a="review-later">Later</button></div></div>';
 }
 
+/* Check-in rows confirm what happened, then fold away instead of vanishing. */
+function settleRow(btn,label,then){
+  var row=btn&&btn.closest?btn.closest('.rv-row'):null;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!row||row.classList.contains('settling')){if(!row)then();return;}
+  if(reduce){then();return;}
+  row.style.height=row.offsetHeight+'px';
+  row.classList.add('settling');
+  row.innerHTML='<div class="rv-settled"><i class="co-tick"></i><span>'+label+'</span></div>';
+  setTimeout(function(){row.classList.add('gone');row.style.height='0px';},1100);
+  setTimeout(then,1500);
+}
 function renderReview(){
   var el=document.getElementById('review');
   if(!el)return;
@@ -3115,7 +3165,7 @@ function renderReview(){
   if(!order.length)h+='<div class="rv-empty">Nothing logged this week. One small step on any focus goal counts.</div>';
   order.forEach(function(id){
     var r=by[id];
-    h+='<div class="rv-row"><div class="l"><b>'+esc(r.name)+'</b><span>'+esc(r.cat)+
+    h+='<div class="rv-row"><div class="l"><b>'+esc(r.name)+'</b><span>'+esc(idOf(r.cat).title)+
        (r.clear?' · cleared':' · '+r.n+' update'+(r.n>1?'s':''))+'</span></div>'+
        '<div class="r"><span class="rv-pts'+(r.pts<0?' neg':'')+'">'+(r.pts>0?'+':'')+nf(r.pts)+'</span></div></div>';
   });
@@ -3126,10 +3176,10 @@ function renderReview(){
   if(!quiet.length)h+='<div class="rv-empty">Every focus goal moved in the last 7 days.</div>';
   else h+='<p class="sub">In focus but untouched for over a week. Keep it, or free the slot.</p>';
   quiet.forEach(function(g){
-    h+='<div class="rv-row"><div class="l"><b>'+esc(g.name)+'</b><span>'+esc(g.category)+
+    h+='<div class="rv-row"><div class="l"><b>'+esc(g.name)+'</b><span>'+esc(idOf(g.category).title)+
        ' · last moved '+ago(lastMove(g))+'</span>'+(g.why?'<span class="rv-why">\u201C'+esc(g.why)+'\u201D</span>':'')+'</div>'+
        '<div class="r"><button class="btn2 sm" data-a="review-keep" data-id="'+g.id+'">Keep</button>'+
-       '<button class="btn2 sm" data-a="bench" data-id="'+g.id+'">Bench</button></div></div>';
+       '<button class="btn2 sm" data-a="review-bench" data-id="'+g.id+'">Bench</button></div></div>';
   });
   h+='</div>';
 
@@ -3139,7 +3189,7 @@ function renderReview(){
   if(open.length){
     h+='<div class="rv-card"><h3>Open slots</h3>';
     open.forEach(function(x){
-      h+='<div class="rv-row"><div class="l"><b>'+esc(x[0])+'</b><span>'+x[1]+' slot'+(x[1]>1?'s':'')+' free</span></div>'+
+      h+='<div class="rv-row"><div class="l"><b>'+esc(idOf(x[0]).title)+'</b><span>'+x[1]+' slot'+(x[1]>1?'s':'')+' free</span></div>'+
          '<div class="r"><button class="btn2 sm" data-a="review-pick" data-c="'+esc(x[0])+'">Pick a quest</button></div></div>';
     });
     h+='</div>';
@@ -3820,12 +3870,20 @@ document.addEventListener('click',function(e){
   else if(a==='review-close'){showPanel('progress');}
   else if(a==='review-later'){S.settings.reviewSnooze=Date.now()+DAY;save();renderBanner();
     toast('I\u2019ll bring it back tomorrow.');}
-  else if(a==='review-keep'){U.reviewKept[id]=true;renderReview();}
+  else if(a==='review-keep'){
+    var kg=S.goals.find(function(x){return x.id===id;});
+    settleRow(el,'Kept. <b>'+esc(kg?kg.name:'It')+'</b> stays in focus.',function(){U.reviewKept[id]=true;renderReview();});}
+  else if(a==='review-bench'){
+    var bg=S.goals.find(function(x){return x.id===id;});
+    if(!bg)return;
+    if(hasProgress(bg))bench(id);
+    else settleRow(el,'Benched. A '+esc(idOf(bg.category).title)+' slot is open.',async function(){
+      snap();bg.active=false;await save();renderAll();toast('Benched.',true);});}
   else if(a==='review-pick'){
-    U.cat=el.getAttribute('data-c');U.filter='all';U.q='';
-    document.getElementById('q').value='';
-    document.querySelectorAll('.chips .chip[data-f]').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-f')==='all');});
-    showPanel('quests');renderCatChips();renderGoals();}
+    var pc=el.getAttribute('data-c');if(!U.idOpen)U.idOpen={};U.idOpen[pc]=true;U.q='';document.getElementById('q').value='';
+    STALE.quests=1;showPanel('quests');
+    var ps=document.querySelector('.ident[data-cat="'+pc.replace(/"/g,'\\"')+'"]');
+    if(ps&&ps.scrollIntoView)setTimeout(function(){try{ps.scrollIntoView({block:'start'});}catch(x){}},0);}
   else if(a==='review-done'){
     S.settings.lastReview=Date.now();S.settings.reviewSnooze=0;save();
     showPanel('focus');renderBanner();renderProfile();
@@ -3864,6 +3922,11 @@ document.addEventListener('click',function(e){
   else if(a==='closeout-edit'){U.closeEdit=true;renderCloseout();var ci=document.getElementById('co-in');if(ci&&ci.focus)ci.focus();}
   else if(a==='closeout-cancel'){U.closeEdit=false;var cj=document.getElementById('co-in');if(cj)cj.value='';renderCloseout();}
   else if(a==='journal-all'){U.jAll=!U.jAll;renderJourney();}
+  else if(a==='journal-view'){
+    U.jAll=true;STALE.progress=1;showPanel('progress');
+    setTimeout(function(){var jw=document.getElementById('j-words');if(!jw)return;
+      if(jw.scrollIntoView)try{jw.scrollIntoView({behavior:'smooth',block:'start'});}catch(x){}
+      jw.classList.remove('flash');void jw.offsetWidth;jw.classList.add('flash');},0);}
   else if(a==='cool-keep')coolKeep(id);
   else if(a==='cool-drop')coolDrop(id);
   else if(a==='edit-ids'){showPanel('profile');var ce=document.getElementById('cat-rows');if(ce){ce.closest('details').open=true;}}
@@ -4011,7 +4074,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.3';
+var APP_VERSION='3.4';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
