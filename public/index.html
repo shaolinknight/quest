@@ -963,6 +963,93 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .rv-settled .co-tick{animation:tickPop .4s cubic-bezier(.2,1.6,.4,1) both;}
 @keyframes settleIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
 @media (prefers-reduced-motion: reduce){.closeout.just,.closeout.just .co-tick,.rv-settled,.rv-settled .co-tick{animation:none;}}
+
+/* =================== 3.5 =================== */
+.hdr-r{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.hdr-rep{height:38px;padding:0 13px;border-radius:9px;border:none;background:var(--gold);color:var(--btnfg);font-family:inherit;
+  font-weight:700;font-size:0.86rem;cursor:pointer;white-space:nowrap;}
+.hdr-rep:active{transform:scale(.97);}
+.sub-head{margin:-4px 0 10px;}
+.back{display:inline-flex;align-items:center;gap:8px;background:none;border:none;padding:6px 0;font-family:inherit;font-size:0.9rem;font-weight:600;color:var(--gold);cursor:pointer;}
+.back .chev{transform:rotate(135deg);border-color:var(--gold);width:7px;height:7px;}
+#p-log h2,#p-caseid h2{margin-bottom:6px;}
+.rep-chips{margin-bottom:12px;}
+.idchip.on{background:var(--gold);color:var(--btnfg);border-color:var(--gold);}
+.idchip.on .iddot{box-shadow:0 0 0 2px var(--btnfg);}
+.rep-grp{font-size:0.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
+.rep-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;width:100%;text-align:left;padding:11px 12px;margin-bottom:6px;
+  background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--c);border-radius:var(--r-card);font-family:inherit;color:var(--chalk);cursor:pointer;}
+.rr-n{font-weight:600;font-size:0.95rem;overflow-wrap:anywhere;}
+.rr-m{grid-column:1;font-size:var(--t-meta);color:var(--dim);display:flex;align-items:center;}
+.rep-row .chev{grid-column:2;grid-row:1/3;transform:rotate(-45deg);width:7px;height:7px;}
+.rep-card{margin-top:12px;padding:16px;border-radius:var(--r-card);border:1px solid var(--edge-soft);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 12%,var(--panel)) 0,var(--panel) 110px);}
+.rc-id{display:flex;align-items:center;font-size:var(--t-meta);font-weight:700;color:var(--dim);}
+.rc-n{font-family:var(--fdisp);font-weight:600;font-size:1.3rem;margin-top:4px;color:var(--chalk);overflow-wrap:anywhere;}
+.rc-p{font-size:var(--t-meta);color:var(--dim);margin-top:2px;}
+.seg2{display:flex;gap:4px;padding:3px;margin:14px 0 4px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge-soft);}
+.seg2 button{flex:1;border:none;background:none;border-radius:999px;padding:8px 6px;font-family:inherit;font-weight:700;font-size:0.84rem;color:var(--dim);cursor:pointer;}
+.seg2 button.on{background:var(--panel);color:var(--chalk);box-shadow:0 1px 2px var(--shadow);}
+.rc-l{display:block;margin:14px 0 6px;font-size:0.82rem;font-weight:700;color:var(--chalk);}
+.rep-st{max-width:220px;}
+.rc-act{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border-radius:var(--r-ctl);background:var(--panel-2);font-weight:600;font-size:0.92rem;}
+.rc-hint{margin:12px 0 0;}
+.rep-card textarea{width:100%;font-family:var(--fserif);font-size:1rem;line-height:1.4;padding:10px 12px;min-height:64px;resize:vertical;
+  border:1px solid var(--edge);border-radius:var(--r-ctl);background:var(--void);color:var(--chalk);}
+.rep-done{text-align:center;padding:26px 16px;border-radius:var(--r-card);border:1px solid color-mix(in srgb,var(--jade) 40%,var(--edge-soft));background:var(--panel);
+  animation:coIn .6s cubic-bezier(.2,.8,.2,1);}
+.rd-tick .co-tick{width:44px;height:44px;animation:tickPop .5s .1s cubic-bezier(.2,1.6,.4,1) both;}
+.rd-tick .co-tick::after{width:10px;height:18px;border-width:0 3px 3px 0;}
+.rd-t{font-family:var(--fdisp);font-weight:600;font-size:1.4rem;margin-top:12px;}
+.rd-s{font-weight:600;margin-top:4px;}
+.rd-v{font-size:0.9rem;color:var(--dim);margin-top:6px;}
+.rd-v b{color:var(--c);}
+.rd-p{font-size:var(--t-meta);color:var(--dim);margin-top:2px;}
+.rd-n{font-style:italic;font-size:1.02rem;margin:12px auto 0;max-width:30ch;}
+.rep-done .f-acts{margin-top:18px;}
+/* case file */
+.case-hero{padding:18px 16px 14px;border-radius:var(--r-card);border:1px solid var(--edge-soft);margin-bottom:14px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c,var(--gold)) 18%,var(--panel)),var(--panel) 75%);}
+.ch-k{font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
+.ch-t{font-family:var(--fdisp);font-weight:600;font-size:1.9rem;line-height:1.1;margin-top:4px;color:var(--chalk);}
+.ch-l{font-style:italic;font-size:1.1rem;margin-top:6px;color:var(--chalk);}
+.case-hero .id-bar{margin:14px 0 6px;}
+.case-hero .id-bar i{background:var(--c,var(--gold));}
+.ch-m{font-size:var(--t-meta);color:var(--dim);}
+.case-stats .pstat b{color:var(--c);}
+.case-since{margin:2px 0 14px;}
+.rec{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--edge-soft);font-size:0.9rem;}
+.rec:first-of-type{border-top:none;}
+.rec-d{flex-shrink:0;width:52px;color:var(--dim);font-size:var(--t-meta);padding-top:1px;}
+.rec-t{color:var(--chalk);}
+.id-case{display:flex;align-items:center;gap:6px;margin-top:10px;padding:0;background:none;border:none;font-family:inherit;font-size:var(--t-meta);
+  font-weight:700;color:var(--c);cursor:pointer;}
+.id-case .chev,.idc-title .chev,.jid .chev,.mrow .chev{transform:rotate(-45deg);width:6px;height:6px;border-color:currentColor;}
+.idc-head{width:100%;border:none;background:none;font-family:inherit;text-align:left;cursor:pointer;color:inherit;padding-bottom:0;}
+.idc-title{display:inline-flex;align-items:center;gap:8px;}
+.idc-title .chev{color:var(--dim);}
+.jid{display:block;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--edge-soft);font-family:inherit;color:inherit;cursor:pointer;}
+.jid:first-of-type{border-top:none;}
+.jid-top span{display:inline-flex;align-items:center;gap:8px;}
+.jid-line{display:block;}
+.jid .id-bar{display:block;}
+/* monthly */
+.mon-hero{--c:var(--gold);}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:11px 0;background:none;border:none;
+  border-top:1px solid var(--edge-soft);font-family:inherit;color:var(--chalk);cursor:pointer;}
+.mrow:first-of-type{border-top:none;}
+.mrow b{display:block;font-weight:600;}
+.mrow span span{font-size:var(--t-meta);color:var(--dim);}
+.mrow .chev{color:var(--dim);}
+.mid{border-left:3px solid var(--c);}
+.mid-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+.mid-h b{color:var(--c);font-size:1rem;}
+.mid-h span{font-size:var(--t-meta);color:var(--dim);}
+.mid-c{font-size:0.86rem;margin-top:6px;}
+.mid-w{font-style:italic;margin-top:8px;font-size:0.98rem;}
+.mid .link{font-size:var(--t-meta);margin-top:6px;padding:4px 0;}
+.eb2{display:block;font-size:0.72rem;color:var(--dim);font-weight:400;}
+#month-banner .rbanner{margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -972,15 +1059,15 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
   <div class="wallet">
     <div class="wallet-top">
       <div class="brand" id="brand"></div>
-      <div class="balance"><span class="n" id="bal">0</span><span class="u">points to spend</span></div>
-      <button class="gear" id="gear" data-a="open-profile" aria-label="Settings">
+      <div class="balance"><span class="n" id="bal">0</span><span class="u">pts</span></div>
+      <div class="hdr-r"><button class="hdr-rep" data-a="open-report" aria-label="Report progress">+ Report</button><button class="gear" id="gear" data-a="open-profile" aria-label="Settings">
         <i class="syncdot" id="syncdot"></i>
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
              stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3.2"/>
           <path d="M19.2 14.6a1.5 1.5 0 0 0 .3 1.7l.05.05a1.9 1.9 0 1 1-2.7 2.7l-.05-.05a1.5 1.5 0 0 0-1.7-.3 1.5 1.5 0 0 0-.9 1.37V20a1.9 1.9 0 1 1-3.8 0v-.09a1.5 1.5 0 0 0-.98-1.37 1.5 1.5 0 0 0-1.7.3l-.05.05a1.9 1.9 0 1 1-2.7-2.7l.05-.05a1.5 1.5 0 0 0 .3-1.7 1.5 1.5 0 0 0-1.37-.9H4a1.9 1.9 0 1 1 0-3.8h.09a1.5 1.5 0 0 0 1.37-.98 1.5 1.5 0 0 0-.3-1.7l-.05-.05a1.9 1.9 0 1 1 2.7-2.7l.05.05a1.5 1.5 0 0 0 1.7.3h.07a1.5 1.5 0 0 0 .9-1.37V4a1.9 1.9 0 1 1 3.8 0v.09a1.5 1.5 0 0 0 .9 1.37 1.5 1.5 0 0 0 1.7-.3l.05-.05a1.9 1.9 0 1 1 2.7 2.7l-.05.05a1.5 1.5 0 0 0-.3 1.7v.07a1.5 1.5 0 0 0 1.37.9H20a1.9 1.9 0 1 1 0 3.8h-.09a1.5 1.5 0 0 0-1.37.9z"/>
         </svg>
-      </button>
+      </button></div>
     </div>
   </div>
 
@@ -988,6 +1075,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
     <div id="now-head"></div>
     <div id="closeout-top"></div>
     <div id="readd-banner"></div>
+    <div id="month-banner"></div>
     <div id="review-banner"></div>
     <div id="habits"></div>
     <div id="attention"></div>
@@ -1101,6 +1189,9 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
   </div>
 
   <div class="panel" id="p-review"><div id="review"></div></div>
+  <div class="panel" id="p-log"><div id="logp"></div></div>
+  <div class="panel" id="p-caseid"><div id="casep"></div></div>
+  <div class="panel" id="p-month"><div id="monthp"></div></div>
 
   <div class="panel" id="p-progress">
     <div class="head"><h2>Journey</h2></div>
@@ -2413,7 +2504,8 @@ function identityHeadHTML(c,vs){
     '<div class="id-bar" aria-hidden="true"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>'+
     '<div class="id-meta"><span>'+nf(vs.month[c]||0)+' vote'+((vs.month[c]||0)===1?'':'s')+' this month</span>'+
     '<span>'+L.left+' to Lv '+(L.lv+1)+'</span>'+
-    '<span>'+act.length+' / '+PERCAT+' in focus</span></div></div>';
+    '<span>'+act.length+' / '+PERCAT+' in focus</span></div>'+
+    '<button class="id-case" data-a="open-case" data-c="'+esc(c)+'">See the evidence<span class="chev"></span></button></div>';
 }
 function renderGoals(){
   parkForm('goal-form','goal-form-home');
@@ -2474,9 +2566,9 @@ function renderJourney(){
   h+='<div class="card"><h3>Who you’re becoming</h3>';
   S.categories.forEach(function(c){
     var id=idOf(c),v=vs.life[c]||0,L=levelOf(v);
-    h+='<div class="jid" style="--c:'+idColor(c)+'"><div class="jid-top"><b>'+esc(id.title)+'</b><span>Lv '+L.lv+' · '+nf(v)+' vote'+(v===1?'':'s')+'</span></div>'+
-       (id.line?'<div class="jid-line serif">'+esc(id.line)+'</div>':'')+
-       '<div class="id-bar"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div></div>';
+    h+='<button class="jid" data-a="open-case" data-c="'+esc(c)+'" style="--c:'+idColor(c)+'"><span class="jid-top"><b>'+esc(id.title)+'</b><span>Lv '+L.lv+' \u00B7 '+nf(v)+' vote'+(v===1?'':'s')+'<span class="chev"></span></span></span>'+
+       (id.line?'<span class="jid-line serif">'+esc(id.line)+'</span>':'')+
+       '<span class="id-bar"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></span></button>';
   });
   h+='</div>';
 
@@ -2493,6 +2585,7 @@ function renderJourney(){
     if(jr.length>5)h+='<button class="link" data-a="journal-all">'+(U.jAll?'Show fewer':'Show all '+jr.length)+'</button>';
     h+='</div>';
   }
+  h+=monthListHTML();
   if(lg.n)h+='<div class="card letgo"><b>'+nf(lg.n)+' want'+(lg.n>1?'s':'')+' let go</b><span>$'+nf(lg.dollars||0)+' you didn’t spend after the cooling-off week.</span></div>';
   el.innerHTML=h;
 }
@@ -2555,6 +2648,311 @@ function earnedByFor(cost){
   var top=order.slice(0,4).map(function(n){return n+(by[n].n>1?' ×'+by[n].n:'');});
   if(order.length>4)top.push(order.length-4+' more');
   return top.join(' · ');
+}
+
+
+/* =====================================================================
+   3.5 — report progress, case files, monthly reports
+   ===================================================================== */
+var PANEL_LIT={review:'progress',month:'progress',caseid:'quests'};
+function openSub(name){
+  if(['log','caseid','month','review'].indexOf(U.tab)<0)U.prev=U.tab;
+  STALE[name]=1;showPanel(name);
+}
+function backSub(){showPanel(U.prev||'focus');}
+
+/* ---------- Report progress: any quest, any time ---------- */
+function repReset(keepFilter){var c=keepFilter&&U.rep?U.rep.cat:'all';U.rep={cat:c||'all',q:'',gid:null,mode:'progress',amt:1,done:null};}
+function openReport(cat,gid){
+  repReset();if(cat)U.rep.cat=cat;if(gid){U.rep.gid=gid;U.rep.mode=repCanProgress(S.goals.find(function(g){return g.id===gid;}))?'progress':'note';}
+  openSub('log');
+}
+function repNext(g){
+  if(g.type==='counter')return {kind:'count',label:'Add '+(g.unit||'to the count'),max:Math.max(1,g.target-clampCur(g))};
+  if(g.type==='steps'&&g.steps.length){
+    var i=stepOpenIndex(g);if(i>=g.steps.length)return null;
+    var s=g.steps[i];
+    if((s.target||0)>1)return {kind:'stepcount',s:s,label:'Add to “'+s.name+'”',max:Math.max(1,s.target-(s.current||0))};
+    return {kind:'tick',s:s,label:'Tick off “'+s.name+'”'};
+  }
+  if(g.type==='once'&&((g.completedCount||0)===0||g.repeatable)&&!doneThisPeriod(g))return {kind:'complete',label:'Mark it complete · +'+nf(worth(g))+' pts'};
+  return null;
+}
+function repCanProgress(g){return !!(g&&repNext(g));}
+function repProgText(g){
+  if(g.type==='counter')return nf(clampCur(g))+' / '+nf(g.target)+' '+(g.unit||'');
+  if(g.type==='steps'&&g.steps.length)return g.steps.filter(function(s){return s.done;}).length+' of '+g.steps.length+' milestones';
+  return (g.completedCount||0)?'Done '+g.completedCount+'×':'Not done yet';
+}
+function renderLog(){
+  var el=document.getElementById('logp');if(!el)return;
+  if(!U.rep)repReset();
+  var R=U.rep,h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>';
+  if(R.done){
+    var d=R.done;
+    h+='<div class="rep-done" style="--c:'+idColor(d.cat)+'"><div class="rd-tick"><i class="co-tick"></i></div>'+
+       '<div class="rd-t">Reported</div>'+
+       '<div class="rd-s">'+esc(d.name)+'</div>'+
+       '<div class="rd-v">A vote for <b>'+esc(idOf(d.cat).title)+'</b>'+(d.pts>0?' · +'+nf(d.pts)+' pts':'')+'</div>'+
+       (d.prog?'<div class="rd-p">'+esc(d.prog)+'</div>':'')+
+       (d.note?'<div class="rd-n serif">“'+esc(d.note)+'”</div>':'')+
+       '<div class="f-acts" style="justify-content:center;"><button class="btn" data-a="rep-again">Report another</button>'+
+       '<button class="btn2" data-a="sub-back">Done</button></div></div>';
+    el.innerHTML=h;return;
+  }
+  var g=R.gid?S.goals.find(function(x){return x.id===R.gid;}):null;
+  if(g){
+    var nx=repNext(g);if(!nx)R.mode='note';
+    h+='<h2>Report progress</h2>'+
+       '<div class="rep-card" style="--c:'+idColor(g.category)+'">'+
+       '<div class="rc-id"><i class="iddot" style="background:'+idColor(g.category)+'"></i>'+esc(idOf(g.category).title)+(g.active?' · in focus':'')+'</div>'+
+       '<div class="rc-n">'+esc(g.name)+'</div><div class="rc-p">'+esc(repProgText(g))+'</div>';
+    if(nx){
+      h+='<div class="seg2" role="group"><button class="'+(R.mode==='progress'?'on':'')+'" data-a="rep-mode" data-m="progress">Made progress</button>'+
+         '<button class="'+(R.mode==='note'?'on':'')+'" data-a="rep-mode" data-m="note">Worked on it</button></div>';
+      if(R.mode==='progress'){
+        if(nx.kind==='count'||nx.kind==='stepcount'){
+          h+='<label class="rc-l" for="rep-amt">'+esc(nx.label)+'</label>'+
+             '<div class="stepper rep-st"><button class="minus" data-a="rep-amt" data-d="-1" aria-label="Less">−</button>'+
+             '<input type="number" id="rep-amt" value="'+R.amt+'" min="1" max="'+nx.max+'" inputmode="numeric">'+
+             '<button class="plus" data-a="rep-amt" data-d="1" aria-label="More">+</button></div>';
+        }else h+='<div class="rc-act"><i class="co-tick"></i>'+esc(nx.label)+'</div>';
+      }else h+='<p class="sub rc-hint">For days you put in work that doesn’t move a number yet. It still counts as a vote.</p>';
+    }else h+='<p class="sub rc-hint">Nothing left to tick on this one, but the work still counts. Say what you did.</p>';
+    h+='<label class="rc-l" for="rep-note">'+(R.mode==='note'?'What did you do?':'What did you do? <span class="opt">(optional)</span>')+'</label>'+
+       '<textarea id="rep-note" rows="2" maxlength="280" placeholder="'+(R.mode==='note'?'e.g. Ran 4 miles easy':'This becomes evidence in your case file')+'"></textarea>'+
+       '<div class="f-acts"><button class="btn" data-a="rep-go">Report</button><button class="btn2" data-a="rep-change">Pick another quest</button></div></div>';
+    el.innerHTML=h;
+    var nt=document.getElementById('rep-note');if(nt&&R.note)nt.value=R.note;
+    return;
+  }
+  /* step 1: pick a quest */
+  h+='<h2>Report progress</h2><p class="sub">Anything you did, on any quest, in focus or not. It all counts as a vote for who you’re becoming.</p>'+
+     '<div class="search"><input type="search" id="rep-q" placeholder="Search quests" autocomplete="off" value="'+esc(R.q)+'"></div>'+
+     '<div class="idchips rep-chips"><button class="idchip'+(R.cat==='all'?' on':'')+'" data-a="rep-cat" data-c="all">All</button>'+
+     S.categories.map(function(c){return '<button class="idchip'+(R.cat===c?' on':'')+'" data-a="rep-cat" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'</button>';}).join('')+
+     '</div><div id="rep-list"></div>';
+  el.innerHTML=h;
+  renderRepList();
+}
+function renderRepList(){
+  var el=document.getElementById('rep-list');if(!el)return;
+  var R=U.rep,q=(R.q||'').trim().toLowerCase();
+  var list=S.goals.filter(function(g){
+    if(isDone(g))return false;
+    if(R.cat!=='all'&&g.category!==R.cat)return false;
+    return !q||g.name.toLowerCase().indexOf(q)>=0;
+  }).sort(function(a,b){return (b.active?1:0)-(a.active?1:0)||lastMove(b)-lastMove(a);});
+  if(!list.length){el.innerHTML='<div class="note">No open quests match.</div>';return;}
+  var h='',cur=null;
+  list.forEach(function(g){
+    var grp=g.active?'In focus':'Everything else';
+    if(grp!==cur){h+='<div class="rep-grp">'+grp+'</div>';cur=grp;}
+    h+='<button class="rep-row" data-a="rep-pick" data-id="'+g.id+'" style="--c:'+idColor(g.category)+'">'+
+       '<span class="rr-n">'+esc(g.name)+'</span><span class="rr-m"><i class="iddot" style="background:'+idColor(g.category)+'"></i>'+
+       esc(idOf(g.category).title)+' · '+esc(repProgText(g))+'</span><span class="chev"></span></button>';
+  });
+  el.innerHTML=h;
+}
+async function repGo(){
+  var R=U.rep,g=S.goals.find(function(x){return x.id===R.gid;});if(!g)return;
+  var nt=document.getElementById('rep-note'),note=nt?nt.value.trim():'';
+  var nx=repNext(g),t0=Date.now(),b0=balance();
+  if(R.mode==='note'||!nx){
+    if(!note){toast('Say what you did, even briefly.');if(nt&&nt.focus)nt.focus();return;}
+    snap();
+    S.log.push({id:uid(),at:Date.now(),gid:g.id,name:g.name,cat:g.category,pts:0,clear:false,note:note});
+    g.touchedAt=Date.now();NOTE_VER++;
+    await save();
+  }else{
+    var amt=Math.max(1,Math.round(+(document.getElementById('rep-amt')||{value:1}).value)||1);
+    var run=nx.kind==='count'?function(){return nudge(g.id,1,Math.min(amt,nx.max));}:
+            nx.kind==='stepcount'?function(){return stepNudge(g.id,nx.s.id,1,Math.min(amt,nx.max));}:
+            nx.kind==='tick'?function(){return toggleStep(g.id,nx.s.id,null);}:
+            function(){return complete(g.id);};
+    await once(g.id,run);
+    if(note){
+      var e=null;for(var i=S.log.length-1;i>=0;i--){if(S.log[i].gid===g.id&&S.log[i].at>=t0){e=S.log[i];break;}}
+      if(e)e.note=note;
+      else S.log.push({id:uid(),at:Date.now(),gid:g.id,name:g.name,cat:g.category,pts:0,clear:false,note:note});
+      NOTE_VER++;await save();
+    }
+  }
+  var g2=S.goals.find(function(x){return x.id===R.gid;})||g;
+  R.done={name:g.name,cat:g.category,pts:Math.max(0,balance()-b0),note:note,prog:repProgText(g2)};
+  R.note='';
+  STALE.focus=1;STALE.quests=1;STALE.progress=1;
+  if(U.tab==='log')renderLog();
+}
+
+/* ---------- identity case file ---------- */
+function caseStats(c,since,until){
+  var ents=S.log.filter(function(e){return e.cat===c&&isVote(e)&&(!since||e.at>=since)&&(!until||e.at<until);})
+    .sort(function(a,b){return a.at-b.at;});
+  var days={};ents.forEach(function(e){days[dayKeyOf(e.at)]=1;});
+  var keys=Object.keys(days).sort(),best=0,run=0,prev=null;
+  keys.forEach(function(k){var p=k.split('-'),ts=new Date(+p[0],+p[1]-1,+p[2]).getTime();
+    run=(prev!==null&&Math.round((ts-prev)/DAY)===1)?run+1:1;if(run>best)best=run;prev=ts;});
+  return {ents:ents,days:days,nDays:keys.length,best:best,
+    pts:ents.reduce(function(a,e){return a+(e.pts>0?e.pts:0);},0),
+    clears:ents.filter(function(e){return e.clear;})};
+}
+function caseWords(c,ents,days,limit){
+  var w=[];
+  ents.forEach(function(e){if(e.note)w.push({at:e.at,text:e.note,src:e.name});});
+  (S.journal||[]).forEach(function(j){if(days[dayKeyOf(j.day)])w.push({at:j.day,text:j.text,src:'Close-out'});});
+  w.sort(function(a,b){return b.at-a.at;});
+  return limit?w.slice(0,limit):w;
+}
+function openCase(c){U.caseCat=c;U.caseAll=false;openSub('caseid');}
+function renderCase(){
+  var el=document.getElementById('casep');if(!el)return;
+  var c=U.caseCat;if(S.categories.indexOf(c)<0){el.innerHTML='';return;}
+  var id=idOf(c),st=caseStats(c),L=levelOf(st.ents.length),now=Date.now();
+  var h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>'+
+    '<div class="case-hero" style="--c:'+idColor(c)+'"><div class="ch-k">The case for</div>'+
+    '<div class="ch-t">'+esc(id.title)+'</div>'+(id.line?'<div class="ch-l serif">'+esc(id.line)+'</div>':'')+
+    '<div class="id-bar"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>'+
+    '<div class="ch-m">Lv '+L.lv+' · '+L.left+' to Lv '+(L.lv+1)+'</div></div>';
+  if(!st.ents.length){
+    h+='<div class="note">No evidence yet. The first vote starts the case.</div>'+
+       '<div class="f-acts"><button class="btn" data-a="open-report" data-c="'+esc(c)+'">Report progress</button></div>';
+    el.innerHTML=h;return;
+  }
+  var first=st.ents[0].at;
+  h+='<div class="pstats case-stats" style="--c:'+idColor(c)+'">'+
+     '<div class="pstat"><b>'+st.nDays+'</b><span>days you showed up</span></div>'+
+     '<div class="pstat"><b>'+st.ents.length+'</b><span>votes</span></div>'+
+     '<div class="pstat"><b>'+st.best+'</b><span>longest streak</span></div></div>'+
+     '<p class="sub case-since">Since '+new Date(first).toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})+
+     ' · '+nf(st.pts)+' points earned as '+esc(id.title)+'</p>';
+  /* 12-week calendar for this identity */
+  var start=weekStart(now)-11*7*DAY,today=dayStart(now);
+  h+='<div class="card"><h3>Days as '+esc(id.title)+'</h3><div class="cal" style="--gold:'+idColor(c)+'">';
+  for(var i=0;i<84;i++){var ts=start+i*DAY,k=dayKeyOf(ts),n=0;
+    st.ents.forEach(function(e){if(dayKeyOf(e.at)===k)n++;});
+    h+='<i class="c'+(ts>today?'f':n===0?0:n<2?1:n<4?2:3)+(ts===today?' t':'')+'"></i>';}
+  h+='</div><div class="cal-key"><span>12 weeks ago</span><span>today</span></div></div>';
+  /* milestones in the record */
+  var marks=[];
+  st.clears.forEach(function(e){marks.push({at:e.at,t:'Cleared “'+e.name+'”'});});
+  var cnt=0,lv=1;st.ents.forEach(function(e){cnt++;while(cnt>=5*lv*(lv+1)/2){lv++;marks.push({at:e.at,t:'Reached '+esc(id.title)+' Lv '+lv});}});
+  if(st.best>=3){var r=0,pv=null,bestEnd=null;Object.keys(st.days).sort().forEach(function(k){var p=k.split('-'),ts=new Date(+p[0],+p[1]-1,+p[2]).getTime();
+    r=(pv!==null&&Math.round((ts-pv)/DAY)===1)?r+1:1;if(r===st.best&&!bestEnd)bestEnd=ts;pv=ts;});
+    if(bestEnd)marks.push({at:bestEnd,t:st.best+' days in a row'});}
+  marks.sort(function(a,b){return b.at-a.at;});
+  if(marks.length){
+    h+='<div class="card"><h3>On the record</h3>';
+    marks.slice(0,U.caseAll?99:6).forEach(function(m){h+='<div class="rec"><span class="rec-d">'+shortDate(m.at)+'</span><span class="rec-t">'+m.t+'</span></div>';});
+    h+='</div>';
+  }
+  /* in your words */
+  var words=caseWords(c,st.ents,st.days);
+  if(words.length){
+    h+='<div class="card"><h3>In your words</h3>';
+    words.slice(0,U.caseAll?99:5).forEach(function(w){
+      h+='<div class="jr"><span class="jr-d">'+new Date(w.at).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+' · '+esc(w.src)+'</span>'+
+         '<span class="jr-t serif">'+esc(w.text)+'</span></div>';});
+    if(words.length>5&&!U.caseAll)h+='<button class="link" data-a="case-all">Show all '+words.length+'</button>';
+    h+='</div>';
+  }
+  /* what you're working on */
+  var act=activeIn(c);
+  h+='<div class="card"><h3>Working on</h3>';
+  if(!act.length)h+='<div class="rv-empty">Nothing in focus for '+esc(id.title)+' right now.</div>';
+  act.forEach(function(g){h+='<div class="kv"><span>'+esc(g.name)+'</span><b>'+esc(repProgText(g))+'</b></div>';});
+  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button>'+
+     '<button class="btn2 sm" data-a="open-id" data-c="'+esc(c)+'">All '+esc(id.title)+' quests</button></div></div>';
+  el.innerHTML=h;
+}
+
+/* ---------- monthly evidence report ---------- */
+function monthKey(ts){var d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function monthRange(key){var p=key.split('-'),a=new Date(+p[0],+p[1]-1,1),b=new Date(+p[0],+p[1],1);return [a.getTime(),b.getTime()];}
+function monthName(key){var r=monthRange(key);return new Date(r[0]).toLocaleDateString(undefined,{month:'long',year:'numeric'});}
+function prevMonthKey(key){var r=monthRange(key);return monthKey(r[0]-DAY);}
+function monthsWithData(){
+  var m={};S.log.forEach(function(e){if(isVote(e))m[monthKey(e.at)]=1;});
+  (S.journal||[]).forEach(function(j){m[monthKey(j.day)]=1;});
+  m[monthKey(Date.now())]=1;
+  return Object.keys(m).sort().reverse();
+}
+function monthSummary(key){
+  var r=monthRange(key),ents=S.log.filter(function(e){return isVote(e)&&e.at>=r[0]&&e.at<r[1];});
+  var days={};ents.forEach(function(e){days[dayKeyOf(e.at)]=(days[dayKeyOf(e.at)]||0)+1;});
+  return {r:r,ents:ents,days:days,nDays:Object.keys(days).length,
+    pts:ents.reduce(function(a,e){return a+(e.pts>0?e.pts:0);},0),
+    clears:ents.filter(function(e){return e.clear;}),
+    words:(S.journal||[]).filter(function(j){return j.day>=r[0]&&j.day<r[1];}),
+    reds:S.redemptions.filter(function(x){var t=tsOf(x.date);return t>=r[0]&&t<r[1];})};
+}
+function openMonth(key){
+  U.month=key;
+  /* only a finished month counts as read; peeking at this month doesn't */
+  if(key!==monthKey(Date.now())){S.settings.reportSeen=key;saveLocal();}
+  openSub('month');
+}
+function monthListHTML(){
+  var ms=monthsWithData(),cur=monthKey(Date.now());
+  var h='<div class="card"><h3>Monthly reports</h3><p class="sub">The evidence, a month at a time.</p>';
+  ms.forEach(function(k){
+    var s=monthSummary(k);
+    h+='<button class="mrow" data-a="open-month" data-k="'+k+'"><span><b>'+monthName(k)+'</b><span>'+
+       (k===cur?'In progress · ':'')+s.nDays+' day'+(s.nDays===1?'':'s')+' showed up · '+s.ents.length+' vote'+(s.ents.length===1?'':'s')+
+       '</span></span><span class="chev"></span></button>';
+  });
+  return h+'</div>';
+}
+function renderMonth(){
+  var el=document.getElementById('monthp');if(!el)return;
+  var key=U.month||monthKey(Date.now()),s=monthSummary(key),cur=key===monthKey(Date.now());
+  var p=monthSummary(prevMonthKey(key));
+  var span=cur?new Date(Date.now()).getDate():Math.round((s.r[1]-s.r[0])/DAY);
+  var h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>'+
+    '<div class="case-hero mon-hero"><div class="ch-k">'+(cur?'Report so far':'Monthly report')+'</div><div class="ch-t">'+monthName(key)+'</div>'+
+    '<div class="ch-l serif">'+(s.nDays?'You showed up on '+s.nDays+' of '+span+' days.':'No votes yet this month. One small thing starts it.')+'</div></div>';
+  var dv=s.ents.length-p.ents.length;
+  h+='<div class="pstats"><div class="pstat"><b>'+s.ents.length+'</b><span>votes'+(p.ents.length?' · '+(dv>=0?'+':'−')+Math.abs(dv)+' vs last month':'')+'</span></div>'+
+     '<div class="pstat"><b>'+nf(s.pts)+'</b><span>points earned</span></div>'+
+     '<div class="pstat"><b>'+s.clears.length+'</b><span>cleared</span></div></div>';
+  /* best day */
+  var bd=null;Object.keys(s.days).forEach(function(k){if(!bd||s.days[k]>s.days[bd])bd=k;});
+  if(bd&&s.days[bd]>1){var bp=bd.split('-');h+='<p class="sub">Best day: <b style="color:var(--chalk)">'+new Date(+bp[0],+bp[1]-1,+bp[2]).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})+'</b> with '+s.days[bd]+' votes.</p>';}
+  /* per identity */
+  S.categories.forEach(function(c){
+    var es=s.ents.filter(function(e){return e.cat===c;});if(!es.length)return;
+    var ds={};es.forEach(function(e){ds[dayKeyOf(e.at)]=1;});
+    var cl=es.filter(function(e){return e.clear;});
+    var w=caseWords(c,es,ds,1)[0];
+    h+='<div class="card mid" style="--c:'+idColor(c)+'"><div class="mid-h"><b>'+esc(idOf(c).title)+'</b><span>'+es.length+' vote'+(es.length===1?'':'s')+' · '+Object.keys(ds).length+' day'+(Object.keys(ds).length===1?'':'s')+'</span></div>'+
+       (cl.length?'<div class="mid-c">Cleared: '+cl.map(function(e){return esc(e.name);}).join(', ')+'</div>':'')+
+       (w?'<div class="mid-w serif">“'+esc(w.text)+'”</div>':'')+
+       '<button class="link" data-a="open-case" data-c="'+esc(c)+'">See the case file</button></div>';
+  });
+  var quiet=S.categories.filter(function(c){return !s.ents.some(function(e){return e.cat===c;});});
+  if(quiet.length&&s.ents.length)h+='<p class="sub">No votes yet for '+quiet.map(function(c){return esc(idOf(c).title);}).join(', ')+(cur?' this month.':' that month.')+'</p>';
+  if(s.reds.length){
+    h+='<div class="card"><h3>Earned this month</h3>';
+    s.reds.forEach(function(x){h+='<div class="kv"><span>'+esc(x.name)+(x.earnedBy?'<small class="eb2">'+esc(x.earnedBy)+'</small>':'')+'</span><b>'+(x.cost?nf(x.cost)+' pts':'prize')+'</b></div>';});
+    h+='</div>';
+  }
+  if(s.words.length){
+    h+='<div class="card"><h3>The month in your words</h3>';
+    s.words.slice().sort(function(a,b){return a.day-b.day;}).forEach(function(j){
+      h+='<div class="jr"><span class="jr-d">'+new Date(j.day).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span><span class="jr-t serif">'+esc(j.text)+'</span></div>';});
+    h+='</div>';
+  }
+  el.innerHTML=h;
+}
+/* early in a month, last month's report waits on Today until you open it */
+function renderMonthBanner(){
+  var el=document.getElementById('month-banner');if(!el)return;
+  var now=new Date(Date.now()),pk=prevMonthKey(monthKey(Date.now()));
+  if(now.getDate()>10||S.settings.reportSeen===pk||U.monthLater||!monthSummary(pk).ents.length){el.innerHTML='';return;}
+  el.innerHTML='<div class="rbanner"><div><b>Your '+monthName(pk).split(' ')[0]+' report is ready</b>'+
+    '<span>The evidence from last month, in one place.</span></div>'+
+    '<div class="acts"><button class="btn sm" data-a="open-month" data-k="'+pk+'">Open</button>'+
+    '<button class="btn2 sm" data-a="month-later">Later</button></div></div>';
 }
 
 /* ---------- focus cards ----------
@@ -2781,8 +3179,8 @@ function renderSlots(){
     var above=act.length-shown.length;
     var more=S.goals.filter(function(g){return g.category===c&&!g.active&&!isDone(g);}).length;
     h+='<div class="idcard" style="--c:'+idColor(c)+'">'+
-       '<div class="idc-head"><span class="idc-title">'+esc(id.title)+'</span>'+
-       '<span class="idc-meta">Lv '+L.lv+' \u00B7 '+act.length+'/'+PERCAT+' in focus</span></div>'+
+       '<button class="idc-head" data-a="open-case" data-c="'+esc(c)+'" aria-label="See the evidence for '+esc(id.title)+'"><span class="idc-title">'+esc(id.title)+'<span class="chev"></span></span>'+
+       '<span class="idc-meta">Lv '+L.lv+' \u00B7 '+act.length+'/'+PERCAT+' in focus</span></button>'+
        (id.line?'<div class="idc-line serif">'+esc(id.line)+'</div>':'')+
        '<div class="idc-bar" aria-hidden="true"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>';
     shown.forEach(function(g){h+=(compact&&!U.expanded[g.id])?compactHTML(g,{today:true}):slotHTML(g);});
@@ -3217,7 +3615,7 @@ function renderReview(){
 
 function showPanel(name){
   U.tab=name;
-  var lit=name==='review'?'progress':name;
+  var lit=PANEL_LIT[name]||(name==='log'?(U.prev||'focus'):name);
   document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-tab')===lit);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+name);});
   document.getElementById('gear').classList.toggle('on',name==='profile');
@@ -3293,11 +3691,14 @@ function shelfToggle(){
    marked stale and redraw the moment you open them, so a tap costs one tab's
    worth of work instead of the whole app's. */
 var PANELS={
-  focus:   function(){renderNowHead();renderReaddBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
+  focus:   function(){renderNowHead();renderReaddBanner();renderMonthBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
   quests:  function(){renderCatSelect();renderGoals();},
   rewards: function(){renderChase();renderRewards();renderTrophies();},
   progress:function(){renderProfile();renderJourney();renderProfSeason();renderTrends();renderPlaybook();renderCleared();},
   review:  function(){renderReview();},
+  log:     function(){renderLog();},
+  caseid:  function(){renderCase();},
+  month:   function(){renderMonth();},
   profile: function(){renderProfile();renderSheetSection();renderCatEditor();renderStyles();renderLogos();
                       renderPalettes();renderSummaries();}
 };
@@ -3476,11 +3877,11 @@ function logDelta(g,before,clear,fwd){logEvent(g,earnedFrom(g)-before,clear,fwd)
 function progAmt(g){return (g.completedCount||0)*1e6+(g.current||0)+
   (g.steps||[]).reduce(function(a,s){return a+(s.done?1000:0)+(s.current||0);},0);}
 function once(id,fn){
-  if(id&&LOCK[id])return;
+  if(id&&LOCK[id])return Promise.resolve();
   if(id)LOCK[id]=true;
   var g=id?S.goals.find(function(x){return x.id===id;}):null;
   var b=g?earnedFrom(g):0,sig=g?progSig(g):'',ca=g?(g.completedAt||0):0,pa=g?progAmt(g):0;
-  Promise.resolve().then(fn).catch(function(e){console.error(e);}).then(function(){
+  return Promise.resolve().then(fn).catch(function(e){console.error(e);}).then(function(){
     /* undo may have swapped S out from under us; re-find by id */
     var g2=id?S.goals.find(function(x){return x.id===id;}):null;
     if(g2&&g2===g&&progSig(g2)!==sig){
@@ -3914,6 +4315,21 @@ document.addEventListener('click',function(e){
   else if(a==='expand'){
     if(U.expanded[id])delete U.expanded[id];else U.expanded[id]=true;
     renderPanel('focus');}
+  else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
+  else if(a==='sub-back')backSub();
+  else if(a==='rep-cat'){U.rep.cat=el.getAttribute('data-c');renderLog();}
+  else if(a==='rep-pick'){var rg=S.goals.find(function(x){return x.id===id;});U.rep.gid=id;U.rep.amt=1;U.rep.note='';
+    U.rep.mode=repCanProgress(rg)?'progress':'note';renderLog();if(window.scrollTo)try{window.scrollTo(0,0);}catch(x){}}
+  else if(a==='rep-mode'){var rn=document.getElementById('rep-note');U.rep.note=rn?rn.value:'';U.rep.mode=el.getAttribute('data-m');renderLog();}
+  else if(a==='rep-amt'){var ri=document.getElementById('rep-amt');if(ri){var mx=+ri.max||999;
+    ri.value=Math.max(1,Math.min(mx,(Math.round(+ri.value)||1)+(+el.getAttribute('data-d'))));U.rep.amt=+ri.value;}}
+  else if(a==='rep-go')repGo();
+  else if(a==='rep-change'){U.rep.gid=null;renderLog();}
+  else if(a==='rep-again'){repReset(true);renderLog();if(window.scrollTo)try{window.scrollTo(0,0);}catch(x){}}
+  else if(a==='open-case')openCase(el.getAttribute('data-c'));
+  else if(a==='case-all'){U.caseAll=!U.caseAll;renderCase();}
+  else if(a==='open-month')openMonth(el.getAttribute('data-k'));
+  else if(a==='month-later'){U.monthLater=true;renderMonthBanner();}
   else if(a==='readd-how')readdHow();
   else if(a==='readd-later'){U.readdHide=true;renderReaddBanner();}
   else if(a==='next-line'){U.lineShift=(U.lineShift||0)+1;renderNowHead();}
@@ -4037,6 +4453,9 @@ document.getElementById('r-newshelf').addEventListener('input',rewardHint);
 document.getElementById('s-theme').addEventListener('change',function(){setTheme(this.value);});
 document.getElementById('s-curve').addEventListener('change',renderCurveHint);
 document.getElementById('g-period').addEventListener('change',scheduleToggle);
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='rep-q'&&U.rep){U.rep.q=e.target.value;renderRepList();}
+});
 document.getElementById('p-profile').addEventListener('toggle',function(e){
   var t=e.target;
   if(t&&t.classList&&t.classList.contains('sect')&&t.open)
@@ -4074,7 +4493,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.4';
+var APP_VERSION='3.5';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
@@ -4272,6 +4691,7 @@ function checkV(r){
 function pullBlocked(){
   var ae=document.activeElement;
   if(ae&&ae.id==='co-in'&&ae.value)return true;
+  if(U.tab==='log'&&U.rep&&U.rep.gid&&!U.rep.done)return true;
   return Object.keys(CLEARING).length||Object.keys(LOCK).length||modalOpen();
 }
 function scheduleSync(ms){clearTimeout(SYNC_T);SYNC_T=setTimeout(function(){sync();},ms||0);}
@@ -4533,7 +4953,7 @@ function bigClear(g){return worth(g)>=150;}
 function askReflection(g){
   var e=null;
   for(var i=S.log.length-1;i>=0;i--){if(S.log[i].gid===g.id&&S.log[i].clear){e=S.log[i];break;}}
-  if(!e)return;
+  if(!e||e.note)return;   /* already said in the report */
   var id=e.id;
   openModal('What made this work?','“'+g.name+'” is done. One line for future you — it shows up in your check-ins and playbook.',[
     {label:'Save',style:'pri',run:function(v){
