@@ -1125,6 +1125,41 @@ body.sheet-open{overflow:hidden;}
 .trophy .tx b{font-size:0.8rem;}
 .trophy .eb{display:none;}
 .vault{margin-top:18px;padding-top:14px;}
+
+/* =================== 3.7 =================== */
+body.typing .tabbar,body.typing .fab{display:none!important;}
+#reward-form{scroll-margin-top:calc(var(--wh,58px) + 70px);}
+.reveal{animation:reveal 1.5s ease;}
+@keyframes reveal{0%{box-shadow:0 0 0 0 var(--glow);}25%{box-shadow:0 0 0 5px var(--glow);}100%{box-shadow:0 0 0 0 transparent;}}
+.ideas-entry{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;margin:0 0 14px;border-radius:var(--r-card);
+  border:1px solid color-mix(in srgb,var(--gold) 40%,var(--edge-soft));background:color-mix(in srgb,var(--gold) 8%,var(--panel));
+  font-family:inherit;color:var(--chalk);cursor:pointer;}
+.ie-ico{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--btnfg);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.ie-t{flex:1;min-width:0;}
+.ie-t b{display:block;font-weight:700;}
+.ie-t span{display:block;font-size:var(--t-meta);color:var(--dim);margin-top:1px;}
+.ideas-entry .chev{transform:rotate(-45deg);width:7px;height:7px;}
+.idea-kinds{margin:4px 0 16px;}
+.idea-sec{margin:0 0 22px;}
+.idea-h{display:flex;align-items:center;font-family:var(--fdisp);font-weight:600;font-size:1.05rem;margin-bottom:8px;}
+.idea-h span{margin-left:8px;font-family:var(--fbody);font-size:var(--t-meta);font-weight:700;color:var(--dim);}
+.idea{padding:12px 14px;margin-bottom:8px;border-radius:var(--r-card);background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--c);
+  transition:opacity .25s ease,transform .25s ease;}
+.idea.gone{opacity:0;transform:translateX(18px);}
+.idea.added{border-color:color-mix(in srgb,var(--jade) 45%,var(--edge-soft));border-left-color:var(--jade);}
+.idea-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.idea-top b{font-weight:600;font-size:0.96rem;line-height:1.3;overflow-wrap:anywhere;}
+.idea-top .pill{flex-shrink:0;}
+.idea-why{font-size:0.86rem;color:var(--dim);margin-top:4px;line-height:1.35;}
+.idea-why.linked{color:var(--chalk);}
+.idea-why.linked::before{content:'\2726 ';color:var(--c);}
+.idea-meta{font-size:0.74rem;color:var(--dimmer);margin-top:4px;}
+.idea-acts{display:flex;align-items:center;gap:14px;margin-top:10px;}
+.idea-no{font-size:var(--t-meta);color:var(--dim);padding:4px 0;}
+.idea-ok{display:inline-flex;align-items:center;gap:8px;font-size:0.86rem;font-weight:700;color:var(--jade);}
+.idea-ok .co-tick{width:18px;height:18px;}
+.idea-in{font-size:var(--t-meta);font-weight:700;color:var(--dim);}
+.idea-more{font-size:var(--t-meta);padding:2px 0;}
 </style>
 </head>
 <body>
@@ -1268,6 +1303,7 @@ body.sheet-open{overflow:hidden;}
   <div class="panel" id="p-log"><div id="logp"></div></div>
   <div class="panel" id="p-caseid"><div id="casep"></div></div>
   <div class="panel" id="p-month"><div id="monthp"></div></div>
+  <div class="panel" id="p-ideas"><div id="ideasp"></div></div>
 
   <div class="panel" id="p-progress">
     <div class="head"><h2>Journey</h2></div>
@@ -2626,7 +2662,7 @@ function renderGoals(){
     h+='</section>';
   });
   if(!any)h='<div class="note">No open quests match “'+esc(q)+'”.</div>';
-  else if(!q)h='<div class="idchips" role="navigation" aria-label="Jump to identity">'+S.categories.map(function(c){
+  else if(!q)h=ideasEntryHTML()+'<div class="idchips" role="navigation" aria-label="Jump to identity">'+S.categories.map(function(c){
       var n=activeIn(c).length;
       return '<button class="idchip" data-a="jump-id" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+
         esc(idOf(c).title)+'<span>'+n+'/'+PERCAT+'</span></button>';}).join('')+'</div>'+h;
@@ -2693,7 +2729,7 @@ function coolingHTML(){
         (lg.n?' So far you’ve let go of '+nf(lg.n)+' ($'+nf(lg.dollars||0)+').':'')+'</p>';
   list.forEach(function(r){
     var ready=Date.now()>=r.coolUntil,left=Math.max(1,Math.ceil((r.coolUntil-Date.now())/DAY));
-    h+='<div class="cool-r'+(ready?' ready':'')+'"><div class="cool-top"><b>'+esc(r.name)+'</b><span>$'+nf(r.price)+'</span></div>'+
+    h+='<div class="cool-r'+(ready?' ready':'')+'" data-rid="'+r.id+'"><div class="cool-top"><b>'+esc(r.name)+'</b><span>$'+nf(r.price)+'</span></div>'+
        '<div class="cool-m">'+(ready?'The week is up. Do you still want it?':
          'Decide on '+shortDate(r.coolUntil)+' · '+left+' day'+(left>1?'s':'')+' to go')+'</div>'+
        '<div class="f-acts">'+(ready?'<button class="btn sm" data-a="cool-keep" data-id="'+r.id+'">Still want it</button>':'')+
@@ -2745,9 +2781,9 @@ function earnedByFor(cost){
 /* =====================================================================
    3.5 — report progress, case files, monthly reports
    ===================================================================== */
-var PANEL_LIT={review:'progress',month:'progress',caseid:'quests'};
+var PANEL_LIT={review:'progress',month:'progress',caseid:'quests',ideas:'quests'};
 function openSub(name){
-  if(['log','caseid','month','review'].indexOf(U.tab)<0)U.prev=U.tab;
+  if(['log','caseid','month','review','ideas'].indexOf(U.tab)<0)U.prev=U.tab;
   STALE[name]=1;showPanel(name);
 }
 function backSub(){showPanel(U.prev||'focus');}
@@ -3076,6 +3112,175 @@ function renderMonthBanner(){
     '<span>The evidence from last month, in one place.</span></div>'+
     '<div class="acts"><button class="btn sm" data-a="open-month" data-k="'+pk+'">Open</button>'+
     '<button class="btn2 sm" data-a="month-later">Later</button></div></div>';
+}
+
+
+/* =====================================================================
+   3.7 — ideas for you
+   A hand-picked library of next steps. Each idea knows which identity it
+   builds and which of your quests it goes with, so the list leans toward
+   what you're already working on. Nothing is sent anywhere.
+   kind: skill (build over time) | once (one-time) | habit (weekly)
+   ===================================================================== */
+var IDEAS=[
+ /* Professional */
+ {n:'Coffee chats with 5 people in your target field',r:'career',k:'skill',d:2,t:3,ty:'counter',tg:5,u:'chats',m:/job|resume|career|salary/i,w:'Most jobs come through people, not applications.'},
+ {n:'Practice 10 mock interviews',r:'career',k:'skill',d:3,t:3,ty:'counter',tg:10,u:'interviews',m:/job|resume|interview/i,w:'Interviewing is a skill; reps make it easy.'},
+ {n:'Rewrite your LinkedIn headline and About',r:'career',k:'once',d:2,t:2,ty:'once',m:/job|resume/i,w:'Recruiters read this before your resume.'},
+ {n:'Write a one-page plan for the next 3 years',r:'career',k:'once',d:2,t:2,ty:'once',m:/job|career|business/i,w:'Know where the job search is pointing.'},
+ {n:'Have the raise or promotion conversation',r:'career',k:'once',d:4,t:2,ty:'once',m:/salary|100k|raise/i,w:'The fastest path to a bigger number is asking.'},
+ {n:'Earn an industry certification',r:'career',k:'once',d:4,t:4,ty:'once',m:/salary|job/i,w:'A credential that backs up the salary ask.'},
+ {n:'Build a simple portfolio site',r:'career',k:'once',d:3,t:4,ty:'once',m:/job|business|tiktok/i,w:'One link that shows your work.'},
+ {n:'Talk to 10 potential customers',r:'career',k:'skill',d:3,t:3,ty:'counter',tg:10,u:'conversations',m:/business/i,w:'Validate the idea before building it.'},
+ {n:'Make your first $100 from a side project',r:'career',k:'once',d:4,t:4,ty:'once',m:/business|marketplace/i,w:'Proof that someone will pay.'},
+ {n:'4 hours of deep work on your goals each week',r:'career',k:'habit',d:3,t:3,ty:'counter',tg:4,u:'hours',p:'week',w:'Protected time is where big goals actually move.'},
+ {n:'Thank someone who helped your career',r:'career',k:'once',d:1,t:1,ty:'once',w:'Five minutes, and it strengthens a relationship that matters.'},
+ /* Learner */
+ {n:'Learn 10 songs on guitar',r:'intellectual',k:'skill',d:4,t:4,ty:'counter',tg:10,u:'songs',m:/guitar/i,w:'The next level after five.'},
+ {n:'Play one song start to finish for someone',r:'intellectual',k:'once',d:3,t:2,ty:'once',m:/guitar/i,w:'Playing for someone turns practice into a skill.'},
+ {n:'Practice guitar 4 times a week',r:'intellectual',k:'habit',d:2,t:2,ty:'counter',tg:4,u:'sessions',p:'week',m:/guitar/i,w:'Short, frequent practice beats long and rare.'},
+ {n:'Learn 500 Vietnamese words',r:'intellectual',k:'skill',d:4,t:4,ty:'counter',tg:500,u:'words',m:/vietnamese/i,w:'Vocabulary is what makes conversation possible.'},
+ {n:'Vietnamese practice, 5 times a week',r:'intellectual',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'sessions',p:'week',m:/vietnamese/i,w:'Fifteen minutes a day adds up fast.'},
+ {n:'Order a full meal in Vietnamese',r:'intellectual',k:'once',d:3,t:1,ty:'once',m:/vietnamese/i,w:'A real-world test you can do this month.'},
+ {n:'Take 3 full GMAT practice tests',r:'intellectual',k:'skill',d:4,t:4,ty:'counter',tg:3,u:'tests',m:/gmat/i,w:'Timed tests are where the score actually moves.'},
+ {n:'Shortlist 5 MBA programs',r:'intellectual',k:'once',d:2,t:2,ty:'once',m:/gmat/i,w:'Know what the score is for.'},
+ {n:'Read 12 books this year',r:'intellectual',k:'skill',d:3,t:5,ty:'counter',tg:12,u:'books',m:/read|book/i,w:'One a month, the next step up from two.'},
+ {n:'Read 20 pages, 5 days a week',r:'intellectual',k:'habit',d:2,t:2,ty:'counter',tg:5,u:'days',p:'week',m:/read|book/i,w:'Pages a day is what actually finishes books.'},
+ {n:'Post 3 TikToks a week',r:'intellectual',k:'habit',d:3,t:3,ty:'counter',tg:3,u:'posts',p:'week',m:/tiktok/i,w:'Followers follow consistency.'},
+ {n:'Finish an online course you start',r:'intellectual',k:'once',d:3,t:4,ty:'once',w:'Most courses never get finished. Be the exception.'},
+ {n:'Learn to cook 5 new meals',r:'intellectual',k:'skill',d:2,t:3,ty:'counter',tg:5,u:'meals',m:/eat out/i,w:'More meals you like means fewer nights out.'},
+ /* Athlete */
+ {n:'Run a half marathon',r:'fitness',k:'once',d:4,t:4,ty:'once',m:/marathon|10k|5k/i,w:'The natural stepping stone to the full.'},
+ {n:'Run 3 times a week',r:'fitness',k:'habit',d:3,t:2,ty:'counter',tg:3,u:'runs',p:'week',m:/5k|10k|marathon|run/i,w:'Every race goal sits on this.'},
+ {n:'Sign up for a race 8–12 weeks out',r:'fitness',k:'once',d:1,t:1,ty:'once',m:/5k|10k|marathon|hyrox/i,w:'A date on the calendar makes training real.'},
+ {n:'Strength train 3 times a week',r:'fitness',k:'habit',d:3,t:3,ty:'counter',tg:3,u:'sessions',p:'week',m:/bench|squat|pull|hyrox/i,w:'Bench, squat and pull-ups all come from this.'},
+ {n:'Deadlift 315',r:'fitness',k:'once',d:4,t:4,ty:'once',m:/bench|squat/i,w:'Rounds out your big lifts.'},
+ {n:'50 push-ups unbroken',r:'fitness',k:'once',d:3,t:3,ty:'once',m:/pull-?up|bench|plank/i,w:'Pairs with the pull-up goal.'},
+ {n:'Mobility 10 minutes, 4 times a week',r:'fitness',k:'habit',d:1,t:1,ty:'counter',tg:4,u:'sessions',p:'week',m:/squat|plank|hyrox|marathon/i,w:'Keeps you training instead of injured.'},
+ {n:'Hit your protein target 5 days a week',r:'fitness',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'days',p:'week',m:/body fat|bench|squat/i,w:'Body composition is built in the kitchen.'},
+ {n:'Sleep 7+ hours, 5 nights a week',r:'fitness',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'nights',p:'week',w:'Recovery is when you actually get stronger.'},
+ {n:'Take a golf lesson',r:'fitness',k:'once',d:1,t:2,ty:'once',m:/golf|shoot/i,w:'One lesson can take strokes off faster than a season of rounds.'},
+ {n:'Break 85 on 18',r:'fitness',k:'once',d:5,t:4,ty:'once',m:/shoot 90/i,w:'What comes after breaking 90.'},
+ {n:'Hike a 14,000-ft peak',r:'fitness',k:'once',d:4,t:3,ty:'once',w:'A big day outside that tests everything you train for.'},
+ /* Saver */
+ {n:'Save $5,000',r:'money',k:'skill',d:4,t:5,ty:'counter',tg:5000,u:'dollars',m:/save/i,w:'The next milestone after $1,000.'},
+ {n:'Build a 3-month emergency fund',r:'money',k:'once',d:4,t:5,ty:'once',m:/save/i,w:'The cushion that makes every other goal less stressful.'},
+ {n:'Automate a monthly transfer to savings',r:'money',k:'once',d:1,t:1,ty:'once',m:/save/i,w:'Saving that happens without willpower.'},
+ {n:'Open and fund a Roth IRA',r:'money',k:'once',d:2,t:2,ty:'once',m:/save|salary/i,w:'Future you gets the compounding.'},
+ {n:'Cancel 3 subscriptions you don\u2019t use',r:'money',k:'once',d:1,t:1,ty:'counter',tg:3,u:'subscriptions',w:'Money back every month for ten minutes of work.'},
+ {n:'Sell 25 items on Marketplace',r:'money',k:'skill',d:3,t:3,ty:'counter',tg:25,u:'items',m:/marketplace/i,w:'Keep the momentum from the first ten.'},
+ {n:'A no-spend weekend each month',r:'money',k:'habit',d:2,t:2,ty:'once',p:'month',w:'Proves you can have a good weekend without spending.'},
+ {n:'Read one personal finance book',r:'money',k:'once',d:2,t:3,ty:'once',m:/read|save/i,w:'One book can change how you think about money for good.'},
+ /* Disciplined */
+ {n:'Phone out of the bedroom, 5 nights a week',r:'habits',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'nights',p:'week',m:/screen/i,w:'The easiest way to cut screen time is distance.'},
+ {n:'No social media before 10am, 5 days a week',r:'habits',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'days',p:'week',m:/screen|tiktok/i,w:'Mornings for your goals, not the feed.'},
+ {n:'Cook at home 4 nights a week',r:'habits',k:'habit',d:2,t:2,ty:'counter',tg:4,u:'nights',p:'week',m:/eat out/i,w:'The other side of eating out less.'},
+ {n:'Plan tomorrow the night before, 5 times a week',r:'habits',k:'habit',d:1,t:1,ty:'counter',tg:5,u:'nights',p:'week',w:'Five minutes at night saves the morning.'},
+ {n:'Wake up at the same time, 5 days a week',r:'habits',k:'habit',d:2,t:1,ty:'counter',tg:5,u:'days',p:'week',w:'A steady wake time makes everything else easier.'},
+ {n:'Do the hardest task first for 30 days',r:'habits',k:'skill',d:3,t:2,ty:'counter',tg:30,u:'days',m:/75 hard/i,w:'Builds the same muscle 75 Hard does, every day.'},
+ {n:'30 days without alcohol',r:'habits',k:'skill',d:3,t:3,ty:'counter',tg:30,u:'days',m:/75 hard|body fat/i,w:'Better sleep, better training, clearer head.'},
+ {n:'Make your bed every day for 30 days',r:'habits',k:'skill',d:1,t:1,ty:'counter',tg:30,u:'days',w:'A small promise kept first thing every day.'}
+];
+var IKIND={skill:'Skill',once:'One-time',habit:'Habit'};
+function ideaCat(role){
+  var hit=S.categories.find(function(c){return c.toLowerCase()===role;});
+  if(hit)return hit;
+  var i=DEFCATS.map(function(c){return c.toLowerCase();}).indexOf(role);
+  return i>=0&&S.categories[i]?S.categories[i]:null;
+}
+function normName(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
+function ideaList(){
+  var hidden=S.settings.ideasHidden||[],have=S.goals.map(function(g){return normName(g.name);});
+  var out=[];
+  IDEAS.forEach(function(I){
+    var c=ideaCat(I.r);if(!c)return;
+    if(hidden.indexOf(I.n)>=0)return;
+    var nn=normName(I.n);
+    var added=U.ideaAdded&&U.ideaAdded[I.n];
+    if(!added&&have.some(function(h){return h===nn||(h.length>12&&(h.indexOf(nn)>=0||nn.indexOf(h)>=0));}))return;
+    var match=I.m?S.goals.filter(function(g){return I.m.test(g.name);}):[];
+    var pick=match.filter(function(g){return g.active;})[0]||match.filter(function(g){return isDone(g)||(g.completedCount||0)>0;})[0]||match[0];
+    var why=pick?((isDone(pick)||(pick.completedCount||0)>0)?'Next after \u201C'+pick.name+'\u201D':'Goes with \u201C'+pick.name+'\u201D'):I.w;
+    var score=(pick?(pick.active?12:(isDone(pick)||(pick.completedCount||0)>0)?9:5):0)+(I.k==='habit'&&!S.goals.some(function(g){return g.category===c&&g.period;})?3:0);
+    out.push({I:I,cat:c,why:why,linked:!!pick,score:score});
+  });
+  return out.sort(function(a,b){return b.score-a.score;});
+}
+function ideaGoal(I,c){
+  return {name:I.n,category:c,type:I.ty,difficulty:I.d,time:I.t,target:I.ty==='counter'?I.tg:null,unit:I.u||'',
+    period:I.p||'',repeatable:!!I.p,steps:[],current:0,completedCount:0};
+}
+function openIdeas(){U.ideaMore={};openSub('ideas');}
+function renderIdeas(){
+  var el=document.getElementById('ideasp');if(!el)return;
+  var f=U.ideaKind||'all',list=ideaList().filter(function(x){return f==='all'||x.I.k===f;});
+  if(!U.ideaMore)U.ideaMore={};
+  var h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>'+
+    '<h2>Ideas for you</h2><p class="sub">Picked from what you\u2019re already working on. Anything you add starts in your quest list, benched, until you put it in focus.</p>'+
+    '<div class="idchips idea-kinds">'+[['all','All'],['skill','Skills'],['once','One-time'],['habit','Habits']].map(function(k){
+      return '<button class="idchip'+(f===k[0]?' on':'')+'" data-a="idea-kind" data-k="'+k[0]+'">'+k[1]+'</button>';}).join('')+'</div>';
+  if(!list.length)h+='<div class="note">Nothing new here right now. As your quests change, so do the ideas.</div>';
+  S.categories.forEach(function(c){
+    var mine=list.filter(function(x){return x.cat===c;});if(!mine.length)return;
+    var shown=U.ideaMore[c]?mine:mine.slice(0,3);
+    h+='<section class="idea-sec" style="--c:'+idColor(c)+'"><div class="idea-h"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'<span>'+mine.length+'</span></div>';
+    shown.forEach(function(x){
+      var I=x.I,tg=ideaGoal(I,c),gid=U.ideaAdded&&U.ideaAdded[I.n],ag=gid&&S.goals.find(function(g){return g.id===gid;});
+      h+='<div class="idea'+(ag?' added':'')+'" data-idea="'+esc(I.n)+'">'+
+         '<div class="idea-top"><b>'+esc(I.n)+'</b><span class="pill">'+(I.p==='week'?'Weekly':I.p==='month'?'Monthly':IKIND[I.k])+'</span></div>'+
+         '<div class="idea-why'+(x.linked?' linked':'')+'">'+esc(x.why)+'</div>'+
+         '<div class="idea-meta">'+DIFF[I.d]+' \u00B7 '+TIME[I.t]+' \u00B7 '+nf(worth(tg))+' pts'+(I.ty==='counter'?' \u00B7 '+nf(I.tg)+' '+esc(I.u):'')+'</div>';
+      if(ag){
+        h+='<div class="idea-acts"><span class="idea-ok"><i class="co-tick"></i>Added to '+esc(idOf(c).title)+'</span>'+
+           (ag.active?'<span class="idea-in">In focus</span>':'<button class="btn2 sm" data-a="idea-focus" data-id="'+ag.id+'">Put in focus</button>')+'</div>';
+      }else{
+        h+='<div class="idea-acts"><button class="btn sm" data-a="idea-add" data-n="'+esc(I.n)+'">Add</button>'+
+           '<button class="link idea-no" data-a="idea-hide" data-n="'+esc(I.n)+'">Not for me</button></div>';
+      }
+      h+='</div>';
+    });
+    if(mine.length>3)h+='<button class="link idea-more" data-a="idea-more" data-c="'+esc(c)+'">'+(U.ideaMore[c]?'Show fewer':'Show '+(mine.length-3)+' more')+'</button>';
+    h+='</section>';
+  });
+  el.innerHTML=h;
+}
+async function ideaAdd(n){
+  var I=IDEAS.find(function(x){return x.n===n;});if(!I)return;
+  var c=ideaCat(I.r);if(!c)return;
+  snap();
+  var g=Object.assign({id:uid(),active:false,completedAt:null,createdAt:Date.now(),next:'',when:'',why:'',identity:'',due:null,
+    periodStart:I.p?periodStartOf(I.p,Date.now()):null},ideaGoal(I,c));
+  S.goals.push(g);
+  if(!U.ideaAdded)U.ideaAdded={};U.ideaAdded[n]=g.id;
+  await save();STALE.quests=1;STALE.focus=1;renderIdeas();
+  toast('Added to '+idOf(c).title+'.',true);
+}
+async function ideaHide(n){
+  var h=(S.settings.ideasHidden||[]).slice();if(h.indexOf(n)<0)h.push(n);
+  S.settings.ideasHidden=h;await save();
+  var card=document.querySelector('.idea[data-idea="'+n.replace(/"/g,'\\"')+'"]');
+  if(card){card.classList.add('gone');setTimeout(renderIdeas,260);}else renderIdeas();
+}
+function ideasCount(){return ideaList().length;}
+function ideasEntryHTML(){
+  var n=ideasCount(),linked=ideaList().filter(function(x){return x.linked;}).length;
+  return '<button class="ideas-entry" data-a="open-ideas"><span class="ie-ico">\u2726</span><span class="ie-t"><b>Ideas for you</b>'+
+    '<span>'+(n?n+' ideas'+(linked?', '+linked+' that build on your quests':''):'Nothing new right now')+'</span></span><span class="chev"></span></button>';
+}
+
+/* ---------- edits: go to the form, and come back to what you changed ---------- */
+function revealItem(attr,key,fallback){
+  var sel='.panel.on ['+attr+'="'+key+'"]';
+  var el=document.querySelector('.panel.on .row['+attr+'="'+key+'"],.panel.on .cslot['+attr+'="'+key+'"],.panel.on .slot['+attr+'="'+key+'"],.panel.on .hab['+attr+'="'+key+'"],.panel.on .rw['+attr+'="'+key+'"],.panel.on .cool-r['+attr+'="'+key+'"]')||
+         document.querySelector(sel);
+  if(!el){if(fallback)fallback();return;}
+  if(el.scrollIntoView)try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){el.scrollIntoView();}
+  el.classList.remove('reveal');void el.offsetWidth;el.classList.add('reveal');
+  setTimeout(function(){el.classList.remove('reveal');},1600);
+}
+function showForm(id){
+  var f=document.getElementById(id);if(!f)return;
+  requestAnimationFrame(function(){if(f.scrollIntoView)try{f.scrollIntoView({behavior:'smooth',block:'start'});}catch(x){f.scrollIntoView();}});
 }
 
 /* ---------- focus cards ----------
@@ -3813,6 +4018,7 @@ var PANELS={
   log:     function(){renderLog();},
   caseid:  function(){renderCase();},
   month:   function(){renderMonth();},
+  ideas:   function(){renderIdeas();},
   profile: function(){renderProfile();renderSheetSection();renderCatEditor();renderStyles();renderLogos();
                       renderPalettes();renderSummaries();}
 };
@@ -3950,10 +4156,11 @@ function openGoal(g,forceType){
   if(g){
     /* edit right where you tapped, on whichever tab you're on */
     dockForm('goal-form','data-gid',g.id);
+    showForm('goal-form');
   }else{
     parkForm('goal-form','goal-form-home');
     document.querySelector('.tab[data-tab="quests"]').click();
-    if(gf.scrollIntoView)gf.scrollIntoView({block:'nearest'});
+    showForm('goal-form');
   }
 }
 function closeGoal(){
@@ -4051,9 +4258,14 @@ async function saveGoal(){
   var back=holdScroll();
   /* changing the schedule starts the period fresh */
   if(!existing||existing.period!==o.period)o.periodStart=o.period?periodStartOf(o.period,Date.now()):null;
-  if(existing)Object.assign(existing,o);
-  else S.goals.push(Object.assign({id:uid(),current:0,completedCount:0,active:false,completedAt:null,createdAt:Date.now()},o));
-  closeGoal();await save();renderAll();back();
+  var savedId;
+  if(existing){Object.assign(existing,o);savedId=existing.id;}
+  else{
+    var ng=Object.assign({id:uid(),current:0,completedCount:0,active:false,completedAt:null,createdAt:Date.now()},o);
+    S.goals.push(ng);savedId=ng.id;
+    if(!U.idOpen)U.idOpen={};U.idOpen[ng.category]=true;   /* so the new quest is visible */
+  }
+  closeGoal();await save();renderAll();revealItem('data-gid',savedId,back);
 }
 async function saveReward(){
   var name=document.getElementById('r-name').value.trim(),price=+document.getElementById('r-price').value;
@@ -4066,15 +4278,16 @@ async function saveReward(){
   if(S.shelves.indexOf(sh)<0)S.shelves.push(sh);
   var o={name:name,price:price,shelf:sh};
   var back=holdScroll();
+  var savedR=U.editReward;
   if(U.editReward)Object.assign(S.rewards.find(function(r){return r.id===U.editReward;}),o);
   else{
-    var cd=coolDays();
-    S.rewards.push(Object.assign({id:uid(),pinned:false,createdAt:Date.now(),coolUntil:cd>0?Date.now()+cd*DAY:null},o));
+    var cd=coolDays();savedR=uid();
+    S.rewards.push(Object.assign({id:savedR,pinned:false,createdAt:Date.now(),coolUntil:cd>0?Date.now()+cd*DAY:null},o));
     if(cd>0)setTimeout(function(){toast(name+' is cooling off for '+cd+' days. If you still want it then, it goes on the shelf.');},50);
   }
   document.getElementById('reward-form').classList.add('hide');U.editReward=null;
   parkForm('reward-form','reward-form-home');
-  await save();renderAll();back();
+  await save();renderAll();revealItem('data-rid',savedR,back);
 }
 async function togglePin(id){
   var r=S.rewards.find(function(x){return x.id===id;});
@@ -4404,9 +4617,9 @@ document.addEventListener('click',function(e){
     showPanel('focus');renderBanner();renderProfile();
     toast('Check-in done. Next one in a week.');}
   else if(a==='new-goal')openGoal(null);
-  else if(a==='cancel-goal')closeGoal();
+  else if(a==='cancel-goal'){var cg=U.editGoal;closeGoal();if(cg)revealItem('data-gid',cg);}
   else if(a==='save-goal')saveGoal();
-  else if(a==='new-reward'){U.editReward=null;document.getElementById('r-del').style.display='none';
+  else if(a==='new-reward'){U.editReward=null;document.getElementById('r-del').style.display='none';showForm('reward-form');
     parkForm('reward-form','reward-form-home');
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value='';document.getElementById('r-price').value='';
@@ -4432,6 +4645,12 @@ document.addEventListener('click',function(e){
   else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
   else if(a==='sub-back')backSub();
   else if(a==='sheet-close')closeSheet();
+  else if(a==='open-ideas')openIdeas();
+  else if(a==='idea-kind'){U.ideaKind=el.getAttribute('data-k');renderIdeas();}
+  else if(a==='idea-add')ideaAdd(el.getAttribute('data-n'));
+  else if(a==='idea-hide')ideaHide(el.getAttribute('data-n'));
+  else if(a==='idea-more'){var ic=el.getAttribute('data-c');U.ideaMore[ic]=!U.ideaMore[ic];renderIdeas();}
+  else if(a==='idea-focus'){activate(id).then(function(){if(U.tab==='ideas')renderIdeas();});}
   else if(a==='rep-cat'){U.rep.cat=el.getAttribute('data-c');
     document.querySelectorAll('.rep-chips .idchip').forEach(function(b){b.classList.toggle('on',b===el);});renderRepList();}
   else if(a==='rep-pick'){var rg=S.goals.find(function(x){return x.id===id;});U.rep.gid=id;U.rep.amt=1;U.rep.note='';
@@ -4487,7 +4706,7 @@ document.addEventListener('click',function(e){
     document.getElementById('r-name').value=r.name;document.getElementById('r-price').value=r.price;
     document.getElementById('r-newshelf').value='';renderShelfSelect(r.shelf);
     var rd=document.getElementById('r-del');rd.style.display='';rd.textContent='Delete reward';rd.classList.remove('armed');
-    dockForm('reward-form','data-rid',r.id);}
+    dockForm('reward-form','data-rid',r.id);showForm('reward-form');}
   else if(a==='del-reward-form')danger(el,function(){var rid=U.editReward;
     document.getElementById('reward-form').classList.add('hide');U.editReward=null;parkForm('reward-form','reward-form-home');
     if(rid)delReward(rid);});
@@ -4573,6 +4792,13 @@ document.getElementById('r-newshelf').addEventListener('input',rewardHint);
 document.getElementById('s-theme').addEventListener('change',function(){setTheme(this.value);});
 document.getElementById('s-curve').addEventListener('change',renderCurveHint);
 document.getElementById('g-period').addEventListener('change',scheduleToggle);
+/* iOS lifts fixed bars above the keyboard as you scroll; while a field has
+   focus there is nothing to tap down there anyway, so they step aside. */
+function isField(el){return !!el&&(el.tagName==='TEXTAREA'||el.tagName==='SELECT'||
+  (el.tagName==='INPUT'&&!/^(checkbox|radio|button|submit|file|range|color)$/i.test(el.type)));}
+document.addEventListener('focusin',function(e){if(isField(e.target))document.body.classList.add('typing');});
+document.addEventListener('focusout',function(){setTimeout(function(){
+  if(!isField(document.activeElement))document.body.classList.remove('typing');},120);});
 document.addEventListener('input',function(e){
   if(e.target&&e.target.id==='rep-q'&&U.rep){U.rep.q=e.target.value;renderRepList();}
 });
@@ -4623,10 +4849,10 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.6';
+var APP_VERSION='3.7';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
-var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
+var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
 var Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0};
 var SYNCING=false,SYNC_T=null,PULL_WANTED=false;
 
