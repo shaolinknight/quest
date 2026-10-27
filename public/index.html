@@ -1160,6 +1160,26 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 .idea-ok .co-tick{width:18px;height:18px;}
 .idea-in{font-size:var(--t-meta);font-weight:700;color:var(--dim);}
 .idea-more{font-size:var(--t-meta);padding:2px 0;}
+
+/* =================== 3.8: compact ideas =================== */
+.idea-sec{margin:0 0 16px;border:1px solid var(--edge-soft);border-radius:var(--r-card);background:var(--panel);overflow:hidden;}
+.idea-h{margin:0;padding:9px 12px;background:var(--panel-2);border-bottom:1px solid var(--edge-soft);font-size:0.98rem;}
+.idea{display:flex;align-items:center;gap:10px;margin:0;padding:9px 12px;border:none;border-top:1px solid var(--edge-soft);border-radius:0;background:none;}
+.idea:first-of-type{border-top:none;}
+.idea.added{background:color-mix(in srgb,var(--jade) 7%,var(--panel));border-left:none;box-shadow:inset 3px 0 0 var(--jade);}
+.idea-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+.idea-main b{font-weight:600;font-size:0.92rem;line-height:1.28;overflow-wrap:anywhere;}
+.idea .idea-why{margin:0;font-size:0.78rem;line-height:1.3;}
+.idea .idea-meta{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:0.72rem;color:var(--dimmer);}
+.idea .idea-meta .pill{font-size:0.66rem;padding:1px 7px;}
+.idea-side{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.idea-add{min-height:32px;padding:0 14px;}
+.idea-no{background:none;border:none;padding:3px 0;font-family:inherit;font-size:0.7rem;color:var(--dimmer);cursor:pointer;}
+.idea-side .idea-ok{font-size:0.74rem;gap:5px;}
+.idea-side .idea-ok .co-tick{width:15px;height:15px;}
+.idea-side .btn2.sm{min-height:30px;padding:0 10px;font-size:0.78rem;}
+.idea-more{display:block;width:100%;padding:9px 12px;border:none;border-top:1px dashed var(--edge);background:none;font-family:inherit;
+  font-size:var(--t-meta);font-weight:700;color:var(--c);text-align:left;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -3216,7 +3236,7 @@ function renderIdeas(){
   var f=U.ideaKind||'all',list=ideaList().filter(function(x){return f==='all'||x.I.k===f;});
   if(!U.ideaMore)U.ideaMore={};
   var h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>'+
-    '<h2>Ideas for you</h2><p class="sub">Picked from what you\u2019re already working on. Anything you add starts in your quest list, benched, until you put it in focus.</p>'+
+    '<h2>Ideas for you</h2><p class="sub">Picked from what you\u2019re working on. Added ideas start benched.</p>'+
     '<div class="idchips idea-kinds">'+[['all','All'],['skill','Skills'],['once','One-time'],['habit','Habits']].map(function(k){
       return '<button class="idchip'+(f===k[0]?' on':'')+'" data-a="idea-kind" data-k="'+k[0]+'">'+k[1]+'</button>';}).join('')+'</div>';
   if(!list.length)h+='<div class="note">Nothing new here right now. As your quests change, so do the ideas.</div>';
@@ -3226,20 +3246,22 @@ function renderIdeas(){
     h+='<section class="idea-sec" style="--c:'+idColor(c)+'"><div class="idea-h"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'<span>'+mine.length+'</span></div>';
     shown.forEach(function(x){
       var I=x.I,tg=ideaGoal(I,c),gid=U.ideaAdded&&U.ideaAdded[I.n],ag=gid&&S.goals.find(function(g){return g.id===gid;});
+      var kind=I.p==='week'?'Weekly':I.p==='month'?'Monthly':IKIND[I.k];
       h+='<div class="idea'+(ag?' added':'')+'" data-idea="'+esc(I.n)+'">'+
-         '<div class="idea-top"><b>'+esc(I.n)+'</b><span class="pill">'+(I.p==='week'?'Weekly':I.p==='month'?'Monthly':IKIND[I.k])+'</span></div>'+
-         '<div class="idea-why'+(x.linked?' linked':'')+'">'+esc(x.why)+'</div>'+
-         '<div class="idea-meta">'+DIFF[I.d]+' \u00B7 '+TIME[I.t]+' \u00B7 '+nf(worth(tg))+' pts'+(I.ty==='counter'?' \u00B7 '+nf(I.tg)+' '+esc(I.u):'')+'</div>';
+         '<div class="idea-main"><b>'+esc(I.n)+'</b>'+
+         '<span class="idea-why'+(x.linked?' linked':'')+'">'+esc(x.why)+'</span>'+
+         '<span class="idea-meta"><span class="pill">'+kind+'</span>'+nf(worth(tg))+' pts \u00B7 '+TIME[I.t]+'</span></div>'+
+         '<div class="idea-side">';
       if(ag){
-        h+='<div class="idea-acts"><span class="idea-ok"><i class="co-tick"></i>Added to '+esc(idOf(c).title)+'</span>'+
-           (ag.active?'<span class="idea-in">In focus</span>':'<button class="btn2 sm" data-a="idea-focus" data-id="'+ag.id+'">Put in focus</button>')+'</div>';
+        h+='<span class="idea-ok"><i class="co-tick"></i>Added</span>'+
+           (ag.active?'<span class="idea-in">In focus</span>':'<button class="btn2 sm" data-a="idea-focus" data-id="'+ag.id+'">Put in focus</button>');
       }else{
-        h+='<div class="idea-acts"><button class="btn sm" data-a="idea-add" data-n="'+esc(I.n)+'">Add</button>'+
-           '<button class="link idea-no" data-a="idea-hide" data-n="'+esc(I.n)+'">Not for me</button></div>';
+        h+='<button class="btn sm idea-add" data-a="idea-add" data-n="'+esc(I.n)+'">Add</button>'+
+           '<button class="idea-no" data-a="idea-hide" data-n="'+esc(I.n)+'" aria-label="Not for me">Not for me</button>';
       }
-      h+='</div>';
+      h+='</div></div>';
     });
-    if(mine.length>3)h+='<button class="link idea-more" data-a="idea-more" data-c="'+esc(c)+'">'+(U.ideaMore[c]?'Show fewer':'Show '+(mine.length-3)+' more')+'</button>';
+    if(mine.length>3)h+='<button class="idea-more" data-a="idea-more" data-c="'+esc(c)+'">'+(U.ideaMore[c]?'Show fewer':'Show '+(mine.length-3)+' more')+'</button>';
     h+='</section>';
   });
   el.innerHTML=h;
@@ -4849,7 +4871,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.7';
+var APP_VERSION='3.8';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
