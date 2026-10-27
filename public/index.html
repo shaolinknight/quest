@@ -1053,7 +1053,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 
 /* =================== 3.6 =================== */
 /* floating report button */
-.fab{position:fixed;right:max(16px,calc((100vw - 600px)/2 + 16px));bottom:calc(76px + env(safe-area-inset-bottom));z-index:45;
+.fab{position:fixed;right:max(16px,calc((100vw - 600px)/2 + 16px));bottom:calc(76px + env(safe-area-inset-bottom));z-index:39;
   width:48px;height:48px;border-radius:50%;border:none;background:var(--gold);color:var(--btnfg);display:none;align-items:center;justify-content:center;
   box-shadow:0 6px 18px var(--shadow),0 1px 3px var(--shadow);cursor:pointer;transition:transform .15s ease,opacity .2s ease;}
 #app.ready~.fab{display:flex;}
@@ -1180,6 +1180,26 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 .idea-side .btn2.sm{min-height:30px;padding:0 10px;font-size:0.78rem;}
 .idea-more{display:block;width:100%;padding:9px 12px;border:none;border-top:1px dashed var(--edge);background:none;font-family:inherit;
   font-size:var(--t-meta);font-weight:700;color:var(--c);text-align:left;cursor:pointer;}
+
+/* =================== 3.9 =================== */
+.idc-up{display:flex;align-items:center;gap:8px;width:100%;padding:8px 14px;background:color-mix(in srgb,var(--c) 6%,transparent);border:none;
+  border-top:1px solid var(--edge-soft);font-family:inherit;text-align:left;cursor:pointer;color:var(--dim);}
+.up-ico{flex-shrink:0;width:7px;height:7px;border-left:2px solid var(--c);border-top:2px solid var(--c);transform:rotate(45deg);margin:3px 2px 0 1px;}
+.up-n{flex:1;min-width:0;font-size:0.86rem;font-weight:600;color:var(--chalk);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.up-w{flex-shrink:0;font-size:0.72rem;font-weight:600;color:var(--c);}
+.idea-sub{padding:7px 12px;font-size:0.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
+  background:color-mix(in srgb,var(--c) 5%,var(--panel));border-top:1px solid var(--edge-soft);}
+.idea.stretch .pill{border-color:var(--c);color:var(--c);}
+.idea-sx{margin:-6px 0 14px;}
+.idea-full{font-size:0.72rem;font-weight:700;color:var(--dim);white-space:nowrap;}
+.idea-cap{flex-basis:100%;font-style:normal;font-family:var(--fbody);font-size:0.72rem;font-weight:600;color:var(--dim);margin:2px 0 0 15px;}
+.idea-h{flex-wrap:wrap;}
+.q-full{color:var(--ember);font-weight:700;}
+.case-q .cq-h{display:flex;justify-content:space-between;align-items:baseline;}
+.case-q .cq-h h3{margin:0;}
+.case-q .cq-h span{font-size:var(--t-meta);font-weight:700;color:var(--dim);}
+.cq-sub{font-size:0.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
+.case-q .row.on{--c:inherit;}
 </style>
 </head>
 <body>
@@ -1299,6 +1319,8 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
         <div><label for="r-price">Price ($)</label><input type="number" id="r-price" min="1" step="1" placeholder="185"></div>
         <div><label for="r-shelf">Shelf</label><select id="r-shelf"></select></div>
       </div>
+      <div class="f"><label for="r-link">Link <span class="opt">(optional: the product page)</span></label>
+        <input type="url" id="r-link" placeholder="https://" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="f" id="newshelf-wrap" style="display:none;">
         <label for="r-newshelf">New shelf name</label>
         <input type="text" id="r-newshelf" placeholder="e.g. Watches">
@@ -2651,7 +2673,8 @@ function identityHeadHTML(c,vs){
     '<div class="id-bar" aria-hidden="true"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>'+
     '<div class="id-meta"><span>'+nf(vs.month[c]||0)+' vote'+((vs.month[c]||0)===1?'':'s')+' this month</span>'+
     '<span>'+L.left+' to Lv '+(L.lv+1)+'</span>'+
-    '<span>'+act.length+' / '+PERCAT+' in focus</span></div>'+
+    '<span>'+act.length+' / '+PERCAT+' in focus</span>'+
+    '<span class="'+(openCount(c)>=MAXQ?'q-full':'')+'">'+openCount(c)+' / '+MAXQ+' quests</span></div>'+
     '<button class="id-case" data-a="open-case" data-c="'+esc(c)+'">See the evidence<span class="chev"></span></button></div>';
 }
 function renderGoals(){
@@ -2984,6 +3007,20 @@ function caseWords(c,ents,days,limit){
   return limit?w.slice(0,limit):w;
 }
 function openCase(c){U.caseCat=c;U.caseAll=false;openSub('caseid');}
+function caseQuestsHTML(c,id){
+  var h='';
+  /* every quest in this identity: in focus first, then the rest */
+  var all=S.goals.filter(function(g){return g.category===c&&!isDone(g);})
+    .sort(function(a,b){return (b.active?2:hasProgress(b)?1:0)-(a.active?2:hasProgress(a)?1:0)||worth(b)-worth(a);});
+  var act=all.filter(function(g){return g.active;}),rest=all.filter(function(g){return !g.active;});
+  h+='<div class="card case-q" style="--c:'+idColor(c)+'"><div class="cq-h"><h3>Quests</h3><span>'+all.length+' / '+MAXQ+'</span></div>';
+  h+='<div class="cq-sub">In focus</div>';
+  if(!act.length)h+='<div class="rv-empty">Nothing in focus for '+esc(id.title)+' right now.</div>';
+  act.forEach(function(g){h+=goalRow(g);});
+  if(rest.length){h+='<div class="cq-sub">Everything else</div>';rest.forEach(function(g){h+=goalRow(g);});}
+  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button></div></div>';
+  return h;
+}
 function renderCase(){
   var el=document.getElementById('casep');if(!el)return;
   var c=U.caseCat;if(S.categories.indexOf(c)<0){el.innerHTML='';return;}
@@ -2994,9 +3031,8 @@ function renderCase(){
     '<div class="id-bar"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>'+
     '<div class="ch-m">Lv '+L.lv+' · '+L.left+' to Lv '+(L.lv+1)+'</div></div>';
   if(!st.ents.length){
-    h+='<div class="note">No evidence yet. The first vote starts the case.</div>'+
-       '<div class="f-acts"><button class="btn" data-a="open-report" data-c="'+esc(c)+'">Report progress</button></div>';
-    el.innerHTML=h;return;
+    h+='<div class="note">No evidence yet. The first vote starts the case.</div>'+caseQuestsHTML(c,id);
+    el.innerHTML=h;reDockGoal();return;
   }
   var first=st.ents[0].at;
   h+='<div class="pstats case-stats" style="--c:'+idColor(c)+'">'+
@@ -3035,14 +3071,9 @@ function renderCase(){
     if(words.length>5&&!U.caseAll)h+='<button class="link" data-a="case-all">Show all '+words.length+'</button>';
     h+='</div>';
   }
-  /* what you're working on */
-  var act=activeIn(c);
-  h+='<div class="card"><h3>Working on</h3>';
-  if(!act.length)h+='<div class="rv-empty">Nothing in focus for '+esc(id.title)+' right now.</div>';
-  act.forEach(function(g){h+='<div class="kv"><span>'+esc(g.name)+'</span><b>'+esc(repProgText(g))+'</b></div>';});
-  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button>'+
-     '<button class="btn2 sm" data-a="open-id" data-c="'+esc(c)+'">All '+esc(id.title)+' quests</button></div></div>';
+  h+=caseQuestsHTML(c,id);
   el.innerHTML=h;
+  reDockGoal();
 }
 
 /* ---------- monthly evidence report ---------- */
@@ -3231,37 +3262,50 @@ function ideaGoal(I,c){
     period:I.p||'',repeatable:!!I.p,steps:[],current:0,completedCount:0};
 }
 function openIdeas(){U.ideaMore={};openSub('ideas');}
+function ideaRowHTML(x,c,full){
+  var I=x.I,tg=ideaGoal(I,c),gid=U.ideaAdded&&U.ideaAdded[I.n],ag=gid&&S.goals.find(function(g){return g.id===gid;});
+  var kind=I.p==='week'?'Weekly':I.p==='month'?'Monthly':IKIND[I.k];
+  var h='<div class="idea'+(ag?' added':'')+(I.k==='stretch'?' stretch':'')+'" data-idea="'+esc(I.n)+'">'+
+     '<div class="idea-main"><b>'+esc(I.n)+'</b>'+
+     '<span class="idea-why'+(x.linked?' linked':'')+'">'+esc(x.why)+'</span>'+
+     '<span class="idea-meta"><span class="pill">'+kind+'</span>'+nf(worth(tg))+' pts \u00B7 '+TIME[I.t]+'</span></div>'+
+     '<div class="idea-side">';
+  if(ag){
+    h+='<span class="idea-ok"><i class="co-tick"></i>Added</span>'+
+       (ag.active?'<span class="idea-in">In focus</span>':'<button class="btn2 sm" data-a="idea-focus" data-id="'+ag.id+'">Put in focus</button>');
+  }else if(full){
+    h+='<span class="idea-full">'+MAXQ+'/'+MAXQ+' full</span>';
+  }else{
+    h+='<button class="btn sm idea-add" data-a="idea-add" data-n="'+esc(I.n)+'">Add</button>'+
+       '<button class="idea-no" data-a="idea-hide" data-n="'+esc(I.n)+'" aria-label="Not for me">Not for me</button>';
+  }
+  return h+'</div></div>';
+}
 function renderIdeas(){
   var el=document.getElementById('ideasp');if(!el)return;
   var f=U.ideaKind||'all',list=ideaList().filter(function(x){return f==='all'||x.I.k===f;});
   if(!U.ideaMore)U.ideaMore={};
   var h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>'+
     '<h2>Ideas for you</h2><p class="sub">Picked from what you\u2019re working on. Added ideas start benched.</p>'+
-    '<div class="idchips idea-kinds">'+[['all','All'],['skill','Skills'],['once','One-time'],['habit','Habits']].map(function(k){
+    '<div class="idchips idea-kinds">'+[['all','All'],['skill','Skills'],['once','One-time'],['habit','Habits'],['stretch','Stretch']].map(function(k){
       return '<button class="idchip'+(f===k[0]?' on':'')+'" data-a="idea-kind" data-k="'+k[0]+'">'+k[1]+'</button>';}).join('')+'</div>';
+  if(f==='stretch')h+='<p class="sub idea-sx">Not for now. Bigger goals to grow into once today\u2019s are behind you.</p>';
   if(!list.length)h+='<div class="note">Nothing new here right now. As your quests change, so do the ideas.</div>';
   S.categories.forEach(function(c){
     var mine=list.filter(function(x){return x.cat===c;});if(!mine.length)return;
-    var shown=U.ideaMore[c]?mine:mine.slice(0,3);
-    h+='<section class="idea-sec" style="--c:'+idColor(c)+'"><div class="idea-h"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'<span>'+mine.length+'</span></div>';
-    shown.forEach(function(x){
-      var I=x.I,tg=ideaGoal(I,c),gid=U.ideaAdded&&U.ideaAdded[I.n],ag=gid&&S.goals.find(function(g){return g.id===gid;});
-      var kind=I.p==='week'?'Weekly':I.p==='month'?'Monthly':IKIND[I.k];
-      h+='<div class="idea'+(ag?' added':'')+'" data-idea="'+esc(I.n)+'">'+
-         '<div class="idea-main"><b>'+esc(I.n)+'</b>'+
-         '<span class="idea-why'+(x.linked?' linked':'')+'">'+esc(x.why)+'</span>'+
-         '<span class="idea-meta"><span class="pill">'+kind+'</span>'+nf(worth(tg))+' pts \u00B7 '+TIME[I.t]+'</span></div>'+
-         '<div class="idea-side">';
-      if(ag){
-        h+='<span class="idea-ok"><i class="co-tick"></i>Added</span>'+
-           (ag.active?'<span class="idea-in">In focus</span>':'<button class="btn2 sm" data-a="idea-focus" data-id="'+ag.id+'">Put in focus</button>');
-      }else{
-        h+='<button class="btn sm idea-add" data-a="idea-add" data-n="'+esc(I.n)+'">Add</button>'+
-           '<button class="idea-no" data-a="idea-hide" data-n="'+esc(I.n)+'" aria-label="Not for me">Not for me</button>';
-      }
-      h+='</div></div>';
-    });
-    if(mine.length>3)h+='<button class="idea-more" data-a="idea-more" data-c="'+esc(c)+'">'+(U.ideaMore[c]?'Show fewer':'Show '+(mine.length-3)+' more')+'</button>';
+    var full=catFull(c),more=!!U.ideaMore[c];
+    var now=f==='all'?mine.filter(function(x){return x.I.k!=='stretch';}):mine;
+    var str=f==='all'?mine.filter(function(x){return x.I.k==='stretch';}):[];
+    var showNow=more?now:now.slice(0,3),showStr=more?str:str.slice(0,1);
+    var hidden=(now.length-showNow.length)+(str.length-showStr.length);
+    h+='<section class="idea-sec" style="--c:'+idColor(c)+'"><div class="idea-h"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+
+       '<span>'+mine.length+'</span>'+(full?'<em class="idea-cap">'+openCount(c)+'/'+MAXQ+' quests \u00B7 finish or delete one to add</em>':'')+'</div>';
+    showNow.forEach(function(x){h+=ideaRowHTML(x,c,full);});
+    if(showStr.length){
+      h+='<div class="idea-sub">Stretch \u00B7 for future you</div>';
+      showStr.forEach(function(x){h+=ideaRowHTML(x,c,full);});
+    }
+    if(hidden>0||more)h+='<button class="idea-more" data-a="idea-more" data-c="'+esc(c)+'">'+(more?'Show fewer':'Show '+hidden+' more')+'</button>';
     h+='</section>';
   });
   el.innerHTML=h;
@@ -3269,6 +3313,7 @@ function renderIdeas(){
 async function ideaAdd(n){
   var I=IDEAS.find(function(x){return x.n===n;});if(!I)return;
   var c=ideaCat(I.r);if(!c)return;
+  if(catFull(c)){toast(idOf(c).title+' already has '+MAXQ+' quests. Finish or delete one first.');return;}
   snap();
   var g=Object.assign({id:uid(),active:false,completedAt:null,createdAt:Date.now(),next:'',when:'',why:'',identity:'',due:null,
     periodStart:I.p?periodStartOf(I.p,Date.now()):null},ideaGoal(I,c));
@@ -3292,17 +3337,106 @@ function ideasEntryHTML(){
 
 /* ---------- edits: go to the form, and come back to what you changed ---------- */
 function revealItem(attr,key,fallback){
-  var sel='.panel.on ['+attr+'="'+key+'"]';
-  var el=document.querySelector('.panel.on .row['+attr+'="'+key+'"],.panel.on .cslot['+attr+'="'+key+'"],.panel.on .slot['+attr+'="'+key+'"],.panel.on .hab['+attr+'="'+key+'"],.panel.on .rw['+attr+'="'+key+'"],.panel.on .cool-r['+attr+'="'+key+'"]')||
-         document.querySelector(sel);
-  if(!el){if(fallback)fallback();return;}
-  if(el.scrollIntoView)try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){el.scrollIntoView();}
-  el.classList.remove('reveal');void el.offsetWidth;el.classList.add('reveal');
-  setTimeout(function(){el.classList.remove('reveal');},1600);
+  /* the keyboard is still sliding away right after Save; scroll once it's gone */
+  var ae=document.activeElement,typing=document.body.classList.contains('typing');
+  if(ae&&ae.blur&&isField(ae))ae.blur();
+  setTimeout(function(){
+    var el=document.querySelector('.panel.on .row['+attr+'="'+key+'"],.panel.on .cslot['+attr+'="'+key+'"],.panel.on .slot['+attr+'="'+key+'"],.panel.on .hab['+attr+'="'+key+'"],.panel.on .rw['+attr+'="'+key+'"],.panel.on .cool-r['+attr+'="'+key+'"]')||
+           document.querySelector('.panel.on ['+attr+'="'+key+'"]');
+    if(!el){if(fallback)fallback();return;}
+    if(el.scrollIntoView)try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){el.scrollIntoView();}
+    el.classList.remove('reveal');void el.offsetWidth;el.classList.add('reveal');
+    setTimeout(function(){el.classList.remove('reveal');},1600);
+  },typing?320:30);
 }
+function backToSpot(){var y=U.editY||0;setTimeout(function(){try{window.scrollTo({top:y,behavior:'smooth'});}catch(x){window.scrollTo(0,y);}},320);}
 function showForm(id){
   var f=document.getElementById(id);if(!f)return;
   requestAnimationFrame(function(){if(f.scrollIntoView)try{f.scrollIntoView({behavior:'smooth',block:'start'});}catch(x){f.scrollIntoView();}});
+}
+
+
+/* =====================================================================
+   3.9 — stretch ideas, quest cap, links, one open card, edge swipe
+   ===================================================================== */
+/* Stretch ideas: not for now, but worth growing toward. */
+IDEAS=IDEAS.concat([
+ {n:'Earn $150k a year',r:'career',k:'stretch',d:5,t:5,ty:'once',m:/salary|100k/i,w:'Past the $100k goal: where the next few years could go.'},
+ {n:'Grow a business to $1,000 a month',r:'career',k:'stretch',d:5,t:5,ty:'once',m:/business/i,w:'Turns "start a business" into one that pays.'},
+ {n:'Lead a team',r:'career',k:'stretch',d:5,t:5,ty:'once',m:/job|salary/i,w:'The skill that compounds every career move after it.'},
+ {n:'Score 700+ on the GMAT',r:'intellectual',k:'stretch',d:5,t:5,ty:'once',m:/gmat/i,w:'The top-program score, once 650 is behind you.'},
+ {n:'Get into a top MBA program',r:'intellectual',k:'stretch',d:5,t:5,ty:'once',m:/gmat/i,w:'What the GMAT work is ultimately for.'},
+ {n:'Hold a 30-minute conversation in Vietnamese',r:'intellectual',k:'stretch',d:5,t:5,ty:'once',m:/vietnamese/i,w:'Three times the 10-minute goal, with no English.'},
+ {n:'Play a song at an open mic',r:'intellectual',k:'stretch',d:5,t:4,ty:'once',m:/guitar/i,w:'Your guitar practice, in front of strangers.'},
+ {n:'Reach 50,000 TikTok followers',r:'intellectual',k:'stretch',d:5,t:5,ty:'once',m:/tiktok/i,w:'The account at a scale that opens doors.'},
+ {n:'Run a marathon under 4 hours',r:'fitness',k:'stretch',d:5,t:5,ty:'once',m:/marathon/i,w:'Finishing first, then racing it.'},
+ {n:'Finish a half Ironman',r:'fitness',k:'stretch',d:5,t:5,ty:'once',m:/marathon|hyrox|10k/i,w:'Swim, bike and run: the next kind of hard.'},
+ {n:'Break 80 on 18',r:'fitness',k:'stretch',d:5,t:5,ty:'once',m:/shoot|golf/i,w:'Single-digit-handicap territory.'},
+ {n:'Bench 275',r:'fitness',k:'stretch',d:5,t:5,ty:'once',m:/bench/i,w:'Two plates is the start; this is the climb after.'},
+ {n:'Squat 315',r:'fitness',k:'stretch',d:5,t:5,ty:'once',m:/squat/i,w:'Three plates, years of patient strength.'},
+ {n:'Save $25,000',r:'money',k:'stretch',d:5,t:5,ty:'counter',tg:25000,u:'dollars',m:/save/i,w:'The kind of cushion that changes what you can say yes to.'},
+ {n:'Max out a Roth IRA for a year',r:'money',k:'stretch',d:5,t:5,ty:'once',m:/save|salary|roth/i,w:'Future you, fully funded for a year.'},
+ {n:'Pay for a big trip entirely in cash',r:'money',k:'stretch',d:4,t:5,ty:'once',w:'A reward you planned for instead of financed.'},
+ {n:'90 days of screen time under 2 hours',r:'habits',k:'stretch',d:5,t:5,ty:'counter',tg:90,u:'days',m:/screen/i,w:'Three months, a tighter limit: it becomes who you are.'},
+ {n:'A full year of weekly check-ins',r:'habits',k:'stretch',d:4,t:5,ty:'counter',tg:52,u:'weeks',w:'Fifty-two Sundays of showing up for yourself.'}
+]);
+IKIND.stretch='Stretch';
+
+/* ---------- at most 8 open quests per identity ---------- */
+var MAXQ=8;
+function openCount(c){return S.goals.filter(function(g){return g.category===c&&!isDone(g);}).length;}
+function catFull(c,except){return openCount(c)-(except&&except.category===c&&!isDone(except)?1:0)>=MAXQ;}
+
+/* ---------- links on rewards ---------- */
+function normLink(v){v=String(v||'').trim();if(!v)return '';if(!/^https?:\/\//i.test(v))v='https://'+v.replace(/^\/+/,'');return v;}
+function openLink(u){if(!u)return;try{var w=window.open(u,'_blank','noopener');if(!w)location.href=u;}catch(e){location.href=u;}}
+
+/* ---------- tap anywhere else to close an open card ---------- */
+function collapseOthers(e){
+  if(!Object.keys(U.expanded).length||modalOpen()||sheetOpen())return;
+  var t=e.target;
+  var inside=t.closest&&t.closest('.slot[data-gid]');
+  if(inside&&U.expanded[inside.getAttribute('data-gid')])return;
+  if(t.closest&&(t.closest('#goal-form')||t.closest('#toast')))return;
+  var act=t.closest&&t.closest('[data-a]');
+  if(act&&act.getAttribute('data-a')==='expand')return;   /* the expand action handles itself */
+  U.expanded={};
+  if(U.tab==='focus')renderPanel('focus');
+}
+
+/* ---------- swipe from the left edge to go back from a section ---------- */
+var SUBPANELS=['caseid','month','ideas','review'];
+function subBack(){if(U.tab==='review')showPanel('progress');else backSub();}
+(function(){
+  var x0=null,y0=0,dx=0,live=false,pan=null;
+  document.addEventListener('touchstart',function(e){
+    if(SUBPANELS.indexOf(U.tab)<0||modalOpen()||sheetOpen())return;
+    var t=e.touches[0];if(t.clientX>28)return;
+    x0=t.clientX;y0=t.clientY;dx=0;live=false;pan=document.querySelector('.panel.on');
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(x0===null||!pan)return;
+    var t=e.touches[0];dx=t.clientX-x0;var dy=Math.abs(t.clientY-y0);
+    if(!live){if(dy>14&&dy>dx){x0=null;return;}if(dx>10)live=true;else return;}
+    pan.style.transition='none';pan.style.transform='translateX('+Math.max(0,dx)+'px)';pan.style.opacity=String(Math.max(.4,1-dx/600));
+  },{passive:true});
+  document.addEventListener('touchend',function(){
+    if(x0===null||!pan){x0=null;return;}
+    var p=pan,ok=live&&dx>80;x0=null;pan=null;
+    p.style.transition='transform .2s ease,opacity .2s ease';
+    if(ok){p.style.transform='translateX(100%)';p.style.opacity='0';
+      setTimeout(function(){p.style.transition='';p.style.transform='';p.style.opacity='';subBack();},190);}
+    else{p.style.transform='';p.style.opacity='';setTimeout(function(){p.style.transition='';},220);}
+  });
+})();
+
+/* ---------- jump from a card's "up above" line to where the quest is ---------- */
+function gotoUp(id){
+  var el=document.querySelector('#attention [data-gid="'+id+'"],#habits [data-gid="'+id+'"]');
+  if(!el)return;
+  if(el.scrollIntoView)try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){el.scrollIntoView();}
+  el.classList.remove('reveal');void el.offsetWidth;el.classList.add('reveal');
+  setTimeout(function(){el.classList.remove('reveal');},1600);
 }
 
 /* ---------- focus cards ----------
@@ -3534,10 +3668,12 @@ function renderSlots(){
        (id.line?'<div class="idc-line serif">'+esc(id.line)+'</div>':'')+
        '<div class="idc-bar" aria-hidden="true"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></div>';
     shown.forEach(function(g){h+=(compact&&!U.expanded[g.id])?compactHTML(g,{today:true}):slotHTML(g);});
-    if(above){
-      var nh=act.filter(function(g){return g.period;}).length,na=above-nh;
-      var where=nh&&na?'Habits and Needs attention':nh?'Habits':'Needs attention';
-      h+='<div class="idc-note">'+(above>1?above+' more are':'1 more is')+' up in '+where+'</div>';}
+    act.forEach(function(g){
+      if(!(skip[g.id]||g.period))return;
+      var where=g.period?'In Habits':'In Needs attention';
+      h+='<button class="idc-up" data-a="goto-up" data-id="'+g.id+'"><span class="up-ico" aria-hidden="true"></span>'+
+         '<span class="up-n">'+esc(g.name)+'</span><span class="up-w">'+where+'</span></button>';
+    });
     if(!act.length)h+='<div class="idc-note">Nothing in focus yet.</div>';
     if(more||act.length<PERCAT)h+='<button class="idc-more" data-a="open-id" data-c="'+esc(c)+'"><span>'+
        (act.length<PERCAT?(more?'Pick from '+more+' more quest'+(more>1?'s':''):'Add a quest'):more+' more quest'+(more>1?'s':'')+' waiting')+
@@ -4010,8 +4146,13 @@ function renderCatEditor(){
 }
 function renderCatSelect(){
   var sel=document.getElementById('g-cat'),cur=sel.value,h='';
-  S.categories.forEach(function(c){h+='<option value="'+esc(c)+'">'+esc(idOf(c).title)+'</option>';});
+  var eg=U.editGoal?S.goals.find(function(g){return g.id===U.editGoal;}):null;
+  S.categories.forEach(function(c){
+    var full=catFull(c)&&!(eg&&eg.category===c);
+    h+='<option value="'+esc(c)+'"'+(full?' disabled':'')+'>'+esc(idOf(c).title)+(full?' \u00B7 full ('+MAXQ+')':'')+'</option>';});
   sel.innerHTML=h;
+  if(sel.selectedOptions&&sel.selectedOptions[0]&&sel.selectedOptions[0].disabled){
+    var open=[].slice.call(sel.options).find(function(o){return !o.disabled;});if(open)sel.value=open.value;}
   if(S.categories.indexOf(cur)>=0)sel.value=cur;
 }
 function renderShelfSelect(pick){
@@ -4152,6 +4293,8 @@ function typeToggle(){
 }
 function openGoal(g,forceType){
   U.editGoal=g?g.id:null;
+  U.editY=window.pageYOffset||0;
+  renderCatSelect();
   renderCatSelect();
   document.getElementById('goal-form').classList.remove('hide');
   document.getElementById('g-name').value=g?g.name:'';
@@ -4260,6 +4403,8 @@ async function saveGoal(){
     if(!U.draft.length){toast('Add at least one milestone.');return;}}
   var newCat=document.getElementById('g-cat').value;
   var existing=U.editGoal?S.goals.find(function(g){return g.id===U.editGoal;}):null;
+  if((!existing||existing.category!==newCat)&&catFull(newCat)){
+    toast(idOf(newCat).title+' already has '+MAXQ+' quests. Finish or delete one first.');return;}
   if(existing&&existing.active&&existing.category!==newCat&&activeIn(newCat).length>=PERCAT){
     toast(newCat+' already has '+PERCAT+' in focus. Bench one there first.');return;}
   snap();
@@ -4287,7 +4432,7 @@ async function saveGoal(){
     S.goals.push(ng);savedId=ng.id;
     if(!U.idOpen)U.idOpen={};U.idOpen[ng.category]=true;   /* so the new quest is visible */
   }
-  closeGoal();await save();renderAll();revealItem('data-gid',savedId,back);
+  closeGoal();await save();renderAll();revealItem('data-gid',savedId,existing?backToSpot:back);
 }
 async function saveReward(){
   var name=document.getElementById('r-name').value.trim(),price=+document.getElementById('r-price').value;
@@ -4298,7 +4443,7 @@ async function saveReward(){
   if(!sh){toast('Pick a shelf, or name a new one.');return;}
   snap();
   if(S.shelves.indexOf(sh)<0)S.shelves.push(sh);
-  var o={name:name,price:price,shelf:sh};
+  var o={name:name,price:price,shelf:sh,link:normLink(document.getElementById('r-link').value)};
   var back=holdScroll();
   var savedR=U.editReward;
   if(U.editReward)Object.assign(S.rewards.find(function(r){return r.id===U.editReward;}),o);
@@ -4470,11 +4615,16 @@ async function redeem(id){
   if(balance()<cost){toast('Not enough points yet.');return;}
   snap();
   var eb=earnedByFor(cost);
-  S.redemptions.push({id:uid(),rewardId:r.id,name:r.name,shelf:r.shelf,cost:cost,date:new Date().toISOString(),earnedBy:eb});
+  S.redemptions.push({id:uid(),rewardId:r.id,name:r.name,shelf:r.shelf,cost:cost,date:new Date().toISOString(),earnedBy:eb,link:r.link||''});
   r.pinned=false;
   await save();renderAll();
   toast(r.name+' obtained. '+r.shelf+' shelf is now level '+(shelfLevel(r.shelf)+1)+'.',true);
-  if(eb)openModal(r.name+' is yours','You earned it with: '+eb+'.',[{label:'Nice',style:'pri'}]);
+  /* congratulations, what paid for it, and the way to go get it */
+  var opts=[];
+  if(r.link)opts.push({label:'Go to the product',style:'pri',run:function(){openLink(r.link);}});
+  opts.push({label:r.link?'Later':'Nice',style:r.link?'ghost':'pri'});
+  openModal(r.name+' is yours',(eb?'You earned it with: '+eb+'.':'You earned this one.')+'\nNext: buy it, and mark it bought in your trophy case.',opts,
+    {html:burstHTML('\u2713'),cls:'celebrate'});
 }
 async function delGoal(id){snap();S.goals=S.goals.filter(function(g){return g.id!==id;});await save();renderAll();toast('Quest deleted.',true);}
 async function delReward(id){snap();S.rewards=S.rewards.filter(function(r){return r.id!==id;});await save();renderAll();toast('Reward deleted.',true);}
@@ -4641,7 +4791,7 @@ document.addEventListener('click',function(e){
   else if(a==='new-goal')openGoal(null);
   else if(a==='cancel-goal'){var cg=U.editGoal;closeGoal();if(cg)revealItem('data-gid',cg);}
   else if(a==='save-goal')saveGoal();
-  else if(a==='new-reward'){U.editReward=null;document.getElementById('r-del').style.display='none';showForm('reward-form');
+  else if(a==='new-reward'){U.editReward=null;document.getElementById('r-del').style.display='none';document.getElementById('r-link').value='';showForm('reward-form');
     parkForm('reward-form','reward-form-home');
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value='';document.getElementById('r-price').value='';
@@ -4662,12 +4812,13 @@ document.addEventListener('click',function(e){
   else if(a==='step-sub'){var ss=el.getAttribute('data-s');
     once(id,function(){return stepNudge(id,ss,-1);});}
   else if(a==='expand'){
-    if(U.expanded[id])delete U.expanded[id];else U.expanded[id]=true;
+    var wasOpen=!!U.expanded[id];U.expanded={};if(!wasOpen)U.expanded[id]=true;
     renderPanel('focus');}
   else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
   else if(a==='sub-back')backSub();
   else if(a==='sheet-close')closeSheet();
   else if(a==='open-ideas')openIdeas();
+  else if(a==='goto-up')gotoUp(id);
   else if(a==='idea-kind'){U.ideaKind=el.getAttribute('data-k');renderIdeas();}
   else if(a==='idea-add')ideaAdd(el.getAttribute('data-n'));
   else if(a==='idea-hide')ideaHide(el.getAttribute('data-n'));
@@ -4727,9 +4878,10 @@ document.addEventListener('click',function(e){
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value=r.name;document.getElementById('r-price').value=r.price;
     document.getElementById('r-newshelf').value='';renderShelfSelect(r.shelf);
+    U.editY=window.pageYOffset||0;document.getElementById('r-link').value=r.link||'';
     var rd=document.getElementById('r-del');rd.style.display='';rd.textContent='Delete reward';rd.classList.remove('armed');
     dockForm('reward-form','data-rid',r.id);showForm('reward-form');}
-  else if(a==='del-reward-form')danger(el,function(){var rid=U.editReward;
+  else if(a==='del-reward-form')danger(el,function(){var rid=U.editReward;setTimeout(backToSpot,50);
     document.getElementById('reward-form').classList.add('hide');U.editReward=null;parkForm('reward-form','reward-form-home');
     if(rid)delReward(rid);});
   else if(a==='add-step-row'){readDraft();U.draft.push({id:uid(),name:'',weight:1,done:false,target:0,current:0});renderDraft();}
@@ -4744,7 +4896,7 @@ document.addEventListener('click',function(e){
       toast('Drafted '+U.draft.length+' milestones \u2014 edit them to fit.');
     }}
   else if(a==='del-goal')danger(el,function(){delGoal(id);});
-  else if(a==='del-goal-form')danger(el,function(){var gid=U.editGoal;closeGoal();if(gid)delGoal(gid);});
+  else if(a==='del-goal-form')danger(el,function(){var gid=U.editGoal;closeGoal();if(gid)delGoal(gid).then(backToSpot);});
   else if(a==='open-id'){
     var oc=el.getAttribute('data-c');if(!U.idOpen)U.idOpen={};U.idOpen[oc]=true;
     STALE.quests=1;showPanel('quests');
@@ -4814,6 +4966,7 @@ document.getElementById('r-newshelf').addEventListener('input',rewardHint);
 document.getElementById('s-theme').addEventListener('change',function(){setTheme(this.value);});
 document.getElementById('s-curve').addEventListener('change',renderCurveHint);
 document.getElementById('g-period').addEventListener('change',scheduleToggle);
+document.addEventListener('click',collapseOthers);
 /* iOS lifts fixed bars above the keyboard as you scroll; while a field has
    focus there is nothing to tap down there anyway, so they step aside. */
 function isField(el){return !!el&&(el.tagName==='TEXTAREA'||el.tagName==='SELECT'||
@@ -4871,8 +5024,8 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.8';
-var NEED_CONNECTOR=3;
+var APP_VERSION='4.0';
+var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
 var Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0};
@@ -4905,12 +5058,12 @@ function toRows(){
   });
   S.rewards.forEach(function(r){
     R.rewards[r.id]={id:r.id,name:r.name,price:r.price,shelf:r.shelf,chasing:!!r.pinned,created:tsOf(r.createdAt),
-      'cool until':r.coolUntil||null};
+      'cool until':r.coolUntil||null,link:r.link||''};
   });
   S.redemptions.forEach(function(x){
     R.trophies[x.id]={id:x.id,'reward id':x.rewardId||'',reward:x.name,shelf:x.shelf,cost:x.cost||0,
       redeemed:tsOf(x.date),bought:!!x.bought,'bought on':tsOf(x.boughtAt),'season prize':!!x.prize,photo:x.photo||'',
-      'earned by':x.earnedBy||''};
+      'earned by':x.earnedBy||'',link:x.link||''};
   });
   S.log.forEach(function(e){
     R.history[e.id]={id:e.id,when:e.at,'quest id':e.gid,quest:e.name,category:e.cat,points:e.pts,
@@ -4978,12 +5131,13 @@ function fromData(d){
   });
   var rewards=(d.rewards||[]).map(function(r){
     return {id:String(r.id),name:String(r.name||'Reward'),price:Math.max(1,Number(r.price)||1),
-      shelf:String(r.shelf||'Other'),pinned:!!r.chasing,createdAt:r.created||Date.now(),coolUntil:tsOf(r['cool until'])||null};
+      shelf:String(r.shelf||'Other'),pinned:!!r.chasing,createdAt:r.created||Date.now(),coolUntil:tsOf(r['cool until'])||null,
+      link:String(r.link||'')};
   });
   var reds=(d.trophies||[]).map(function(x){
     return {id:String(x.id),rewardId:String(x['reward id']||''),name:String(x.reward||''),shelf:String(x.shelf||'Other'),
       cost:Number(x.cost)||0,date:new Date(x.redeemed||Date.now()).toISOString(),bought:!!x.bought,
-      boughtAt:x['bought on']||null,prize:!!x['season prize'],photo:String(x.photo||''),earnedBy:String(x['earned by']||'')};
+      boughtAt:x['bought on']||null,prize:!!x['season prize'],photo:String(x.photo||''),earnedBy:String(x['earned by']||''),link:String(x.link||'')};
   });
   var log=(d.history||[]).map(function(e){
     return {id:String(e.id),at:e.when||0,gid:String(e['quest id']||''),name:String(e.quest||''),cat:String(e.category||''),
@@ -5549,6 +5703,8 @@ function openTrophy(id){
     toast(r.name+' is in the trophy case.',true);}});
   opts.push({label:r.photo?'Change photo':'Add a photo',run:function(){
     TROPHY_PHOTO=r.id;document.getElementById('trophy-photo').click();}});
+  var rl=r.link||((S.rewards.find(function(x){return x.id===r.rewardId;})||{}).link);
+  if(rl&&!r.bought)opts.unshift({label:'Go to the product',run:function(){openLink(rl);}});
   if(r.photo)opts.push({label:'Remove photo',run:function(){snap();r.photo='';save();renderTrophies();}});
   if(r.bought)opts.push({label:'Not bought after all',run:function(){snap();r.bought=false;r.boughtAt=null;save();renderTrophies();}});
   if(!r.bought)opts.push({label:r.cost?'Return it — refund '+nf(r.cost)+' pts':'Return it',style:'danger',run:function(){
