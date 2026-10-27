@@ -1050,6 +1050,81 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .mid .link{font-size:var(--t-meta);margin-top:6px;padding:4px 0;}
 .eb2{display:block;font-size:0.72rem;color:var(--dim);font-weight:400;}
 #month-banner .rbanner{margin-bottom:16px;}
+
+/* =================== 3.6 =================== */
+/* floating report button */
+.fab{position:fixed;right:max(16px,calc((100vw - 600px)/2 + 16px));bottom:calc(76px + env(safe-area-inset-bottom));z-index:45;
+  width:48px;height:48px;border-radius:50%;border:none;background:var(--gold);color:var(--btnfg);display:none;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px var(--shadow),0 1px 3px var(--shadow);cursor:pointer;transition:transform .15s ease,opacity .2s ease;}
+#app.ready~.fab{display:flex;}
+.fab:active{transform:scale(.93);}
+body.sheet-open .fab{opacity:0;pointer-events:none;}
+#app{padding-bottom:calc(140px + env(safe-area-inset-bottom));}
+/* slide-up sheet */
+.rsheet{position:fixed;inset:0;z-index:60;}
+.rsheet.hide{display:none;}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.38);opacity:0;transition:opacity .28s ease;}
+.rsheet.open .sheet-bg{opacity:1;}
+.sheet-card{position:absolute;left:0;right:0;bottom:0;max-width:600px;margin:0 auto;height:min(88vh,88dvh);display:flex;flex-direction:column;
+  background:var(--void);border-radius:18px 18px 0 0;box-shadow:0 -8px 30px var(--shadow);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding-bottom:env(safe-area-inset-bottom);}
+.rsheet.open .sheet-card{transform:translateY(0);}
+.sheet-grab{display:flex;justify-content:center;padding:8px 0 2px;touch-action:none;}
+.sheet-grab span{width:38px;height:5px;border-radius:3px;background:var(--edge);}
+.sheet-head{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;padding:2px 10px 8px;touch-action:none;}
+.sheet-head h2{text-align:center;font-size:1.1rem;}
+.sheet-back,.sheet-x{width:36px;height:36px;border-radius:50%;border:none;background:var(--panel-2);color:var(--chalk);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.sheet-back .chev{transform:rotate(135deg);width:8px;height:8px;margin-left:3px;border-color:var(--chalk);}
+.sheet-x{justify-self:end;}
+.sheet-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 24px;overscroll-behavior:contain;}
+body.sheet-open{overflow:hidden;}
+.sheet-step.in-fwd{animation:stepFwd .26s cubic-bezier(.2,.8,.2,1);}
+.sheet-step.in-back{animation:stepBack .26s cubic-bezier(.2,.8,.2,1);}
+@keyframes stepFwd{from{opacity:0;transform:translateX(28px);}to{opacity:1;transform:none;}}
+@keyframes stepBack{from{opacity:0;transform:translateX(-28px);}to{opacity:1;transform:none;}}
+.rep-intro{margin:0 0 10px;}
+.rsheet .rep-card{margin-top:4px;}
+.rep-go{width:100%;margin-top:14px;min-height:46px;font-size:1rem;}
+/* the vote landing on Today */
+.votes{position:relative;}
+.vdots i.vnew{animation:votePop .6s cubic-bezier(.2,1.6,.4,1);}
+@keyframes votePop{0%{transform:scale(0);}60%{transform:scale(1.6);}100%{transform:scale(1);}}
+.vfloat{position:absolute;right:0;top:-4px;font-size:0.78rem;font-weight:700;color:var(--c);pointer-events:none;
+  animation:vfloat 1.5s ease-out forwards;}
+@keyframes vfloat{0%{opacity:0;transform:translateY(8px);}20%{opacity:1;transform:translateY(0);}70%{opacity:1;}100%{opacity:0;transform:translateY(-16px);}}
+.balance.bump{animation:pillBump .7s ease;}
+@keyframes pillBump{0%{transform:scale(1);}35%{transform:scale(1.08);box-shadow:0 0 0 6px var(--glow);}100%{transform:scale(1);box-shadow:0 0 0 0 transparent;}}
+@media (prefers-reduced-motion: reduce){.sheet-card,.sheet-bg{transition:none;}.sheet-step.in-fwd,.sheet-step.in-back,.vdots i.vnew,.vfloat,.balance.bump{animation:none;}}
+/* rewards, compact */
+.rw-sub{margin:-2px 0 14px;font-size:var(--t-meta);}
+.chase{display:flex;flex-direction:column;gap:2px;padding:10px 12px;margin-bottom:16px;border-radius:var(--r-card);}
+.chase-h{margin-bottom:4px;}
+.chase-r{display:block;width:100%;text-align:left;background:none;border:none;padding:6px 0;font-family:inherit;color:var(--chalk);cursor:pointer;margin:0;}
+.chase-r .bar{display:block;margin:5px 0 0;height:5px;}
+.chase-r .bar-fill{display:block;}
+.shelf{border:1px solid var(--edge-soft);border-radius:var(--r-card);background:var(--panel);margin:0 0 12px;overflow:hidden;}
+.shelf .shelf-h{margin:0;padding:10px 12px 8px;background:var(--panel-2);border-bottom:1px solid var(--edge-soft);}
+.shelf .rw{display:flex;align-items:center;gap:6px;margin:0;padding:6px 10px 6px 4px;border:none;border-top:1px solid var(--edge-soft);border-radius:0;background:none;}
+.shelf .rw:first-of-type{border-top:none;}
+.shelf .rw.can{background:color-mix(in srgb,var(--gold) 7%,var(--panel));}
+.shelf .rw.pin{border-left:none;box-shadow:inset 3px 0 0 var(--gold);}
+.rw-star{flex-shrink:0;width:36px;height:40px;border:none;background:none;font-size:1.15rem;color:var(--dimmer);cursor:pointer;padding:0;}
+.rw-star.on{color:var(--gold);}
+.rw-main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:none;border:none;padding:4px 0;
+  font-family:inherit;color:var(--chalk);text-align:left;cursor:pointer;}
+.rw-main .rw-name{font-family:var(--fbody);font-weight:600;font-size:0.95rem;line-height:1.25;overflow-wrap:anywhere;}
+.rw-main .rw-meta{margin:0;font-size:var(--t-meta);color:var(--dim);}
+.rw-bar{display:block;width:100%;max-width:180px;height:4px;border-radius:2px;background:var(--edge-soft);margin-top:5px;overflow:hidden;}
+.rw-bar i{display:block;height:100%;background:var(--gold);}
+.rw-togo{flex-shrink:0;text-align:right;font-weight:700;font-size:0.9rem;color:var(--chalk);min-width:54px;}
+.rw-togo small{display:block;font-size:0.68rem;font-weight:600;color:var(--dim);}
+.shelf .rw .btn.redeem{min-height:34px;padding:0 12px;flex-shrink:0;}
+.shelf #reward-form{margin:0;border-radius:0;border-left:none;border-right:none;}
+.trophies:not(:empty){grid-template-columns:repeat(3,1fr);gap:8px;}
+.trophy .tx{padding:7px 8px 8px;}
+.trophy .tx b{font-size:0.8rem;}
+.trophy .eb{display:none;}
+.vault{margin-top:18px;padding-top:14px;}
 </style>
 </head>
 <body>
@@ -1060,7 +1135,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
     <div class="wallet-top">
       <div class="brand" id="brand"></div>
       <div class="balance"><span class="n" id="bal">0</span><span class="u">pts</span></div>
-      <div class="hdr-r"><button class="hdr-rep" data-a="open-report" aria-label="Report progress">+ Report</button><button class="gear" id="gear" data-a="open-profile" aria-label="Settings">
+      <div class="hdr-r"><button class="gear" id="gear" data-a="open-profile" aria-label="Settings">
         <i class="syncdot" id="syncdot"></i>
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
              stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1159,9 +1234,9 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
   </div>
 
   <div class="panel" id="p-rewards">
+    <div class="bec-bar"><h2>Rewards</h2><button class="btn sm add-q" data-a="new-reward">+ Add reward</button></div>
     <div id="chase-rewards"></div>
-    <div class="head"><h2>Reward shelf</h2><button class="link" data-a="new-reward">+ Add reward</button></div>
-    <p class="sub" id="rw-sub"></p>
+    <p class="sub rw-sub" id="rw-sub"></p>
 
     <div id="reward-form-home"><div class="form hide" id="reward-form">
       <div class="f"><label for="r-name">Reward name</label><input type="text" id="r-name" placeholder="e.g. Salomon XT-6"></div>
@@ -1174,7 +1249,8 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
         <input type="text" id="r-newshelf" placeholder="e.g. Watches">
       </div>
       <div class="hint" id="r-hint">Costs 185 points</div>
-      <div class="f-acts"><button class="btn" data-a="save-reward">Save reward</button><button class="btn2" data-a="cancel-reward">Cancel</button></div>
+      <div class="f-acts"><button class="btn" data-a="save-reward">Save reward</button><button class="btn2" data-a="cancel-reward">Cancel</button>
+        <button class="btn2 del-q" id="r-del" data-a="del-reward-form" style="display:none;">Delete reward</button></div>
     </div></div>
 
     <div id="reward-list"></div>
@@ -1311,6 +1387,21 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 </div>
 
 
+  <button class="fab" id="fab" data-a="open-report" aria-label="Report progress">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <div id="rsheet" class="rsheet hide" aria-hidden="true">
+    <div class="sheet-bg" data-a="sheet-close"></div>
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="rs-title">
+      <div class="sheet-grab" id="rs-grab"><span></span></div>
+      <div class="sheet-head">
+        <button class="sheet-back" id="rs-back" data-a="rep-change" aria-label="Back to quests"><span class="chev"></span></button>
+        <h2 id="rs-title">Report progress</h2>
+        <button class="sheet-x" data-a="sheet-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="sheet-body" id="rs-body"></div>
+    </div>
+  </div>
   <nav class="tabbar" aria-label="Sections"><div class="tabbar-in">
     <button class="tab on" data-tab="focus">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -2663,9 +2754,22 @@ function backSub(){showPanel(U.prev||'focus');}
 
 /* ---------- Report progress: any quest, any time ---------- */
 function repReset(keepFilter){var c=keepFilter&&U.rep?U.rep.cat:'all';U.rep={cat:c||'all',q:'',gid:null,mode:'progress',amt:1,done:null};}
+function sheetOpen(){var s=document.getElementById('rsheet');return !!s&&!s.classList.contains('hide');}
 function openReport(cat,gid){
-  repReset();if(cat)U.rep.cat=cat;if(gid){U.rep.gid=gid;U.rep.mode=repCanProgress(S.goals.find(function(g){return g.id===gid;}))?'progress':'note';}
-  openSub('log');
+  repReset();if(cat)U.rep.cat=cat;
+  if(gid){U.rep.gid=gid;U.rep.mode=repCanProgress(S.goals.find(function(g){return g.id===gid;}))?'progress':'note';}
+  var s=document.getElementById('rsheet');
+  renderSheet('');
+  s.classList.remove('hide');s.setAttribute('aria-hidden','false');
+  document.body.classList.add('sheet-open');
+  void s.offsetWidth;s.classList.add('open');
+}
+function closeSheet(cb){
+  var s=document.getElementById('rsheet');if(!s||s.classList.contains('hide')){if(cb)cb();return;}
+  var ae=document.activeElement;if(ae&&ae.blur&&s.contains(ae))ae.blur();
+  s.classList.remove('open');s.setAttribute('aria-hidden','true');
+  var card=s.querySelector('.sheet-card');if(card)card.style.transform='';
+  setTimeout(function(){s.classList.add('hide');document.body.classList.remove('sheet-open');if(cb)cb();afterModals();},280);
 }
 function repNext(g){
   if(g.type==='counter')return {kind:'count',label:'Add '+(g.unit||'to the count'),max:Math.max(1,g.target-clampCur(g))};
@@ -2684,28 +2788,18 @@ function repProgText(g){
   if(g.type==='steps'&&g.steps.length)return g.steps.filter(function(s){return s.done;}).length+' of '+g.steps.length+' milestones';
   return (g.completedCount||0)?'Done '+g.completedCount+'×':'Not done yet';
 }
-function renderLog(){
-  var el=document.getElementById('logp');if(!el)return;
+function renderLog(){renderSheet('');}
+/* dir: '' just draw, 'fwd' slide the next step in from the right, 'back' from the left */
+function renderSheet(dir){
+  var el=document.getElementById('rs-body');if(!el)return;
   if(!U.rep)repReset();
-  var R=U.rep,h='<div class="sub-head"><button class="back" data-a="sub-back" aria-label="Back"><span class="chev"></span>Back</button></div>';
-  if(R.done){
-    var d=R.done;
-    h+='<div class="rep-done" style="--c:'+idColor(d.cat)+'"><div class="rd-tick"><i class="co-tick"></i></div>'+
-       '<div class="rd-t">Reported</div>'+
-       '<div class="rd-s">'+esc(d.name)+'</div>'+
-       '<div class="rd-v">A vote for <b>'+esc(idOf(d.cat).title)+'</b>'+(d.pts>0?' · +'+nf(d.pts)+' pts':'')+'</div>'+
-       (d.prog?'<div class="rd-p">'+esc(d.prog)+'</div>':'')+
-       (d.note?'<div class="rd-n serif">“'+esc(d.note)+'”</div>':'')+
-       '<div class="f-acts" style="justify-content:center;"><button class="btn" data-a="rep-again">Report another</button>'+
-       '<button class="btn2" data-a="sub-back">Done</button></div></div>';
-    el.innerHTML=h;return;
-  }
-  var g=R.gid?S.goals.find(function(x){return x.id===R.gid;}):null;
+  var R=U.rep,g=R.gid?S.goals.find(function(x){return x.id===R.gid;}):null,h='';
+  document.getElementById('rs-back').style.visibility=g?'visible':'hidden';
+  document.getElementById('rs-title').textContent=g?'What did you do?':'Report progress';
   if(g){
     var nx=repNext(g);if(!nx)R.mode='note';
-    h+='<h2>Report progress</h2>'+
-       '<div class="rep-card" style="--c:'+idColor(g.category)+'">'+
-       '<div class="rc-id"><i class="iddot" style="background:'+idColor(g.category)+'"></i>'+esc(idOf(g.category).title)+(g.active?' · in focus':'')+'</div>'+
+    h+='<div class="rep-card" style="--c:'+idColor(g.category)+'">'+
+       '<div class="rc-id"><i class="iddot" style="background:'+idColor(g.category)+'"></i>'+esc(idOf(g.category).title)+(g.active?' \u00B7 in focus':'')+'</div>'+
        '<div class="rc-n">'+esc(g.name)+'</div><div class="rc-p">'+esc(repProgText(g))+'</div>';
     if(nx){
       h+='<div class="seg2" role="group"><button class="'+(R.mode==='progress'?'on':'')+'" data-a="rep-mode" data-m="progress">Made progress</button>'+
@@ -2713,27 +2807,26 @@ function renderLog(){
       if(R.mode==='progress'){
         if(nx.kind==='count'||nx.kind==='stepcount'){
           h+='<label class="rc-l" for="rep-amt">'+esc(nx.label)+'</label>'+
-             '<div class="stepper rep-st"><button class="minus" data-a="rep-amt" data-d="-1" aria-label="Less">−</button>'+
+             '<div class="stepper rep-st"><button class="minus" data-a="rep-amt" data-d="-1" aria-label="Less">\u2212</button>'+
              '<input type="number" id="rep-amt" value="'+R.amt+'" min="1" max="'+nx.max+'" inputmode="numeric">'+
              '<button class="plus" data-a="rep-amt" data-d="1" aria-label="More">+</button></div>';
         }else h+='<div class="rc-act"><i class="co-tick"></i>'+esc(nx.label)+'</div>';
-      }else h+='<p class="sub rc-hint">For days you put in work that doesn’t move a number yet. It still counts as a vote.</p>';
+      }else h+='<p class="sub rc-hint">For days you put in work that doesn\u2019t move a number yet. It still counts as a vote.</p>';
     }else h+='<p class="sub rc-hint">Nothing left to tick on this one, but the work still counts. Say what you did.</p>';
     h+='<label class="rc-l" for="rep-note">'+(R.mode==='note'?'What did you do?':'What did you do? <span class="opt">(optional)</span>')+'</label>'+
        '<textarea id="rep-note" rows="2" maxlength="280" placeholder="'+(R.mode==='note'?'e.g. Ran 4 miles easy':'This becomes evidence in your case file')+'"></textarea>'+
-       '<div class="f-acts"><button class="btn" data-a="rep-go">Report</button><button class="btn2" data-a="rep-change">Pick another quest</button></div></div>';
-    el.innerHTML=h;
-    var nt=document.getElementById('rep-note');if(nt&&R.note)nt.value=R.note;
-    return;
+       '<button class="btn rep-go" data-a="rep-go">Report</button></div>';
+  }else{
+    h+='<p class="sub rep-intro">Anything you did, on any quest, in focus or not. It all counts as a vote.</p>'+
+       '<div class="search"><input type="search" id="rep-q" placeholder="Search quests" autocomplete="off" value="'+esc(R.q)+'"></div>'+
+       '<div class="idchips rep-chips"><button class="idchip'+(R.cat==='all'?' on':'')+'" data-a="rep-cat" data-c="all">All</button>'+
+       S.categories.map(function(c){return '<button class="idchip'+(R.cat===c?' on':'')+'" data-a="rep-cat" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'</button>';}).join('')+
+       '</div><div id="rep-list"></div>';
   }
-  /* step 1: pick a quest */
-  h+='<h2>Report progress</h2><p class="sub">Anything you did, on any quest, in focus or not. It all counts as a vote for who you’re becoming.</p>'+
-     '<div class="search"><input type="search" id="rep-q" placeholder="Search quests" autocomplete="off" value="'+esc(R.q)+'"></div>'+
-     '<div class="idchips rep-chips"><button class="idchip'+(R.cat==='all'?' on':'')+'" data-a="rep-cat" data-c="all">All</button>'+
-     S.categories.map(function(c){return '<button class="idchip'+(R.cat===c?' on':'')+'" data-a="rep-cat" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+esc(idOf(c).title)+'</button>';}).join('')+
-     '</div><div id="rep-list"></div>';
-  el.innerHTML=h;
-  renderRepList();
+  el.innerHTML='<div class="sheet-step'+(dir?' in-'+dir:'')+'">'+h+'</div>';
+  el.scrollTop=0;
+  if(g){var nt=document.getElementById('rep-note');if(nt&&R.note)nt.value=R.note;}
+  else renderRepList();
 }
 function renderRepList(){
   var el=document.getElementById('rep-list');if(!el)return;
@@ -2757,9 +2850,10 @@ function renderRepList(){
 async function repGo(){
   var R=U.rep,g=S.goals.find(function(x){return x.id===R.gid;});if(!g)return;
   var nt=document.getElementById('rep-note'),note=nt?nt.value.trim():'';
-  var nx=repNext(g),t0=Date.now(),b0=balance();
+  var nx=repNext(g),t0=Date.now(),b0=balance(),v0=(voteStats().days[dayKeyOf(Date.now())]||[]).length;
   if(R.mode==='note'||!nx){
     if(!note){toast('Say what you did, even briefly.');if(nt&&nt.focus)nt.focus();return;}
+    if(U.repBusy)return;
     snap();
     S.log.push({id:uid(),at:Date.now(),gid:g.id,name:g.name,cat:g.category,pts:0,clear:false,note:note});
     g.touchedAt=Date.now();NOTE_VER++;
@@ -2778,11 +2872,40 @@ async function repGo(){
       NOTE_VER++;await save();
     }
   }
-  var g2=S.goals.find(function(x){return x.id===R.gid;})||g;
-  R.done={name:g.name,cat:g.category,pts:Math.max(0,balance()-b0),note:note,prog:repProgText(g2)};
-  R.note='';
+  var gained=Math.max(0,balance()-b0);
   STALE.focus=1;STALE.quests=1;STALE.progress=1;
-  if(U.tab==='log')renderLog();
+  U.voteAnim={from:v0,pts:gained,b0:b0,cat:g.category,name:g.name};
+  closeSheet(function(){
+    if(U.tab!=='focus')showPanel('focus');else renderPanel('focus');
+    if(window.scrollTo)try{window.scrollTo({top:0,behavior:'smooth'});}catch(x){window.scrollTo(0,0);}
+    setTimeout(playVote,120);
+  });
+  toast('Reported \u00B7 a vote for '+idOf(g.category).title+(gained?' \u00B7 +'+nf(gained)+' pts':''),true);
+}
+/* The new vote lands on Today: its dot pops in, the count ticks up, and any
+   points roll up in the pill, so you see exactly what the report added. */
+function tween(el,from,to,ms,fmt){
+  if(!el)return;var t0=null;
+  function step(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);
+    el.textContent=fmt(Math.round(from+(to-from)*e));if(k<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+function playVote(){
+  var A=U.voteAnim;U.voteAnim=null;if(!A)return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var v=document.querySelector('#now-head .votes');if(!v||reduce)return;
+  var dots=v.querySelectorAll('.vdots i');var nd=dots[dots.length-1];
+  if(nd&&!nd.classList.contains('empty')){nd.classList.remove('vnew');void nd.offsetWidth;nd.classList.add('vnew');}
+  var b=v.querySelector('.vtxt b'),to=(voteStats().days[dayKeyOf(Date.now())]||[]).length;
+  if(b&&to>A.from)tween(b,A.from,to,700,function(n){return n+' vote'+(n===1?'':'s')+' today';});
+  var chip=document.createElement('span');chip.className='vfloat';chip.style.setProperty('--c',idColor(A.cat));
+  chip.textContent='+1 '+idOf(A.cat).title;v.appendChild(chip);
+  setTimeout(function(){if(chip.parentNode)chip.parentNode.removeChild(chip);},1600);
+  if(A.pts>0){
+    var bal=document.getElementById('bal'),pill=document.querySelector('.balance');
+    tween(bal,A.b0,A.b0+A.pts,900,function(n){return nf(n);});
+    if(pill){pill.classList.remove('bump');void pill.offsetWidth;pill.classList.add('bump');}
+  }
 }
 
 /* ---------- identity case file ---------- */
@@ -3271,13 +3394,12 @@ function goReward(id){
 function chaseHTML(link){
   var p=pinnedRewards(),bal=balance();
   if(!p.length)return '';
-  var h='<div class="chase"><div class="c-head"><div class="c-title"><span>Chasing</span></div>'+
-        (link?'<button class="link" data-a="go-rewards">Shelf</button>':'')+'</div>';
+  var h='<div class="chase"><div class="chase-h">Chasing</div>';
   p.slice(0,MAXPIN).forEach(function(r){
     var cost=costOf(r),pct=Math.min(100,Math.round(bal/cost*100)),can=bal>=cost;
-    h+='<div class="chase-r"><div class="chase-top"><b>'+esc(r.name)+'</b>'+
-       '<span'+(can?' class="hit"':'')+'>'+(can?'ready \u00B7 '+nf(cost)+' pts':nf(cost-bal)+' pts to go')+'</span></div>'+
-       '<div class="bar"><div class="bar-fill'+(can?' done':'')+'" style="width:'+pct+'%"></div></div></div>';
+    h+='<button class="chase-r" data-a="go-reward" data-r="'+r.id+'"><span class="chase-top"><b>'+esc(r.name)+'</b>'+
+       '<span'+(can?' class="hit"':'')+'>'+(can?'Ready':nf(cost-bal)+' to go')+'</span></span>'+
+       '<span class="bar"><span class="bar-fill'+(can?' done':'')+'" style="width:'+pct+'%"></span></span></button>';
   });
   return h+'</div>';
 }
@@ -3358,47 +3480,39 @@ function renderCleared(){
 function renderRewards(){
   parkForm('reward-form','reward-form-home');
   var el=document.getElementById('reward-list');
-  document.getElementById('rw-sub').textContent=S.settings.rate+' point per $1. Redeeming anything levels its whole shelf by '+
-    Math.round(S.settings.step*100)+'%. Chase up to '+MAXPIN+'.';
+  document.getElementById('rw-sub').textContent=nf(balance())+' pts to spend \u00B7 '+S.settings.rate+' pt per $1 \u00B7 each redemption raises its shelf '+
+    Math.round(S.settings.step*100)+'% \u00B7 tap \u2606 to chase (up to '+MAXPIN+')';
   if(!S.rewards.length){el.innerHTML='<div class="note">No rewards yet. Add something you actually want.</div>';reDockReward();return;}
-
-  /* grouped by shelf, cheapest first inside each; wants still cooling off wait above */
   var bal=balance(),groups={};
   S.rewards.forEach(function(r){if(!r.coolUntil)(groups[r.shelf]=groups[r.shelf]||[]).push(r);});
   var order=S.shelves.filter(function(s){return groups[s];})
     .concat(Object.keys(groups).filter(function(s){return S.shelves.indexOf(s)<0;}));
-
-  var h=coolingHTML(),first=true;
+  var h=coolingHTML();
   order.forEach(function(sh){
     var lv=shelfLevel(sh),bump=Math.round((shelfMult(sh)-1)*100);
-    h+='<div class="shelf-h'+(first?' first':'')+'"><span class="shelf-n">'+esc(sh)+'</span>'+
+    h+='<div class="shelf"><div class="shelf-h"><span class="shelf-n">'+esc(sh)+'</span>'+
        '<span class="shelf-l">Lv '+(lv+1)+(bump?' \u00B7 +'+bump+'%':'')+'</span></div>';
-    first=false;
-    groups[sh].sort(function(a,b){return costOf(a)-costOf(b);}).forEach(function(r){
-      var cost=costOf(r),can=bal>=cost;
-      h+='<div class="rw'+(can?' can':'')+(r.pinned?' pin':'')+'" data-rid="'+r.id+'">'+
-        '<div class="rw-top"><span class="rw-name">'+esc(r.name)+'</span>'+
-        '<span class="rw-price">$'+nf(r.price)+'</span></div>';
-      /* the full progress read-out is only worth the space on what you're chasing */
-      if(r.pinned){
-        var pct=Math.min(100,Math.round(bal/cost*100));
-        h+='<div class="bar"><div class="bar-fill'+(can?' done':'')+'" style="width:'+pct+'%"></div></div>';
-      }
-      h+='<div class="rw-bot"><span class="rw-cost"><b>'+nf(cost)+'</b> pts'+
-        (can?' \u00B7 ready':' \u00B7 '+nf(cost-bal)+' to go')+'</span>'+
-        '<button class="btn sm redeem'+(can?' live':'')+'" data-a="redeem" data-id="'+r.id+'"'+
-        (can?'':' disabled')+'>Redeem</button></div>'+
-        '<div class="cfoot">'+
-        '<button class="pinbtn'+(r.pinned?' on':'')+'" data-a="pin" data-id="'+r.id+'">'+
-        (r.pinned?'\u2605 Chasing':'\u2606 Chase')+'</button>'+
-        '<button data-a="edit-reward" data-id="'+r.id+'">Edit</button>'+
-        '<button data-a="del-reward" data-id="'+r.id+'">Delete</button></div></div>';
-    });
+    groups[sh].sort(function(a,b){return costOf(a)-costOf(b);}).forEach(function(r){h+=rewardRow(r,bal);});
+    h+='</div>';
   });
   el.innerHTML=h;
   reDockReward();
 }
-
+/* One line per reward: chase star, name and price (tap to edit), and on the
+   right either Redeem when you can afford it or how far there is to go. */
+function rewardRow(r,bal){
+  var cost=costOf(r),can=bal>=cost,pct=Math.min(100,Math.round(bal/cost*100));
+  return '<div class="rw'+(can?' can':'')+(r.pinned?' pin':'')+'" data-rid="'+r.id+'">'+
+    '<button class="rw-star'+(r.pinned?' on':'')+'" data-a="pin" data-id="'+r.id+'" aria-pressed="'+!!r.pinned+'" aria-label="'+(r.pinned?'Stop chasing ':'Chase ')+esc(r.name)+'">'+(r.pinned?'\u2605':'\u2606')+'</button>'+
+    '<button class="rw-main" data-a="edit-reward" data-id="'+r.id+'" aria-label="Edit '+esc(r.name)+'">'+
+      '<span class="rw-name">'+esc(r.name)+'</span>'+
+      '<span class="rw-meta">$'+nf(r.price)+' \u00B7 '+nf(cost)+' pts</span>'+
+      (r.pinned&&!can?'<span class="rw-bar"><i style="width:'+pct+'%"></i></span>':'')+
+    '</button>'+
+    (can?'<button class="btn sm redeem live" data-a="redeem" data-id="'+r.id+'">Redeem</button>':
+         '<span class="rw-togo">'+nf(cost-bal)+'<small>to go</small></span>')+
+    '</div>';
+}
 function renderGot(){
   var list=S.redemptions.slice().reverse();
   document.getElementById('got-sub').textContent=list.length?
@@ -4292,7 +4406,7 @@ document.addEventListener('click',function(e){
   else if(a==='new-goal')openGoal(null);
   else if(a==='cancel-goal')closeGoal();
   else if(a==='save-goal')saveGoal();
-  else if(a==='new-reward'){U.editReward=null;
+  else if(a==='new-reward'){U.editReward=null;document.getElementById('r-del').style.display='none';
     parkForm('reward-form','reward-form-home');
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value='';document.getElementById('r-price').value='';
@@ -4317,14 +4431,16 @@ document.addEventListener('click',function(e){
     renderPanel('focus');}
   else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
   else if(a==='sub-back')backSub();
-  else if(a==='rep-cat'){U.rep.cat=el.getAttribute('data-c');renderLog();}
+  else if(a==='sheet-close')closeSheet();
+  else if(a==='rep-cat'){U.rep.cat=el.getAttribute('data-c');
+    document.querySelectorAll('.rep-chips .idchip').forEach(function(b){b.classList.toggle('on',b===el);});renderRepList();}
   else if(a==='rep-pick'){var rg=S.goals.find(function(x){return x.id===id;});U.rep.gid=id;U.rep.amt=1;U.rep.note='';
-    U.rep.mode=repCanProgress(rg)?'progress':'note';renderLog();if(window.scrollTo)try{window.scrollTo(0,0);}catch(x){}}
-  else if(a==='rep-mode'){var rn=document.getElementById('rep-note');U.rep.note=rn?rn.value:'';U.rep.mode=el.getAttribute('data-m');renderLog();}
+    U.rep.mode=repCanProgress(rg)?'progress':'note';renderSheet('fwd');}
+  else if(a==='rep-mode'){var rn=document.getElementById('rep-note');U.rep.note=rn?rn.value:'';U.rep.mode=el.getAttribute('data-m');renderSheet('');}
   else if(a==='rep-amt'){var ri=document.getElementById('rep-amt');if(ri){var mx=+ri.max||999;
     ri.value=Math.max(1,Math.min(mx,(Math.round(+ri.value)||1)+(+el.getAttribute('data-d'))));U.rep.amt=+ri.value;}}
   else if(a==='rep-go')repGo();
-  else if(a==='rep-change'){U.rep.gid=null;renderLog();}
+  else if(a==='rep-change'){if(!U.rep||!U.rep.gid)return;U.rep.gid=null;renderSheet('back');}
   else if(a==='rep-again'){repReset(true);renderLog();if(window.scrollTo)try{window.scrollTo(0,0);}catch(x){}}
   else if(a==='open-case')openCase(el.getAttribute('data-c'));
   else if(a==='case-all'){U.caseAll=!U.caseAll;renderCase();}
@@ -4370,7 +4486,11 @@ document.addEventListener('click',function(e){
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value=r.name;document.getElementById('r-price').value=r.price;
     document.getElementById('r-newshelf').value='';renderShelfSelect(r.shelf);
+    var rd=document.getElementById('r-del');rd.style.display='';rd.textContent='Delete reward';rd.classList.remove('armed');
     dockForm('reward-form','data-rid',r.id);}
+  else if(a==='del-reward-form')danger(el,function(){var rid=U.editReward;
+    document.getElementById('reward-form').classList.add('hide');U.editReward=null;parkForm('reward-form','reward-form-home');
+    if(rid)delReward(rid);});
   else if(a==='add-step-row'){readDraft();U.draft.push({id:uid(),name:'',weight:1,done:false,target:0,current:0});renderDraft();}
   else if(a==='del-step-row'){readDraft();U.draft.splice(+el.getAttribute('data-i'),1);renderDraft();}
   else if(a==='suggest-steps'){
@@ -4456,6 +4576,16 @@ document.getElementById('g-period').addEventListener('change',scheduleToggle);
 document.addEventListener('input',function(e){
   if(e.target&&e.target.id==='rep-q'&&U.rep){U.rep.q=e.target.value;renderRepList();}
 });
+(function(){
+  var card=document.querySelector('#rsheet .sheet-card'),y0=null,dy=0;
+  function start(e){var t=e.target;if(!t.closest('.sheet-grab,.sheet-head'))return;y0=e.touches[0].clientY;dy=0;card.style.transition='none';}
+  function move(e){if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);card.style.transform='translateY('+dy+'px)';}
+  function end(){if(y0===null)return;y0=null;card.style.transition='';
+    if(dy>90)closeSheet();else card.style.transform='';}
+  card.addEventListener('touchstart',start,{passive:true});
+  card.addEventListener('touchmove',move,{passive:true});
+  card.addEventListener('touchend',end);
+})();
 document.getElementById('p-profile').addEventListener('toggle',function(e){
   var t=e.target;
   if(t&&t.classList&&t.classList.contains('sect')&&t.open)
@@ -4493,7 +4623,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='3.5';
+var APP_VERSION='3.6';
 var NEED_CONNECTOR=3;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo'];
@@ -4691,7 +4821,7 @@ function checkV(r){
 function pullBlocked(){
   var ae=document.activeElement;
   if(ae&&ae.id==='co-in'&&ae.value)return true;
-  if(U.tab==='log'&&U.rep&&U.rep.gid&&!U.rep.done)return true;
+  if(sheetOpen())return true;
   return Object.keys(CLEARING).length||Object.keys(LOCK).length||modalOpen();
 }
 function scheduleSync(ms){clearTimeout(SYNC_T);SYNC_T=setTimeout(function(){sync();},ms||0);}
