@@ -1200,6 +1200,53 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 .case-q .cq-h span{font-size:var(--t-meta);font-weight:700;color:var(--dim);}
 .cq-sub{font-size:0.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
 .case-q .row.on{--c:inherit;}
+
+/* =================== 4.1 =================== */
+/* Today's top card */
+#now-head.now-card{position:relative;margin:0 0 22px;padding:16px 16px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--c) 30%,var(--edge-soft));
+  background:linear-gradient(150deg,color-mix(in srgb,var(--c) 26%,var(--panel)) 0%,color-mix(in srgb,var(--c) 10%,var(--panel)) 55%,var(--panel) 100%);
+  box-shadow:0 8px 24px -14px var(--shadow),0 1px 2px var(--shadow);}
+.now-card .now-line .serif{font-size:1.62rem;line-height:1.18;}
+.now-card .now-date{color:color-mix(in srgb,var(--c) 55%,var(--dim));}
+.now-card .votes{margin-top:12px;padding-top:12px;border-radius:0;border-top:1px solid color-mix(in srgb,var(--c) 22%,var(--edge-soft));}
+.now-card .vdots i{width:11px;height:11px;box-shadow:0 0 0 2px var(--panel);}
+/* quick view of a quest */
+.row-detail{margin:-2px 0 10px;padding:12px 14px;border-radius:0 0 var(--r-card) var(--r-card);background:var(--panel);
+  border:1px solid var(--edge-soft);border-top:none;border-left:3px solid var(--c);}
+.row.on+.row-detail{margin-top:-10px;}
+.row-detail .bar{margin:2px 0 6px;}
+.rd-id{font-style:italic;color:var(--dim);font-size:0.9rem;margin-bottom:6px;}
+.rd-prog{font-size:var(--t-meta);color:var(--dim);}
+.rd-steps{list-style:none;margin:8px 0 2px;padding:0;}
+.rd-steps li{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:0.88rem;border-top:1px solid var(--edge-soft);}
+.rd-steps li:first-child{border-top:none;}
+.rd-box{flex-shrink:0;width:15px;height:15px;border-radius:4px;border:1.5px solid var(--edge);}
+.rd-steps li.done .rd-box{background:var(--jade);border-color:var(--jade);}
+.rd-steps li.done .rd-sn{color:var(--dim);text-decoration:line-through;text-decoration-color:var(--edge);}
+.rd-steps li.next .rd-sn{font-weight:700;color:var(--chalk);}
+.rd-steps li.next .rd-box{border-color:var(--c);}
+.rd-sn{flex:1;min-width:0;overflow-wrap:anywhere;}
+.rd-sn small{color:var(--dim);font-weight:600;}
+.rd-sp{flex-shrink:0;font-size:0.74rem;color:var(--dimmer);}
+.rd-meta{font-size:0.74rem;color:var(--dimmer);margin-top:6px;}
+.rd-line{font-size:0.84rem;margin-top:6px;}
+.rd-line b{font-size:0.74rem;margin-right:4px;color:var(--gold);}
+.rd-line b.pace-bad{color:var(--ember);}
+.rd-why{font-style:italic;font-size:0.95rem;margin-top:8px;color:var(--chalk);}
+.rd-acts{display:flex;gap:8px;margin-top:10px;}
+/* close-out catch-up */
+.co-catch{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--edge);font-size:var(--t-meta);color:var(--dim);}
+.co-catch span{flex-basis:100%;}
+.co-catch .link{font-size:var(--t-meta);padding:2px 0;}
+#g-why{width:100%;min-height:78px;resize:vertical;font-family:inherit;font-size:0.92rem;line-height:1.4;padding:9px 10px;
+  border:1px solid var(--edge);border-radius:var(--r-ctl);background:var(--void);color:var(--chalk);}
+/* calmer motion */
+.panel.enter{animation:panelIn .2s ease-out;}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.ease-in{animation:easeIn .24s cubic-bezier(.2,.8,.2,1);}
+@keyframes easeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+#toast{transition:opacity .2s ease,transform .2s ease;}
+@media (prefers-reduced-motion: reduce){.panel.enter,.ease-in{animation:none;}}
 </style>
 </head>
 <body>
@@ -1293,7 +1340,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
           <label for="g-identity">Who this makes you</label>
           <input type="text" id="g-identity" placeholder="I’m a runner" maxlength="80">
           <label for="g-why" style="margin-top:10px;">Why it matters to you</label>
-          <input type="text" id="g-why" placeholder="So I can keep up with my kids" maxlength="160">
+          <textarea id="g-why" rows="3" placeholder="So I can keep up with my kids" maxlength="280"></textarea>
           <div class="hint" style="color:var(--dim);font-weight:400;">Shows on the card, and comes back up when this goal falls behind or goes quiet.</div>
         </div>
       </details>
@@ -2540,9 +2587,10 @@ function renderNowHead(){
   var el=document.getElementById('now-head');if(!el)return;
   var vs=voteStats(),today=vs.days[dayKeyOf(Date.now())]||[],tl=todayLine();
   var r=nearestReward(),rl='';
-  if(r){var gap=costOf(r)-balance();
-    rl='<button class="now-rw'+(gap<=0?' ok':'')+'" data-a="go-rewards"><span>'+
-       (gap<=0?esc(r.name)+' is ready':nf(gap)+' to '+esc(r.name))+'</span><span class="chev"></span></button>';}
+  var bal0=balance(),nReady=S.rewards.filter(function(x){return !x.coolUntil&&bal0>=costOf(x);}).length;
+  if(nReady)rl='<button class="now-rw ok" data-a="go-rewards"><span>Rewards ready to redeem</span><span class="chev"></span></button>';
+  else if(r){var gap=costOf(r)-bal0;
+    rl='<button class="now-rw" data-a="go-rewards"><span>'+nf(gap)+' to '+esc(r.name)+'</span><span class="chev"></span></button>';}
   var h='<div class="now-top"><span class="now-date">'+
         new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span>'+rl+'</div>';
   if(tl)h+='<button class="now-line" data-a="next-line" aria-label="Show another identity">'+
@@ -2561,6 +2609,7 @@ function renderNowHead(){
   var cs=currentSeason();
   if(cs&&!cs.claimedAt&&seasonPts(cs)>=cs.target)h+='<div class="top line" style="margin-top:10px;">'+seasonRowHTML('line')+'</div>';
   el.innerHTML=h;
+  el.className='now-card';el.style.setProperty('--c',tl?idColor(tl.c):'var(--gold)');
 }
 
 /* ---------- Today: habits ---------- */
@@ -2618,7 +2667,8 @@ function journalStreak(){
 function renderCloseout(){
   var bottom=document.getElementById('closeout'),top=document.getElementById('closeout-top');if(!bottom)return;
   var old=document.getElementById('co-in'),draft=old?old.value:null;
-  var hr=new Date(Date.now()).getHours(),k=dayKeyOf(Date.now()),j=journalFor(k),late=hr>=17;
+  var hr=new Date(Date.now()).getHours(),k=U.coDay||dayKeyOf(Date.now()),j=journalFor(k),late=hr>=17;
+  var catching=!!U.coDay;
   /* in the evening it's the main thing left, so it sits up top, and stays
      there once written so the confirmation is right where you tapped */
   var up=top&&hr>=19;
@@ -2626,30 +2676,38 @@ function renderCloseout(){
   var past=(S.journal||[]).length-(j?1:0);
   var pastBtn=past>0?'<button class="link co-past" data-a="journal-view">Past entries ('+past+')</button>':'';
   var h='<div class="closeout'+(j&&!U.closeEdit?' done':'')+(U.coJust&&j&&!U.closeEdit?' just':'')+'">';
-  if(j&&!U.closeEdit){
+  if(catching){
+    h+='<div class="co-h"><span>Catching up \u00B7 '+esc(dayLabel(k))+'</span><button class="link" data-a="co-catch-cancel">Back to today</button></div>'+
+       '<label class="co-q serif" for="co-in">What did you do '+esc(dayLabel(k))+' that the person you\u2019re becoming would do?</label>'+
+       '<textarea id="co-in" rows="2" maxlength="280" placeholder="Even something small."></textarea>'+
+       '<div class="f-acts"><button class="btn sm" data-a="closeout-save">Save '+esc(dayPoss(k))+'</button></div>';
+  }else if(j&&!U.closeEdit){
     var st=journalStreak();
     h+='<div class="co-h"><span>Today, in your words</span><span class="co-ok"><i class="co-tick"></i>Saved</span></div>'+
        '<div class="co-t serif">'+esc(j.text)+'</div>'+
        '<div class="co-foot"><span>'+(st>1?st+' days in a row you\u2019ve closed out':'Today is on the record')+'</span></div>'+
-       '<div class="co-acts"><button class="link" data-a="closeout-edit">Edit</button>'+pastBtn+'</div>';
+       '<div class="co-acts"><button class="link" data-a="closeout-edit">Edit</button>'+pastBtn+'</div>'+catchupHTML();
   }else{
     h+='<div class="co-h"><span>'+(late?'Close out today':'Before the day ends')+'</span></div>'+
        '<label class="co-q serif" for="co-in">What did you do today that the person you\u2019re becoming would do?</label>'+
        '<textarea id="co-in" rows="2" maxlength="280" placeholder="Even something small."></textarea>'+
        '<div class="f-acts"><button class="btn sm" data-a="closeout-save">Save</button>'+
        (j?'<button class="btn2 sm" data-a="closeout-cancel">Cancel</button>':'')+'</div>'+
-       (pastBtn?'<div class="co-acts">'+pastBtn+'</div>':'');
+       (pastBtn?'<div class="co-acts">'+pastBtn+'</div>':'')+catchupHTML();
   }
   el.innerHTML=h+'</div>';
   var ta=document.getElementById('co-in');
-  if(ta)ta.value=draft!==null?draft:(j?j.text:'');
+  if(ta)ta.value=draft!==null?draft:(j&&!catching?j.text:'');
 }
 async function saveCloseout(){
   var ta=document.getElementById('co-in'),v=ta?ta.value.trim():'';
   if(!v){toast('Write a line first, even a short one.');return;}
   snap();
   if(!Array.isArray(S.journal))S.journal=[];
-  var k=dayKeyOf(Date.now()),j=journalFor(k);
+  var k=U.coDay||dayKeyOf(Date.now()),j=journalFor(k),late=!!U.coDay;
+  /* only the last two nights can still be written */
+  if(late&&missedCloseouts().indexOf(k)<0&&!j){U.coDay=null;toast('That night has closed.');renderCloseout();return;}
+  U.coDay=null;
   if(j){j.text=v;j.at=Date.now();}
   else S.journal.push({id:uid(),day:dateToNoon(k),text:v,at:Date.now()});
   U.closeEdit=false;ta.value='';
@@ -3393,7 +3451,7 @@ function openLink(u){if(!u)return;try{var w=window.open(u,'_blank','noopener');i
 
 /* ---------- tap anywhere else to close an open card ---------- */
 function collapseOthers(e){
-  if(!Object.keys(U.expanded).length||modalOpen()||sheetOpen())return;
+  if(!Object.keys(U.expanded).length||modalOpen()||sheetOpen()||goalFormOpen())return;
   var t=e.target;
   var inside=t.closest&&t.closest('.slot[data-gid]');
   if(inside&&U.expanded[inside.getAttribute('data-gid')])return;
@@ -3437,6 +3495,133 @@ function gotoUp(id){
   if(el.scrollIntoView)try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(x){el.scrollIntoView();}
   el.classList.remove('reveal');void el.offsetWidth;el.classList.add('reveal');
   setTimeout(function(){el.classList.remove('reveal');},1600);
+}
+
+
+/* =====================================================================
+   4.1 — calmer motion, quest view, safe editing, catch-up close-outs
+   ===================================================================== */
+
+/* ---------- a quest you can look at without editing ---------- */
+function rowDetailHTML(g){
+  var w=worth(g),h='<div class="row-detail" data-for="'+g.id+'" style="--c:'+idColor(g.category)+'">';
+  if(g.identity)h+='<div class="rd-id serif">'+esc(g.identity)+'</div>';
+  if(g.type==='steps'&&g.steps.length){
+    var t=stepTotal(g),dn=stepDone(g),pct=t?Math.round(dn/t*100):0,open=stepOpenIndex(g);
+    h+='<div class="bar"><div class="bar-fill'+(pct>=100?' done':'')+'" style="width:'+pct+'%"></div></div>'+
+       '<div class="rd-prog">'+g.steps.filter(function(s){return s.done;}).length+' of '+g.steps.length+' milestones · '+nf(Math.round(w*dn/(t||1)))+' of '+nf(w)+' pts</div>'+
+       '<ol class="rd-steps">';
+    g.steps.forEach(function(s,i){
+      var cnt=(s.target||0)>1;
+      h+='<li class="'+(s.done?'done':i===open?'next':'')+'"><span class="rd-box"></span><span class="rd-sn">'+esc(s.name)+
+         (cnt?' <small>'+nf(s.current||0)+'/'+nf(s.target)+'</small>':'')+'</span><span class="rd-sp">'+nf(stepPts(g,s))+'</span></li>';
+    });
+    h+='</ol>';
+  }else if(g.type==='counter'){
+    var cur=clampCur(g),p2=Math.round(cur/g.target*100);
+    h+='<div class="bar"><div class="bar-fill'+(p2>=100?' done':'')+'" style="width:'+p2+'%"></div></div>'+
+       '<div class="rd-prog">'+nf(cur)+' / '+nf(g.target)+' '+esc(g.unit||'')+(g.period?' this '+PER_WORD[g.period]:' · pays '+nf(w)+' at the finish')+'</div>';
+  }else{
+    h+='<div class="rd-prog">'+((g.completedCount||0)?'Done '+g.completedCount+'× · ':'')+'Pays '+nf(w)+' when it’s done</div>';
+  }
+  h+='<div class="rd-meta">'+DIFF[g.difficulty]+' · '+TIME[g.time]+(g.period?' · every '+PER_WORD[g.period]:'')+'</div>';
+  var p=pace(g);if(p)h+='<div class="rd-line"><b class="pace-'+(p.cls||'n')+'">'+esc(p.label)+'</b> '+esc(p.text)+'</div>';
+  if(g.next||g.when)h+='<div class="rd-line"><b>'+(g.when?'Plan':'Next')+'</b> '+esc(nextText(g))+'</div>';
+  if(g.why)h+='<div class="rd-why serif">“'+esc(g.why)+'”</div>';
+  h+='<div class="rd-acts"><button class="btn2 sm" data-a="edit-goal" data-id="'+g.id+'">Edit</button>'+
+     '<button class="btn2 sm" data-a="open-report" data-g="'+g.id+'" data-c="'+esc(g.category)+'">Report progress</button></div>';
+  return h+'</div>';
+}
+
+/* ---------- editing one quest at a time ---------- */
+function goalFormOpen(){var f=document.getElementById('goal-form');return !!f&&!f.classList.contains('hide');}
+/* Opening something else while a quest is half-edited asks first. */
+function guardEdit(next){
+  var g=U.editGoal?S.goals.find(function(x){return x.id===U.editGoal;}):null;
+  openModal(g?'Save changes to “'+g.name+'”?':'Save this new quest?',
+    'You’re still editing. Only one quest is open at a time.',[
+    {label:'Save',style:'pri',run:async function(){await saveGoal();if(!goalFormOpen())setTimeout(next,60);}},
+    {label:'Discard changes',run:function(){closeGoal();renderPanel(U.tab);setTimeout(next,60);}},
+    {label:'Keep editing',style:'ghost'}]);
+}
+
+/* ---------- close-out: the last two nights can still be written ---------- */
+function missedCloseouts(){
+  if(!(S.journal||[]).length)return [];          /* no nagging before the habit has started */
+  var t=dayStart(Date.now()),out=[];
+  for(var i=1;i<=2;i++){var k=dayKeyOf(t-i*DAY);if(!journalFor(k))out.push(k);}
+  return out;
+}
+function dayLabel(k){
+  var p=k.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),t=dayStart(Date.now());
+  if(Math.round((t-d.getTime())/DAY)===1)return 'last night';
+  return d.toLocaleDateString(undefined,{weekday:'long'})+' night';
+}
+function dayPoss(k){var l=dayLabel(k);return l==='last night'?'last night\u2019s':l.replace(' night','')+'\u2019s';}
+function catchupHTML(){
+  if(U.coDay)return '';
+  var m=missedCloseouts();if(!m.length)return '';
+  return '<div class="co-catch"><span>Missed '+m.map(dayLabel).join(' and ')+'? You can still write '+(m.length>1?'them':'it')+'.</span>'+
+    m.map(function(k){return '<button class="link" data-a="co-catch" data-k="'+k+'">Write '+esc(dayPoss(k))+'</button>';}).join('')+'</div>';
+}
+
+/* ---------- keep the bottom bar on the bottom ----------
+   After the keyboard closes, iOS can leave fixed bars where the keyboard
+   top was until something forces a relayout. Measure the real visible area
+   and pin the bar and + to its bottom edge. */
+(function(){
+  var vv=window.visualViewport;
+  function pin(){
+    var bar=document.querySelector('.tabbar'),fab=document.getElementById('fab');
+    if(!vv||document.body.classList.contains('typing')){return;}
+    var d=Math.round(vv.offsetTop+vv.height-window.innerHeight);
+    var tf=Math.abs(d)>1?'translateY('+d+'px)':'';
+    if(bar)bar.style.transform=tf;if(fab)fab.style.translate=Math.abs(d)>1?'0 '+d+'px':'';
+  }
+  window.__pinBars=pin;
+  if(vv){vv.addEventListener('resize',pin);vv.addEventListener('scroll',pin);}
+  window.addEventListener('scroll',pin,{passive:true});
+  window.addEventListener('orientationchange',function(){setTimeout(pin,400);});
+  document.addEventListener('focusout',function(){
+    [300,700,1200].forEach(function(ms){setTimeout(function(){
+      if(document.body.classList.contains('typing'))return;
+      /* a no-op scroll makes iOS recompute fixed positions */
+      try{window.scrollTo(window.pageXOffset,window.pageYOffset);}catch(e){}
+      pin();},ms);});
+  });
+})();
+
+/* ---------- no jumping when a screen redraws ----------
+   iOS Safari doesn't keep your place when content above you changes height.
+   Before a redraw, note the first card at the top of the screen; after it,
+   put that card back exactly where it was. */
+function anchorKey(el){
+  var a=['data-gid','data-rid','data-cat','data-shelf','id'];
+  for(var i=0;i<a.length;i++){var v=el.getAttribute(a[i]);if(v)return '['+a[i]+'="'+v.replace(/"/g,'\\"')+'"]';}
+  return null;
+}
+function takeAnchor(){
+  var pan=document.querySelector('.panel.on');if(!pan)return null;
+  if((window.pageYOffset||0)<4)return null;          /* at the top: nothing can jump */
+  var top=(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wh'))||58)+4;
+  var els=pan.querySelectorAll('[data-gid],[data-rid],.idcard[data-cat],.ident[data-cat],.shelf[data-shelf],#now-head,#habits,#attention,#closeout');
+  for(var i=0;i<els.length;i++){
+    var r=els[i].getBoundingClientRect();
+    if(r.bottom>top&&r.height>0){var k=anchorKey(els[i]);if(k)return {k:k,y:r.top};}
+  }
+  return null;
+}
+function restoreAnchor(a){
+  if(!a)return;
+  var pan=document.querySelector('.panel.on');if(!pan)return;
+  var el=pan.querySelector(a.k);if(!el)return;
+  var d=el.getBoundingClientRect().top-a.y;
+  if(Math.abs(d)>1)try{window.scrollBy(0,d);}catch(e){}
+}
+/* a newly opened card eases in instead of appearing */
+function easeIn(sel){
+  var el=document.querySelector(sel);if(!el)return;
+  el.classList.remove('ease-in');void el.offsetWidth;el.classList.add('ease-in');
 }
 
 /* ---------- focus cards ----------
@@ -3662,7 +3847,7 @@ function renderSlots(){
     var shown=act.filter(function(g){return !skip[g.id]&&!g.period;});
     var above=act.length-shown.length;
     var more=S.goals.filter(function(g){return g.category===c&&!g.active&&!isDone(g);}).length;
-    h+='<div class="idcard" style="--c:'+idColor(c)+'">'+
+    h+='<div class="idcard" data-cat="'+esc(c)+'" style="--c:'+idColor(c)+'">'+
        '<button class="idc-head" data-a="open-case" data-c="'+esc(c)+'" aria-label="See the evidence for '+esc(id.title)+'"><span class="idc-title">'+esc(id.title)+'<span class="chev"></span></span>'+
        '<span class="idc-meta">Lv '+L.lv+' \u00B7 '+act.length+'/'+PERCAT+' in focus</span></button>'+
        (id.line?'<div class="idc-line serif">'+esc(id.line)+'</div>':'')+
@@ -3788,14 +3973,14 @@ function goalRow(g){
   if(g.period)bits.push('every '+PER_WORD[g.period]);
   var held=!g.active&&hasProgress(g),p=g.active?pace(g):null;
   return '<div class="row'+(g.active?' on':'')+'" data-gid="'+g.id+'">'+
-    '<button class="row-main" data-a="edit-goal" data-id="'+g.id+'" aria-label="Edit '+esc(g.name)+'">'+
+    '<button class="row-main" data-a="row-open" data-id="'+g.id+'" aria-expanded="'+(U.rowOpen===g.id)+'" aria-label="'+esc(g.name)+'">'+
     '<span class="row-name'+(g.active?'':' off')+'"><span>'+esc(g.name)+'</span>'+(held?'<span class="pill ok">Held</span>':'')+'</span>'+
     '<span class="row-meta">'+bits.join(' \u00B7 ')+'</span>'+
     (p&&(p.cls==='bad'||p.cls==='warn')?'<span class="row-next pace-'+p.cls+'"><b>'+esc(p.label)+'</b> '+esc(p.text)+'</span>':'')+
     '</button><div class="row-side">'+
     (g.active?'<button class="btn2 sm" data-a="bench" data-id="'+g.id+'">Bench</button>':
               '<button class="btn2 sm pick" data-a="activate" data-id="'+g.id+'">Focus</button>')+
-    '</div></div>';
+    '</div></div>'+(U.rowOpen===g.id?rowDetailHTML(g):'');
 }
 
 function matchQ(g){
@@ -3853,7 +4038,7 @@ function renderRewards(){
   var h=coolingHTML();
   order.forEach(function(sh){
     var lv=shelfLevel(sh),bump=Math.round((shelfMult(sh)-1)*100);
-    h+='<div class="shelf"><div class="shelf-h"><span class="shelf-n">'+esc(sh)+'</span>'+
+    h+='<div class="shelf" data-shelf="'+esc(sh)+'"><div class="shelf-h"><span class="shelf-n">'+esc(sh)+'</span>'+
        '<span class="shelf-l">Lv '+(lv+1)+(bump?' \u00B7 +'+bump+'%':'')+'</span></div>';
     groups[sh].sort(function(a,b){return costOf(a)-costOf(b);}).forEach(function(r){h+=rewardRow(r,bal);});
     h+='</div>';
@@ -4094,7 +4279,11 @@ function showPanel(name){
   U.tab=name;
   var lit=PANEL_LIT[name]||(name==='log'?(U.prev||'focus'):name);
   document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-tab')===lit);});
-  document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+name);});
+  document.querySelectorAll('.panel').forEach(function(p){
+    var on=p.id==='p-'+name,was=p.classList.contains('on');
+    p.classList.toggle('on',on);
+    if(on&&!was){p.classList.remove('enter');void p.offsetWidth;p.classList.add('enter');}
+  });
   document.getElementById('gear').classList.toggle('on',name==='profile');
   /* time-based bits (banner, "3 days ago") can go stale without a change */
   if(STALE[name]||name==='focus'||name==='progress'||name==='profile'||name==='rewards')renderPanel(name);
@@ -4188,9 +4377,11 @@ var PANELS={
 var STALE={};
 function renderPanel(name){
   if(!PANELS[name])return;
+  var anc=name===U.tab?takeAnchor():null;
   memoOn();
   try{PANELS[name]();}finally{memoOff();}
   delete STALE[name];
+  restoreAnchor(anc);
 }
 function renderAll(){
   Object.keys(PANELS).forEach(function(k){STALE[k]=1;});
@@ -4765,6 +4956,13 @@ document.addEventListener('click',function(e){
   if(!el)return;
   var a=el.getAttribute('data-a'),id=el.getAttribute('data-id');
   if(id&&(CLEARING[id]||LOCK[id]))return;   /* mid-clear, or action still running */
+  /* opening another quest while one is half-edited asks first */
+  if((a==='expand'||a==='edit-goal'||a==='row-open'||a==='new-goal')&&goalFormOpen()&&!el.closest('#goal-form')&&
+     (a==='new-goal'||U.editGoal!==id)){
+    var again='.panel.on [data-a="'+a+'"]'+(id?'[data-id="'+id+'"]':'');
+    guardEdit(function(){var b=document.querySelector(again);if(b)b.click();});
+    return;
+  }
   if(a==='open-profile'){showPanel('profile');}
   else if(a==='open-review'){U.reviewKept={};showPanel('review');renderReview();}
   else if(a==='review-close'){showPanel('progress');}
@@ -4813,7 +5011,10 @@ document.addEventListener('click',function(e){
     once(id,function(){return stepNudge(id,ss,-1);});}
   else if(a==='expand'){
     var wasOpen=!!U.expanded[id];U.expanded={};if(!wasOpen)U.expanded[id]=true;
-    renderPanel('focus');}
+    renderPanel('focus');if(!wasOpen)easeIn('#p-focus .slot[data-gid="'+id+'"]');}
+  else if(a==='row-open'){
+    var ro=U.rowOpen===id;U.rowOpen=ro?null:id;
+    renderPanel(U.tab);if(!ro)easeIn('.panel.on .row-detail[data-for="'+id+'"]');}
   else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
   else if(a==='sub-back')backSub();
   else if(a==='sheet-close')closeSheet();
@@ -4843,6 +5044,9 @@ document.addEventListener('click',function(e){
   else if(a==='next-line'){U.lineShift=(U.lineShift||0)+1;renderNowHead();}
   else if(a==='go-quests')showPanel('quests');
   else if(a==='closeout-save')saveCloseout();
+  else if(a==='co-catch'){U.coDay=el.getAttribute('data-k');U.closeEdit=false;var cx=document.getElementById('co-in');if(cx)cx.value='';
+    renderCloseout();easeIn('.closeout');var cy=document.getElementById('co-in');if(cy&&cy.focus)cy.focus();}
+  else if(a==='co-catch-cancel'){U.coDay=null;var cz=document.getElementById('co-in');if(cz)cz.value='';renderCloseout();}
   else if(a==='closeout-edit'){U.closeEdit=true;renderCloseout();var ci=document.getElementById('co-in');if(ci&&ci.focus)ci.focus();}
   else if(a==='closeout-cancel'){U.closeEdit=false;var cj=document.getElementById('co-in');if(cj)cj.value='';renderCloseout();}
   else if(a==='journal-all'){U.jAll=!U.jAll;renderJourney();}
@@ -4873,7 +5077,10 @@ document.addEventListener('click',function(e){
   else if(a==='unlevel')unlevel(id);
   else if(a==='redeem')redeem(id);
   else if(a==='reopen')reopen(id);
-  else if(a==='edit-goal')openGoal(S.goals.find(function(g){return g.id===id;}));
+  else if(a==='edit-goal'){
+    /* editing replaces the quick view */
+    var dv=document.querySelector('.panel.on .row-detail[data-for="'+id+'"]');if(dv){dv.parentNode.removeChild(dv);U.rowOpen=null;}
+    openGoal(S.goals.find(function(g){return g.id===id;}));}
   else if(a==='edit-reward'){var r=S.rewards.find(function(x){return x.id===id;});U.editReward=r.id;
     document.getElementById('reward-form').classList.remove('hide');
     document.getElementById('r-name').value=r.name;document.getElementById('r-price').value=r.price;
@@ -5024,7 +5231,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='4.0';
+var APP_VERSION='4.1';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
