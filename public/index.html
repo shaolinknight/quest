@@ -1247,6 +1247,37 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 @keyframes easeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
 #toast{transition:opacity .2s ease,transform .2s ease;}
 @media (prefers-reduced-motion: reduce){.panel.enter,.ease-in{animation:none;}}
+
+/* =================== 4.2 =================== */
+.idtile{display:block;width:100%;text-align:left;font-family:inherit;color:var(--chalk);cursor:pointer;padding:14px;margin:0 0 10px;
+  border:1px solid var(--edge-soft);border-radius:var(--r-card);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 15%,var(--panel)) 0,var(--panel) 70%);}
+.it-top{display:flex;justify-content:space-between;align-items:baseline;}
+.it-n{font-family:var(--fdisp);font-weight:600;font-size:1.3rem;}
+.it-lv{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-meta);font-weight:700;color:var(--c);}
+.it-lv .chev{transform:rotate(-45deg);width:6px;height:6px;border-color:currentColor;}
+.it-s{display:block;font-style:italic;font-size:0.98rem;margin-top:1px;}
+.it-bar{display:block;height:4px;border-radius:3px;background:var(--edge-soft);margin:10px 0 8px;overflow:hidden;}
+.it-bar i{display:block;height:100%;background:var(--c);}
+.it-m{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:var(--t-meta);color:var(--dim);}
+.it-f{display:block;font-size:0.84rem;margin-top:6px;color:var(--chalk);overflow-wrap:anywhere;}
+.it-f.none{color:var(--dim);}
+.idc-empty{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:11px 14px;margin:0 0 4px;
+  background:none;border:1px dashed var(--edge);border-radius:var(--r-card);font-family:inherit;font-size:0.84rem;color:var(--dim);text-align:left;cursor:pointer;}
+.idc-empty .pick{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.idc-empty .chev{transform:rotate(-45deg);width:6px;height:6px;border-color:currentColor;}
+.ptsum{padding:16px;margin:0 0 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 30%,var(--edge-soft));
+  background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 12%,var(--panel)) 0,var(--panel) 80%);}
+.ps-big{display:flex;align-items:baseline;gap:8px;color:var(--dim);}
+.ps-n{font-family:var(--fdisp);font-weight:600;font-size:2.4rem;line-height:1;color:var(--gold);}
+.ps-row{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:10px;font-size:0.84rem;color:var(--dim);}
+.ps-row b{color:var(--chalk);}
+.ps-let{margin-top:8px;font-size:var(--t-meta);font-weight:700;color:var(--jade);}
+.jw-chips{margin:0 0 6px;}
+#set-body .settings{margin-top:4px;}
+#set-body .version{margin-bottom:12px;}
+.toast-x{display:flex;flex-direction:column;min-width:0;}
+#toast-w{font-family:var(--fserif);font-style:italic;font-weight:500;font-size:0.9rem;opacity:.92;margin-top:2px;}
+#toast-w.hide{display:none;}
 </style>
 </head>
 <body>
@@ -1286,7 +1317,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 
   <div class="panel" id="p-quests">
     <div class="bec-bar"><h2>Becoming</h2><button class="btn sm add-q" data-a="new-goal">+ Add quest</button></div>
-    <p class="sub becoming-sub">Who you’re working on becoming, and the quests that get you there. Up to 2 per identity in focus at once.</p>
+
 
     <div id="goal-form-home"><div class="form hide" id="goal-form">
       <div class="f"><label for="g-name">Quest name</label><input type="text" id="g-name" placeholder="e.g. Run a 5k under 27 min"></div>
@@ -1349,7 +1380,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
         <button class="btn2 del-q" id="g-del" data-a="del-goal-form" style="display:none;">Delete quest</button></div>
     </div></div>
 
-    <div class="search"><input type="search" id="q" placeholder="Search quests" autocomplete="off" enterkeyhint="search"></div>
+    <div hidden><input type="search" id="q" autocomplete="off"></div>
     <div hidden><div class="chips" id="cat-chips"></div></div>
     <div id="goal-list"></div>
 
@@ -1357,8 +1388,8 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 
   <div class="panel" id="p-rewards">
     <div class="bec-bar"><h2>Rewards</h2><button class="btn sm add-q" data-a="new-reward">+ Add reward</button></div>
-    <div id="chase-rewards"></div>
-    <p class="sub rw-sub" id="rw-sub"></p>
+    <div id="rw-sum"></div>
+    <div id="chase-rewards"></div><p class="sub rw-sub" id="rw-sub" hidden></p>
 
     <div id="reward-form-home"><div class="form hide" id="reward-form">
       <div class="f"><label for="r-name">Reward name</label><input type="text" id="r-name" placeholder="e.g. Salomon XT-6"></div>
@@ -1399,16 +1430,14 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
     <button class="review-entry" data-a="open-review">
       <span><b>Weekly check-in</b><span id="review-entry-sub"></span></span><span class="chev"></span></button>
     <div id="journey"></div>
-    <h3 class="jsec">Points and rewards</h3>
+    <div hidden>
     <div class="pstats" id="prof-stats"></div>
     <div id="prof-season"></div>
     <div id="prof-trends"></div>
-    <div class="brk" id="prof-brk" hidden></div>
+    <div class="brk" id="prof-brk"></div>
     <div id="prof-playbook"></div>
-    <div class="vault">
-      <h3>Cleared</h3>
-      <p class="sub" id="cleared-sub"></p>
-      <div id="cleared-list"></div>
+    <p class="sub" id="cleared-sub"></p>
+    <div id="cleared-list"></div>
     </div>
   </div>
 
@@ -1514,6 +1543,16 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 
   <button class="fab" id="fab" data-a="open-report" aria-label="Report progress">
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <div id="setsheet" class="rsheet hide" aria-hidden="true">
+    <div class="sheet-bg" data-a="settings-close"></div>
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="set-title">
+      <div class="sheet-grab"><span></span></div>
+      <div class="sheet-head"><span></span><h2 id="set-title">Settings</h2>
+        <button class="sheet-x" data-a="settings-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <div class="sheet-body" id="set-body"></div>
+    </div>
+  </div>
   <div id="rsheet" class="rsheet hide" aria-hidden="true">
     <div class="sheet-bg" data-a="sheet-close"></div>
     <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="rs-title">
@@ -1556,7 +1595,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
   </div>
 </div>
 
-<div class="toast hide" id="toast"><span id="toast-t"></span><button id="toast-u" class="hide">Undo</button></div>
+<div class="toast hide" id="toast"><span class="toast-x"><span id="toast-t"></span><span id="toast-w" class="hide"></span></span><button id="toast-u" class="hide">Undo</button></div>
 
 <script>
 (function(){
@@ -1985,6 +2024,7 @@ var tt=null;
 function toast(m,undoable){
   var t=document.getElementById('toast'),u=document.getElementById('toast-u');
   document.getElementById('toast-t').textContent=m;
+  var tw=document.getElementById('toast-w');if(tw){tw.textContent='';tw.classList.add('hide');}
   u.classList.toggle('hide',!undoable);
   t.classList.remove('hide');
   clearTimeout(tt);tt=setTimeout(function(){t.classList.add('hide');},undoable?5200:2800);
@@ -2737,37 +2777,8 @@ function identityHeadHTML(c,vs){
 }
 function renderGoals(){
   parkForm('goal-form','goal-form-home');
-  var el=document.getElementById('goal-list');
-  if(!S.goals.length){el.innerHTML='<div class="note">No quests yet. Add your first one above.</div>';reDockGoal();return;}
-  var vs=voteStats(),q=(U.q||'').trim(),h='',any=false;
-  if(!U.idOpen)U.idOpen={};
-  S.categories.forEach(function(c){
-    var list=S.goals.filter(function(g){return g.category===c&&!isDone(g)&&matchQ(g);});
-    if(q&&!list.length)return;
-    any=true;
-    var up=list.filter(function(g){return g.active||hasProgress(g);})
-      .sort(function(a,b){return (b.active?1:0)-(a.active?1:0)||worth(b)-worth(a);});
-    var rest=list.filter(function(g){return !(g.active||hasProgress(g));}).sort(function(a,b){return worth(b)-worth(a);});
-    h+='<section class="ident" data-cat="'+esc(c)+'" style="--c:'+idColor(c)+'">'+identityHeadHTML(c,vs);
-    if(!list.length)h+='<div class="id-empty">No open quests here. Add one that this person would do.</div>';
-    up.forEach(function(g){h+=goalRow(g);});
-    if(rest.length){
-      var open=q||U.idOpen[c];
-      h+='<details class="id-more" data-cat="'+esc(c)+'"'+(open?' open':'')+'><summary>'+
-         '<span class="idm-n">'+rest.length+'</span><span class="idm-t">'+
-         (up.length?'more '+esc(idOf(c).title)+' quest'+(rest.length>1?'s':''):'quest'+(rest.length>1?'s':'')+' to pick from')+'</span>'+
-         '<span class="idm-a"><span class="show">Show</span><span class="hide">Hide</span></span></summary>';
-      rest.forEach(function(g){h+=goalRow(g);});
-      h+='</details>';
-    }
-    h+='</section>';
-  });
-  if(!any)h='<div class="note">No open quests match “'+esc(q)+'”.</div>';
-  else if(!q)h=ideasEntryHTML()+'<div class="idchips" role="navigation" aria-label="Jump to identity">'+S.categories.map(function(c){
-      var n=activeIn(c).length;
-      return '<button class="idchip" data-a="jump-id" data-c="'+esc(c)+'"><i class="iddot" style="background:'+idColor(c)+'"></i>'+
-        esc(idOf(c).title)+'<span>'+n+'/'+PERCAT+'</span></button>';}).join('')+'</div>'+h;
-  el.innerHTML=h;
+  var el=document.getElementById('goal-list'),vs=voteStats();
+  el.innerHTML=ideasEntryHTML()+S.categories.map(function(c){return identityTileHTML(c,vs);}).join('');
   reDockGoal();
 }
 
@@ -2790,31 +2801,8 @@ function renderJourney(){
      '<div class="pstat"><b>'+st.last28+'<small>/28</small></b><span>last 4 weeks</span></div>'+
      '<div class="pstat"><b>'+st.best+'</b><span>best streak</span></div></div></div>';
 
-  /* who you're becoming */
-  h+='<div class="card"><h3>Who you’re becoming</h3>';
-  S.categories.forEach(function(c){
-    var id=idOf(c),v=vs.life[c]||0,L=levelOf(v);
-    h+='<button class="jid" data-a="open-case" data-c="'+esc(c)+'" style="--c:'+idColor(c)+'"><span class="jid-top"><b>'+esc(id.title)+'</b><span>Lv '+L.lv+' \u00B7 '+nf(v)+' vote'+(v===1?'':'s')+'<span class="chev"></span></span></span>'+
-       (id.line?'<span class="jid-line serif">'+esc(id.line)+'</span>':'')+
-       '<span class="id-bar"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></span></button>';
-  });
-  h+='</div>';
-
-  /* in your own words */
-  var jr=(S.journal||[]).slice().sort(function(a,b){return b.day-a.day;});
-  var lg=S.settings.letGo||{};
-  if(jr.length){
-    var shown=U.jAll?jr:jr.slice(0,5);
-    h+='<div class="card jwords" id="j-words"><h3>In your own words</h3>';
-    shown.forEach(function(e){
-      h+='<div class="jr"><span class="jr-d">'+new Date(e.day).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span>'+
-         '<span class="jr-t serif">'+esc(e.text)+'</span></div>';
-    });
-    if(jr.length>5)h+='<button class="link" data-a="journal-all">'+(U.jAll?'Show fewer':'Show all '+jr.length)+'</button>';
-    h+='</div>';
-  }
   h+=monthListHTML();
-  if(lg.n)h+='<div class="card letgo"><b>'+nf(lg.n)+' want'+(lg.n>1?'s':'')+' let go</b><span>$'+nf(lg.dollars||0)+' you didn’t spend after the cooling-off week.</span></div>';
+  h+=wordsHTML();
   el.innerHTML=h;
 }
 
@@ -3018,6 +3006,7 @@ async function repGo(){
     setTimeout(playVote,120);
   });
   toast('Reported \u00B7 a vote for '+idOf(g.category).title+(gained?' \u00B7 +'+nf(gained)+' pts':''),true);
+  if(g.why)whyToast(g.why);
 }
 /* The new vote lands on Today: its dot pops in, the count ticks up, and any
    points roll up in the pill, so you see exactly what the report added. */
@@ -3065,21 +3054,27 @@ function caseWords(c,ents,days,limit){
   return limit?w.slice(0,limit):w;
 }
 function openCase(c){U.caseCat=c;U.caseAll=false;openSub('caseid');}
+function caseFormBack(){
+  if(goalFormOpen()&&!U.editGoal&&U.newInCase&&document.getElementById('case-form-home'))parkForm('goal-form','case-form-home');
+}
 function caseQuestsHTML(c,id){
   var h='';
   /* every quest in this identity: in focus first, then the rest */
   var all=S.goals.filter(function(g){return g.category===c&&!isDone(g);})
     .sort(function(a,b){return (b.active?2:hasProgress(b)?1:0)-(a.active?2:hasProgress(a)?1:0)||worth(b)-worth(a);});
   var act=all.filter(function(g){return g.active;}),rest=all.filter(function(g){return !g.active;});
-  h+='<div class="card case-q" style="--c:'+idColor(c)+'"><div class="cq-h"><h3>Quests</h3><span>'+all.length+' / '+MAXQ+'</span></div>';
+  h+='<div class="card case-q" style="--c:'+idColor(c)+'"><div class="cq-h"><h3>Quests</h3><span class="'+(all.length>=MAXQ?'q-full':'')+'">'+all.length+' / '+MAXQ+(all.length>=MAXQ?' \u00B7 full':'')+'</span></div>'+
+     '<div id="case-form-home"></div>';
   h+='<div class="cq-sub">In focus</div>';
   if(!act.length)h+='<div class="rv-empty">Nothing in focus for '+esc(id.title)+' right now.</div>';
   act.forEach(function(g){h+=goalRow(g);});
   if(rest.length){h+='<div class="cq-sub">Everything else</div>';rest.forEach(function(g){h+=goalRow(g);});}
-  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button></div></div>';
+  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button>'+
+     (all.length<MAXQ?'<button class="btn2 sm" data-a="new-goal" data-c="'+esc(c)+'">+ Add a quest</button>':'')+'</div></div>';
   return h;
 }
 function renderCase(){
+  parkForm('goal-form','goal-form-home');   /* never let a redraw take the form with it */
   var el=document.getElementById('casep');if(!el)return;
   var c=U.caseCat;if(S.categories.indexOf(c)<0){el.innerHTML='';return;}
   var id=idOf(c),st=caseStats(c),L=levelOf(st.ents.length),now=Date.now();
@@ -3090,7 +3085,7 @@ function renderCase(){
     '<div class="ch-m">Lv '+L.lv+' · '+L.left+' to Lv '+(L.lv+1)+'</div></div>';
   if(!st.ents.length){
     h+='<div class="note">No evidence yet. The first vote starts the case.</div>'+caseQuestsHTML(c,id);
-    el.innerHTML=h;reDockGoal();return;
+    el.innerHTML=h;caseFormBack();reDockGoal();return;
   }
   var first=st.ents[0].at;
   h+='<div class="pstats case-stats" style="--c:'+idColor(c)+'">'+
@@ -3131,6 +3126,7 @@ function renderCase(){
   }
   h+=caseQuestsHTML(c,id);
   el.innerHTML=h;
+  caseFormBack();
   reDockGoal();
 }
 
@@ -3565,32 +3561,6 @@ function catchupHTML(){
     m.map(function(k){return '<button class="link" data-a="co-catch" data-k="'+k+'">Write '+esc(dayPoss(k))+'</button>';}).join('')+'</div>';
 }
 
-/* ---------- keep the bottom bar on the bottom ----------
-   After the keyboard closes, iOS can leave fixed bars where the keyboard
-   top was until something forces a relayout. Measure the real visible area
-   and pin the bar and + to its bottom edge. */
-(function(){
-  var vv=window.visualViewport;
-  function pin(){
-    var bar=document.querySelector('.tabbar'),fab=document.getElementById('fab');
-    if(!vv||document.body.classList.contains('typing')){return;}
-    var d=Math.round(vv.offsetTop+vv.height-window.innerHeight);
-    var tf=Math.abs(d)>1?'translateY('+d+'px)':'';
-    if(bar)bar.style.transform=tf;if(fab)fab.style.translate=Math.abs(d)>1?'0 '+d+'px':'';
-  }
-  window.__pinBars=pin;
-  if(vv){vv.addEventListener('resize',pin);vv.addEventListener('scroll',pin);}
-  window.addEventListener('scroll',pin,{passive:true});
-  window.addEventListener('orientationchange',function(){setTimeout(pin,400);});
-  document.addEventListener('focusout',function(){
-    [300,700,1200].forEach(function(ms){setTimeout(function(){
-      if(document.body.classList.contains('typing'))return;
-      /* a no-op scroll makes iOS recompute fixed positions */
-      try{window.scrollTo(window.pageXOffset,window.pageYOffset);}catch(e){}
-      pin();},ms);});
-  });
-})();
-
 /* ---------- no jumping when a screen redraws ----------
    iOS Safari doesn't keep your place when content above you changes height.
    Before a redraw, note the first card at the top of the screen; after it,
@@ -3622,6 +3592,156 @@ function restoreAnchor(a){
 function easeIn(sel){
   var el=document.querySelector(sel);if(!el)return;
   el.classList.remove('ease-in');void el.offsetWidth;el.classList.add('ease-in');
+}
+
+
+/* =====================================================================
+   4.2 — one job per tab
+   Today: do. Becoming: plan (five identity tiles). Rewards: spend.
+   Journey: look back. Settings slides up over whatever you're on.
+   ===================================================================== */
+
+/* ---------- Becoming: one tile per identity ---------- */
+function identityTileHTML(c,vs){
+  var id=idOf(c),L=levelOf(vs.life[c]||0),act=activeIn(c),n=openCount(c),m=vs.month[c]||0;
+  return '<button class="idtile" data-a="open-case" data-c="'+esc(c)+'" style="--c:'+idColor(c)+'">'+
+    '<span class="it-top"><span class="it-n">'+esc(id.title)+'</span><span class="it-lv">Lv '+L.lv+'<span class="chev"></span></span></span>'+
+    (id.line?'<span class="it-s serif">'+esc(id.line)+'</span>':'')+
+    '<span class="it-bar" aria-hidden="true"><i style="width:'+Math.round(L.into/L.need*100)+'%"></i></span>'+
+    '<span class="it-m"><span>'+act.length+'/'+PERCAT+' in focus · <span class="'+(n>=MAXQ?'q-full':'')+'">'+n+'/'+MAXQ+' quests</span></span>'+
+    '<span>'+m+' vote'+(m===1?'':'s')+' this month</span></span>'+
+    '<span class="it-f'+(act.length?'':' none')+'">'+(act.length?act.map(function(g){return esc(g.name);}).join(' · '):'Nothing in focus. Tap to pick one.')+'</span>'+
+    '</button>';
+}
+
+/* ---------- Rewards: points live with what they buy ---------- */
+function pointsSummaryHTML(){
+  var m0=new Date(Date.now());m0=new Date(m0.getFullYear(),m0.getMonth(),1).getTime();
+  var month=S.log.reduce(function(a,e){return a+(e.at>=m0&&e.pts>0?e.pts:0);},0);
+  var lg=S.settings.letGo||{};
+  return '<div class="ptsum"><div class="ps-big"><span class="ps-n">'+nf(balance())+'</span><span>points to spend</span></div>'+
+    '<div class="ps-row"><span><b>+'+nf(month)+'</b> this month</span><span><b>'+nf(totalEarned())+'</b> earned</span><span><b>'+nf(totalSpent())+'</b> spent</span></div>'+
+    (lg.n?'<div class="ps-let">'+nf(lg.n)+' want'+(lg.n>1?'s':'')+' let go · $'+nf(lg.dollars||0)+' not spent</div>':'')+'</div>';
+}
+
+/* ---------- Journey: everything you've written, in one place ---------- */
+function allWords(){
+  var w=[];
+  (S.journal||[]).forEach(function(j){w.push({at:j.day,text:j.text,src:'Close-out',kind:'close'});});
+  S.log.forEach(function(e){if(e.note)w.push({at:e.at,text:e.note,src:(e.clear?'What worked · ':'')+e.name,kind:'note'});});
+  return w.sort(function(a,b){return b.at-a.at;});
+}
+function wordsHTML(){
+  var k=U.jKind||'all',all=allWords(),list=all.filter(function(x){return k==='all'||x.kind===k;});
+  if(!all.length)return '';
+  var shown=U.jAll?list:list.slice(0,5);
+  var h='<div class="card jwords" id="j-words"><h3>In your own words</h3>'+
+    '<div class="idchips jw-chips">'+[['all','All'],['close','Close-outs'],['note','Notes']].map(function(x){
+      return '<button class="idchip'+(k===x[0]?' on':'')+'" data-a="jw-kind" data-k="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  if(!list.length)h+='<div class="rv-empty">Nothing here yet.</div>';
+  shown.forEach(function(e){
+    h+='<div class="jr"><span class="jr-d">'+new Date(e.at).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+' · '+esc(e.src)+'</span>'+
+       '<span class="jr-t serif">'+esc(e.text)+'</span></div>';
+  });
+  if(list.length>5)h+='<button class="link" data-a="journal-all">'+(U.jAll?'Show fewer':'Show all '+list.length)+'</button>';
+  return h+'</div>';
+}
+
+/* ---------- Settings: a sheet that slides up over any tab ---------- */
+function settingsOpen(){var s=document.getElementById('setsheet');return !!s&&!s.classList.contains('hide');}
+function openSettings(){
+  var s=document.getElementById('setsheet');if(!s)return;
+  renderPanel('profile');
+  document.querySelectorAll('#set-body details.sect').forEach(function(d){d.open=false;});
+  var b=document.getElementById('set-body');if(b)b.scrollTop=0;
+  s.classList.remove('hide');s.setAttribute('aria-hidden','false');
+  document.body.classList.add('sheet-open');
+  document.getElementById('gear').classList.add('on');
+  void s.offsetWidth;s.classList.add('open');
+}
+function closeSettings(){
+  var s=document.getElementById('setsheet');if(!s||s.classList.contains('hide'))return;
+  var ae=document.activeElement;if(ae&&ae.blur&&s.contains(ae))ae.blur();
+  s.classList.remove('open');s.setAttribute('aria-hidden','true');
+  var card=s.querySelector('.sheet-card');if(card)card.style.transform='';
+  document.getElementById('gear').classList.remove('on');
+  setTimeout(function(){s.classList.add('hide');if(!sheetOpen())document.body.classList.remove('sheet-open');
+    renderPanel(U.tab);},280);
+}
+/* Swipe a sheet down to close it: from its handle or title, or from its
+   content once that's scrolled to the top. */
+function bindSheetSwipe(card,close){
+  if(!card)return;
+  var y0=null,dy=0,body=card.querySelector('.sheet-body'),live=false;
+  card.addEventListener('touchstart',function(e){
+    var t=e.target,fromHead=!!t.closest('.sheet-grab,.sheet-head');
+    if(!fromHead&&!(body&&body.contains(t)&&body.scrollTop<=0))return;
+    if(t.closest('input,textarea,select'))return;
+    y0=e.touches[0].clientY;dy=0;live=fromHead;
+  },{passive:true});
+  card.addEventListener('touchmove',function(e){
+    if(y0===null)return;
+    dy=e.touches[0].clientY-y0;
+    if(!live){if(dy<-4){y0=null;return;}if(dy>8)live=true;else return;}
+    card.style.transition='none';card.style.transform='translateY('+Math.max(0,dy)+'px)';
+  },{passive:true});
+  card.addEventListener('touchend',function(){
+    if(y0===null)return;y0=null;card.style.transition='';
+    if(live&&dy>90)close();else card.style.transform='';
+  });
+}
+
+/* ---------- the bottom bar, after the keyboard or a relaunch ----------
+   No more guessing offsets: clear anything left over, drop a "typing"
+   state the keyboard no longer backs up, and make iOS lay the bar out
+   again. */
+function relayoutBars(){
+  var vv=window.visualViewport,bar=document.querySelector('.tabbar'),fab=document.getElementById('fab');
+  if(document.body.classList.contains('typing')){
+    var kbd=vv&&vv.height<window.innerHeight*0.8;
+    if(kbd&&isField(document.activeElement))return;
+    document.body.classList.remove('typing');
+  }
+  [bar,fab].forEach(function(b){if(b){b.style.transform='';b.style.translate='';}});
+  try{window.scrollTo(window.pageXOffset,window.pageYOffset);}catch(e){}
+  if(bar){bar.style.display='none';void bar.offsetHeight;bar.style.display='';}
+}
+document.addEventListener('focusout',function(){[350,900].forEach(function(ms){setTimeout(function(){if(!isField(document.activeElement))relayoutBars();},ms);});});
+window.addEventListener('pageshow',function(){setTimeout(relayoutBars,60);});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(relayoutBars,80);});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',function(){setTimeout(function(){if(!isField(document.activeElement))relayoutBars();},150);});
+
+/* ---------- your why, when you log ---------- */
+function whyToast(why){
+  var w=document.getElementById('toast-w'),t=document.getElementById('toast');if(!w||!t||!why)return;
+  w.textContent='“'+why+'”';w.classList.remove('hide');
+}
+
+/* ---------- weekly check-in: are your whys still true? ---------- */
+function whysHTML(){
+  var act=S.goals.filter(function(g){return g.active;});
+  if(!act.length)return '';
+  var h='<div class="rv-card"><h3>Your whys</h3><p class="sub">Still true? Whys change as you do.</p>';
+  act.forEach(function(g){
+    if(g.why){
+      h+='<div class="rv-row"><div class="l"><b>'+esc(g.name)+'</b><span class="rv-why">“'+esc(g.why)+'”</span></div>'+
+         '<div class="r"><button class="btn2 sm" data-a="why-keep" data-id="'+g.id+'">Still true</button>'+
+         '<button class="btn2 sm" data-a="why-edit" data-id="'+g.id+'">Rewrite</button></div></div>';
+    }else{
+      h+='<div class="rv-row"><div class="l"><b>'+esc(g.name)+'</b><span>No why yet</span></div>'+
+         '<div class="r"><button class="btn2 sm" data-a="why-edit" data-id="'+g.id+'">Add a why</button></div></div>';
+    }
+  });
+  return h+'</div>';
+}
+function editWhy(id){
+  var g=S.goals.find(function(x){return x.id===id;});if(!g)return;
+  openModal(g.why?'Rewrite your why':'Why does this matter?','“'+g.name+'”',[
+    {label:'Save',style:'pri',run:async function(v){
+      var t=String(v.why||'').trim();if(!t){toast('Write a line first.');return;}
+      snap();g.why=t;await save();renderReview();toast('Why saved.',true);}},
+    {label:'Cancel',style:'ghost'}],
+    {html:'<textarea name="why" maxlength="280" placeholder="So I can…">'+esc(g.why||'')+'</textarea>',focus:true});
 }
 
 /* ---------- focus cards ----------
@@ -3842,8 +3962,10 @@ function renderSlots(){
   parkForm('goal-form','goal-form-home');
   var compact=!!S.settings.compact,skip={},h='',vs=voteStats();
   attentionList().forEach(function(g){skip[g.id]=1;});
+  var empty=[];
   S.categories.forEach(function(c){
     var id=idOf(c),L=levelOf(vs.life[c]||0),act=activeIn(c);
+    if(!act.length){empty.push(c);return;}
     var shown=act.filter(function(g){return !skip[g.id]&&!g.period;});
     var above=act.length-shown.length;
     var more=S.goals.filter(function(g){return g.category===c&&!g.active&&!isDone(g);}).length;
@@ -3859,12 +3981,10 @@ function renderSlots(){
       h+='<button class="idc-up" data-a="goto-up" data-id="'+g.id+'"><span class="up-ico" aria-hidden="true"></span>'+
          '<span class="up-n">'+esc(g.name)+'</span><span class="up-w">'+where+'</span></button>';
     });
-    if(!act.length)h+='<div class="idc-note">Nothing in focus yet.</div>';
-    if(more||act.length<PERCAT)h+='<button class="idc-more" data-a="open-id" data-c="'+esc(c)+'"><span>'+
-       (act.length<PERCAT?(more?'Pick from '+more+' more quest'+(more>1?'s':''):'Add a quest'):more+' more quest'+(more>1?'s':'')+' waiting')+
-       '</span><span class="chev"></span></button>';
     h+='</div>';
   });
+  if(empty.length)h+='<button class="idc-empty" data-a="go-quests"><span>Nothing in focus: '+
+    empty.map(function(c){return '<b style="color:'+idColor(c)+'">'+esc(idOf(c).title)+'</b>';}).join(', ')+'</span><span class="pick">Pick<span class="chev"></span></span></button>';
   document.getElementById('compact-btn').style.display=S.goals.some(function(g){return g.active&&!g.period&&!skip[g.id];})?'':'none';
   document.getElementById('compact-btn').textContent=compact?'Expand all':'Compact view';
   document.getElementById('slots').innerHTML=h;
@@ -4027,6 +4147,7 @@ function renderCleared(){
 
 function renderRewards(){
   parkForm('reward-form','reward-form-home');
+  var sm=document.getElementById('rw-sum');if(sm)sm.innerHTML=pointsSummaryHTML();
   var el=document.getElementById('reward-list');
   document.getElementById('rw-sub').textContent=nf(balance())+' pts to spend \u00B7 '+S.settings.rate+' pt per $1 \u00B7 each redemption raises its shelf '+
     Math.round(S.settings.step*100)+'% \u00B7 tap \u2606 to chase (up to '+MAXPIN+')';
@@ -4276,6 +4397,8 @@ function renderReview(){
 }
 
 function showPanel(name){
+  if(name==='profile'){openSettings();return;}
+  if(settingsOpen())closeSettings();
   U.tab=name;
   var lit=PANEL_LIT[name]||(name==='log'?(U.prev||'focus'):name);
   document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-tab')===lit);});
@@ -4365,7 +4488,7 @@ var PANELS={
   focus:   function(){renderNowHead();renderReaddBanner();renderMonthBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
   quests:  function(){renderCatSelect();renderGoals();},
   rewards: function(){renderChase();renderRewards();renderTrophies();},
-  progress:function(){renderProfile();renderJourney();renderProfSeason();renderTrends();renderPlaybook();renderCleared();},
+  progress:function(){renderProfile();renderJourney();renderProfSeason();renderPlaybook();renderCleared();},   /* the last three fill hidden spots, kept for seasons you may already have */
   review:  function(){renderReview();},
   log:     function(){renderLog();},
   caseid:  function(){renderCase();},
@@ -4514,12 +4637,19 @@ function openGoal(g,forceType){
     dockForm('goal-form','data-gid',g.id);
     showForm('goal-form');
   }else{
-    parkForm('goal-form','goal-form-home');
-    document.querySelector('.tab[data-tab="quests"]').click();
+    if(U.tab==='caseid'&&document.getElementById('case-form-home')){
+      /* adding from an identity page: the form opens right there, set to that identity */
+      U.newInCase=true;parkForm('goal-form','case-form-home');
+      var cs=document.getElementById('g-cat');if(cs&&U.caseCat)cs.value=U.caseCat;
+    }else{
+      U.newInCase=false;parkForm('goal-form','goal-form-home');
+      document.querySelector('.tab[data-tab="quests"]').click();
+    }
     showForm('goal-form');
   }
 }
 function closeGoal(){
+  U.newInCase=false;
   var back=holdScroll();
   document.getElementById('goal-form').classList.add('hide');
   U.editGoal=null;U.draft=[];
@@ -4568,6 +4698,7 @@ function once(id,fn){
       /* the vote lands after the redraw, so refresh the parts that count votes */
       if(U.tab==='focus')renderNowHead();
       STALE.progress=1;STALE.quests=1;
+      if(g2.why&&progAmt(g2)>pa)setTimeout(function(){whyToast(g2.why);},0);
     }
     if(id)delete LOCK[id];
   });
@@ -4963,7 +5094,8 @@ document.addEventListener('click',function(e){
     guardEdit(function(){var b=document.querySelector(again);if(b)b.click();});
     return;
   }
-  if(a==='open-profile'){showPanel('profile');}
+  if(a==='open-profile'){if(settingsOpen())closeSettings();else openSettings();}
+  else if(a==='settings-close')closeSettings();
   else if(a==='open-review'){U.reviewKept={};showPanel('review');renderReview();}
   else if(a==='review-close'){showPanel('progress');}
   else if(a==='review-later'){S.settings.reviewSnooze=Date.now()+DAY;save();renderBanner();
@@ -5020,6 +5152,8 @@ document.addEventListener('click',function(e){
   else if(a==='sheet-close')closeSheet();
   else if(a==='open-ideas')openIdeas();
   else if(a==='goto-up')gotoUp(id);
+  else if(a==='why-keep')settleRow(el,'Still true.',function(){});
+  else if(a==='why-edit')editWhy(id);
   else if(a==='idea-kind'){U.ideaKind=el.getAttribute('data-k');renderIdeas();}
   else if(a==='idea-add')ideaAdd(el.getAttribute('data-n'));
   else if(a==='idea-hide')ideaHide(el.getAttribute('data-n'));
@@ -5050,6 +5184,7 @@ document.addEventListener('click',function(e){
   else if(a==='closeout-edit'){U.closeEdit=true;renderCloseout();var ci=document.getElementById('co-in');if(ci&&ci.focus)ci.focus();}
   else if(a==='closeout-cancel'){U.closeEdit=false;var cj=document.getElementById('co-in');if(cj)cj.value='';renderCloseout();}
   else if(a==='journal-all'){U.jAll=!U.jAll;renderJourney();}
+  else if(a==='jw-kind'){U.jKind=el.getAttribute('data-k');U.jAll=false;renderJourney();}
   else if(a==='journal-view'){
     U.jAll=true;STALE.progress=1;showPanel('progress');
     setTimeout(function(){var jw=document.getElementById('j-words');if(!jw)return;
@@ -5184,20 +5319,17 @@ document.addEventListener('focusout',function(){setTimeout(function(){
 document.addEventListener('input',function(e){
   if(e.target&&e.target.id==='rep-q'&&U.rep){U.rep.q=e.target.value;renderRepList();}
 });
+bindSheetSwipe(document.querySelector('#rsheet .sheet-card'),function(){closeSheet();});
+bindSheetSwipe(document.querySelector('#setsheet .sheet-card'),closeSettings);
+/* Settings' sections live in the sheet now; move them in once */
 (function(){
-  var card=document.querySelector('#rsheet .sheet-card'),y0=null,dy=0;
-  function start(e){var t=e.target;if(!t.closest('.sheet-grab,.sheet-head'))return;y0=e.touches[0].clientY;dy=0;card.style.transition='none';}
-  function move(e){if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);card.style.transform='translateY('+dy+'px)';}
-  function end(){if(y0===null)return;y0=null;card.style.transition='';
-    if(dy>90)closeSheet();else card.style.transform='';}
-  card.addEventListener('touchstart',start,{passive:true});
-  card.addEventListener('touchmove',move,{passive:true});
-  card.addEventListener('touchend',end);
+  var pp=document.getElementById('p-profile'),sb=document.getElementById('set-body');
+  if(pp&&sb)[].slice.call(pp.children).forEach(function(ch){if(!ch.classList.contains('head'))sb.appendChild(ch);});
 })();
-document.getElementById('p-profile').addEventListener('toggle',function(e){
+document.addEventListener('toggle',function(e){
   var t=e.target;
   if(t&&t.classList&&t.classList.contains('sect')&&t.open)
-    document.querySelectorAll('#p-profile details.sect').forEach(function(d){if(d!==t&&d.open)d.open=false;});
+    document.querySelectorAll('#set-body details.sect').forEach(function(d){if(d!==t&&d.open)d.open=false;});
 },true);
 document.getElementById('goal-list').addEventListener('toggle',function(e){
   var t=e.target;if(t&&t.classList&&t.classList.contains('id-more')){if(!U.idOpen)U.idOpen={};U.idOpen[t.getAttribute('data-cat')]=t.open;}
@@ -5231,7 +5363,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='4.1';
+var APP_VERSION='4.2';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
@@ -5949,6 +6081,7 @@ function shrinkPhoto(file,cb){
 /* ---------- check-in additions ---------- */
 function reviewExtrasHTML(){
   var h='';
+  h+=whysHTML();
   var vw=voteStats().week,vk=S.categories.filter(function(c){return vw[c];});
   h+='<div class="rv-card"><h3>Votes this week</h3>';
   if(!vk.length)h+='<div class="rv-empty">No votes yet this week. Pick one small thing for tomorrow.</div>';
@@ -6060,7 +6193,7 @@ function registerOffline(){
 
 /* read-only hooks for the test harness */
 window.__qb={pace:pace,periodNext:periodNext,weekStart:weekStart,lastPeriodResult:lastPeriodResult,
-  sync:function(){return sync();},state:function(){return S;},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
+  sync:function(){return sync();},state:function(){return S;},openCase:function(c){openCase(c);},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
 function measureWallet(){
   var w=document.querySelector('.wallet');
   if(w)document.documentElement.style.setProperty('--wh',w.offsetHeight+'px');
