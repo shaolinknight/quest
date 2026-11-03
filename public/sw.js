@@ -3,11 +3,16 @@
    always tries the network first, so a new version on Netlify shows up on the
    next launch; the saved copy is only used when the network is slow or gone.
    Google Sheet requests are never touched here; the app's own sync handles those. */
-var CACHE = 'quest-board-4.2';
+var CACHE = 'quest-board-4.3';
 var PAGE = './';
+var EXTRAS = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll([PAGE]); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) {
+    /* the icons are nice to have offline, but never let a missing one block the app */
+    EXTRAS.forEach(function (f) { c.add(f).catch(function () {}); });
+    return c.addAll([PAGE]);
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener('activate', function (e) {
@@ -34,6 +39,15 @@ self.addEventListener('fetch', function (e) {
         return caches.match(PAGE).then(function (hit) { return hit || fetch(req); });
       })
     );
+    return;
+  }
+
+  /* the install icons and manifest: saved copy first, network to refresh */
+  if (url.origin === location.origin && EXTRAS.some(function (f) { return url.pathname.endsWith('/' + f); })) {
+    e.respondWith(caches.match(req).then(function (hit) {
+      var net = fetch(req).then(function (res) { if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); } return res; }).catch(function () { return hit; });
+      return hit || net;
+    }));
     return;
   }
 

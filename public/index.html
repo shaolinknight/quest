@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Quest Board</title>
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Quests">
@@ -1278,6 +1279,113 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 .toast-x{display:flex;flex-direction:column;min-width:0;}
 #toast-w{font-family:var(--fserif);font-style:italic;font-weight:500;font-size:0.9rem;opacity:.92;margin-top:2px;}
 #toast-w.hide{display:none;}
+
+/* ===================== 4.3 desktop ===================== */
+.fab-l,.side-foot{display:none;}
+.desk-nudge{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;
+  border:1px solid var(--gold-dim);border-radius:var(--r-card);background:color-mix(in srgb,var(--gold) 6%,var(--panel));}
+.desk-nudge b{display:block;font-weight:700;}
+.desk-nudge span{font-size:.85rem;color:var(--dim);}
+.dn-acts{display:flex;gap:8px;flex-shrink:0;}
+@media (hover:hover) and (pointer:fine){
+  .idtile,.ideas-entry,.review-entry{transition:border-color .15s ease,box-shadow .15s ease;}
+  .idtile:hover,.ideas-entry:hover,.review-entry:hover{border-color:var(--edge);box-shadow:0 3px 14px var(--shadow);}
+  .shelf .rw:hover{background:color-mix(in srgb,var(--panel-2) 60%,var(--panel));}
+  .shelf .rw.can:hover{background:color-mix(in srgb,var(--gold) 11%,var(--panel));}
+}
+
+@media (min-width:900px){
+  :root{--side:248px;}
+  #app{max-width:none;margin:0 0 0 var(--side);padding:0 40px 72px;}
+  .panel{max-width:680px;margin:0 auto;padding-top:28px;}
+
+  /* sidebar: the header row on top, then Report, then the sections */
+  .wallet{position:fixed;left:0;top:0;width:var(--side);box-sizing:border-box;z-index:42;
+    background:transparent;border-bottom:none;padding:20px 18px 0;}
+  .wallet-top{align-items:center;}
+  .tabbar{top:0;bottom:0;right:auto;width:var(--side);box-sizing:border-box;border-top:none;border-right:1px solid var(--edge-soft);
+    padding:142px 14px 18px;}
+  #app.ready~.tabbar{display:flex;flex-direction:column;}
+  .tabbar-in{flex-direction:column;max-width:none;margin:0;gap:2px;}
+  .tab{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;font-size:.95rem;padding:10px 12px;border-radius:10px;color:var(--dim);}
+  .tab svg{width:20px;height:20px;}
+  .tab:hover{background:var(--panel-2);color:var(--chalk);}
+  .tab.on{background:var(--panel-2);color:var(--gold);}
+  .tab::after{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--dimmer);border:1px solid var(--edge-soft);border-radius:5px;padding:0 6px;line-height:1.6;}
+  .tab[data-tab="focus"]::after{content:"1";}.tab[data-tab="quests"]::after{content:"2";}
+  .tab[data-tab="rewards"]::after{content:"3";}.tab[data-tab="progress"]::after{content:"4";}
+  .fab{left:18px;right:auto;top:80px;bottom:auto;width:calc(var(--side) - 36px);height:44px;border-radius:10px;gap:8px;z-index:43;
+    font-family:inherit;font-size:.92rem;font-weight:700;box-shadow:none;}
+  .fab svg{width:18px;height:18px;}
+  .fab:hover{filter:brightness(1.07);}
+  .fab-l{display:inline;}
+  body.sheet-open .fab{opacity:1;}
+  body.typing .tabbar{display:flex!important;}
+  body.typing .fab{display:flex!important;}
+  .side-foot{display:flex;flex-direction:column;gap:12px;margin-top:auto;padding:0 4px;}
+  .side-inst{display:block;width:100%;text-align:left;font-family:inherit;color:var(--chalk);cursor:pointer;
+    background:var(--panel);border:1px solid var(--edge-soft);border-radius:10px;padding:10px 12px;}
+  .side-inst:hover{border-color:var(--gold-dim);}
+  .side-inst b{display:block;font-size:.88rem;color:var(--gold);}
+  .side-inst span{font-size:.75rem;color:var(--dim);}
+  .side-tip{font-size:.78rem;color:var(--dim);line-height:1.4;}
+  .side-keys{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.72rem;color:var(--dimmer);}
+  .side-keys kbd{font-family:inherit;font-weight:700;border:1px solid var(--edge-soft);border-radius:4px;padding:0 5px;margin-right:3px;color:var(--dim);}
+
+  .toast{left:calc(50% + var(--side) / 2);bottom:28px;}
+
+  /* Settings: a drawer from the right */
+  #setsheet .sheet-card{left:auto;right:0;top:0;bottom:0;height:100%;width:min(460px,100vw);max-width:none;margin:0;
+    border-radius:0;box-shadow:-10px 0 34px var(--shadow);transform:translateX(100%);}
+  #setsheet.open .sheet-card{transform:translateX(0);}
+  #setsheet .sheet-head{padding-top:14px;}
+  /* Report progress: a dialog in the middle */
+  #rsheet .sheet-card{top:0;bottom:0;margin:auto;width:min(560px,92vw);height:min(720px,86vh);border-radius:16px;
+    box-shadow:0 18px 50px var(--shadow);opacity:0;transform:translateY(18px) scale(.98);
+    transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
+  #rsheet.open .sheet-card{opacity:1;transform:none;}
+  #rsheet .sheet-head{padding-top:12px;}
+  .rsheet .sheet-grab{display:none;}
+  .sheet-bg{background:rgba(0,0,0,.28);}
+}
+
+/* wide: two columns where it helps */
+@media (min-width:1180px){
+  #p-focus,#p-quests,#p-rewards,#p-progress,#p-caseid{max-width:1080px;}
+
+  .dcols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);column-gap:28px;align-items:start;}
+
+  #goal-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;}
+  #goal-list>.ideas-entry{grid-column:1/-1;margin:0;}
+  #goal-list>.idtile{margin:0;}
+  #goal-form-home>.form{max-width:720px;}
+
+  #casep{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:28px;align-items:start;
+    grid-template-areas:"sub sub" "hero hero" "stats q" "since q" "note q" "cal q" "rec q" "words q";}
+  #casep>*{grid-column:1/-1;}
+  #casep>.sub-head{grid-area:sub;}#casep>.case-hero{grid-area:hero;}
+  #casep>.case-stats{grid-area:stats;}#casep>.case-since{grid-area:since;}#casep>.note{grid-area:note;}
+  #casep>.case-cal{grid-area:cal;}#casep>.case-rec{grid-area:rec;}#casep>.case-words{grid-area:words;}
+  #casep>.case-q{grid-area:q;}
+
+  #journey{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:24px;align-items:start;
+    grid-template-areas:"cal mon" "words mon";}
+  #journey>*{grid-column:1/-1;}
+  #journey>.jcal{grid-area:cal;}#journey>.jmonths{grid-area:mon;}#journey>#j-words{grid-area:words;}
+  #p-progress>.review-entry{max-width:none;}
+
+  #p-rewards.on{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:20px;align-items:start;}
+  #p-rewards>*{grid-column:1/-1;}
+  #p-rewards>#rw-sum{grid-column:1;}
+  #p-rewards>#chase-rewards{grid-column:2;}
+  #p-rewards:has(#chase-rewards:empty)>#rw-sum{grid-column:1/-1;}
+  #reward-list{columns:2;column-gap:20px;}
+  #reward-list>*{break-inside:avoid;}
+  .trophies:not(:empty){grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+}
+@media (min-width:1500px){
+  #goal-list{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
 </style>
 </head>
 <body>
@@ -1302,6 +1410,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
   <div class="panel on" id="p-focus">
     <div id="now-head"></div>
     <div id="closeout-top"></div>
+    <div id="desk-banner"></div>
     <div id="readd-banner"></div>
     <div id="month-banner"></div>
     <div id="review-banner"></div>
@@ -1526,7 +1635,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
       <details class="sect">
         <summary>Backups<span id="sum-backup"></span></summary>
         <div class="sect-body">
-          <p class="sub" style="margin:0 0 12px;" id="backup-blurb">Your data lives on this phone only. Save a copy every so often.</p>
+          <p class="sub" style="margin:0 0 12px;" id="backup-blurb">Your data lives on this device only. Save a copy every so often.</p>
           <div class="f-acts">
             <button class="btn2" data-a="export">Save a backup file</button>
             <button class="btn2" data-a="import">Restore from backup</button>
@@ -1542,7 +1651,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 
 
   <button class="fab" id="fab" data-a="open-report" aria-label="Report progress">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="fab-l">Report progress</span></button>
   <div id="setsheet" class="rsheet hide" aria-hidden="true">
     <div class="sheet-bg" data-a="settings-close"></div>
     <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="set-title">
@@ -1584,7 +1693,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M5 20c0-3 2-4.5 4.5-4.5S14 14 14 11s2-4.5 5-4.5"/><circle cx="5" cy="20" r="1.4" fill="currentColor"/><circle cx="19" cy="6.5" r="2"/></svg>
       <span>Journey</span></button>
-  </div></nav>
+  </div><div class="side-foot" id="side-foot"></div></nav>
 
 <div class="modal hide" id="modal">
   <div class="sheet">
@@ -3096,7 +3205,7 @@ function renderCase(){
      ' · '+nf(st.pts)+' points earned as '+esc(id.title)+'</p>';
   /* 12-week calendar for this identity */
   var start=weekStart(now)-11*7*DAY,today=dayStart(now);
-  h+='<div class="card"><h3>Days as '+esc(id.title)+'</h3><div class="cal" style="--gold:'+idColor(c)+'">';
+  h+='<div class="card case-cal"><h3>Days as '+esc(id.title)+'</h3><div class="cal" style="--gold:'+idColor(c)+'">';
   for(var i=0;i<84;i++){var ts=start+i*DAY,k=dayKeyOf(ts),n=0;
     st.ents.forEach(function(e){if(dayKeyOf(e.at)===k)n++;});
     h+='<i class="c'+(ts>today?'f':n===0?0:n<2?1:n<4?2:3)+(ts===today?' t':'')+'"></i>';}
@@ -3110,14 +3219,14 @@ function renderCase(){
     if(bestEnd)marks.push({at:bestEnd,t:st.best+' days in a row'});}
   marks.sort(function(a,b){return b.at-a.at;});
   if(marks.length){
-    h+='<div class="card"><h3>On the record</h3>';
+    h+='<div class="card case-rec"><h3>On the record</h3>';
     marks.slice(0,U.caseAll?99:6).forEach(function(m){h+='<div class="rec"><span class="rec-d">'+shortDate(m.at)+'</span><span class="rec-t">'+m.t+'</span></div>';});
     h+='</div>';
   }
   /* in your words */
   var words=caseWords(c,st.ents,st.days);
   if(words.length){
-    h+='<div class="card"><h3>In your words</h3>';
+    h+='<div class="card case-words"><h3>In your words</h3>';
     words.slice(0,U.caseAll?99:5).forEach(function(w){
       h+='<div class="jr"><span class="jr-d">'+new Date(w.at).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+' · '+esc(w.src)+'</span>'+
          '<span class="jr-t serif">'+esc(w.text)+'</span></div>';});
@@ -3158,7 +3267,7 @@ function openMonth(key){
 }
 function monthListHTML(){
   var ms=monthsWithData(),cur=monthKey(Date.now());
-  var h='<div class="card"><h3>Monthly reports</h3><p class="sub">The evidence, a month at a time.</p>';
+  var h='<div class="card jmonths"><h3>Monthly reports</h3><p class="sub">The evidence, a month at a time.</p>';
   ms.forEach(function(k){
     var s=monthSummary(k);
     h+='<button class="mrow" data-a="open-month" data-k="'+k+'"><span><b>'+monthName(k)+'</b><span>'+
@@ -3744,6 +3853,126 @@ function editWhy(id){
     {html:'<textarea name="why" maxlength="280" placeholder="So I can…">'+esc(g.why||'')+'</textarea>',focus:true});
 }
 
+
+/* =====================================================================
+   4.3 — a desktop version
+   The same app, laid out for a computer: a sidebar instead of the bottom
+   bar, two columns where there's room, Settings as a side drawer, the
+   report sheet as a dialog, keyboard shortcuts, and an install button so
+   it can live in its own window.
+   ===================================================================== */
+function mqOf(q){try{return window.matchMedia?window.matchMedia(q):null;}catch(e){return null;}}
+var MQ_DESK=mqOf('(min-width:900px)'),MQ_WIDE=mqOf('(min-width:1180px)');
+function isDesk(){return !!(MQ_DESK&&MQ_DESK.matches);}
+function isWide(){return !!(MQ_WIDE&&MQ_WIDE.matches);}
+/* phone or computer: for the words the app uses about "this device" */
+function onComputer(){
+  var fine=mqOf('(pointer:fine)');
+  return !!(fine&&fine.matches)&&!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'')&&!(navigator.maxTouchPoints>1);
+}
+function devWord(){return onComputer()?'computer':'phone';}
+
+/* ---------- Today in two columns on a wide screen ----------
+   The cards keep their ids, so moving them doesn't change how they draw. */
+var FOCUS_KIDS=null,FOCUS_SIDE=['closeout-top','month-banner','review-banner','habits','closeout'];
+function layoutToday(){
+  var p=document.getElementById('p-focus');if(!p)return;
+  if(!FOCUS_KIDS)FOCUS_KIDS=[].slice.call(p.children);
+  var cols=[].filter.call(p.children,function(c){return c.classList.contains('dcols');})[0];
+  if(isWide()&&!cols){
+    cols=document.createElement('div');cols.className='dcols';
+    var m=document.createElement('div'),s=document.createElement('div');m.className='dc-main';s.className='dc-side';
+    cols.appendChild(m);cols.appendChild(s);
+    var head=document.getElementById('now-head');
+    FOCUS_KIDS.forEach(function(n){
+      if(n===head||n.hasAttribute('hidden'))return;
+      (FOCUS_SIDE.indexOf(n.id)>=0?s:m).appendChild(n);
+    });
+    p.insertBefore(cols,head?head.nextSibling:p.firstChild);
+  }else if(!isWide()&&cols){
+    FOCUS_KIDS.forEach(function(n){p.appendChild(n);});
+    cols.parentNode.removeChild(cols);
+  }
+}
+function onLayoutChange(){if(typeof measureWallet==='function')measureWallet();layoutToday();renderSideFoot();renderDeskBanner();}
+[MQ_DESK,MQ_WIDE].forEach(function(m){
+  if(!m)return;
+  if(m.addEventListener)m.addEventListener('change',onLayoutChange);else if(m.addListener)m.addListener(onLayoutChange);
+});
+
+/* ---------- keyboard ---------- */
+var TAB_KEYS={'1':'focus','2':'quests','3':'rewards','4':'progress'};
+document.addEventListener('keydown',function(e){
+  if(e.defaultPrevented||e.metaKey||e.ctrlKey||e.altKey)return;
+  var mOpen=modalOpen(),typing=isField(document.activeElement);
+  if(e.key==='Escape'){
+    if(mOpen){
+      /* only when there's a safe way out (Cancel, Keep editing…) */
+      var last=MOPTS[MOPTS.length-1],bs=document.querySelectorAll('#modal-opts button');
+      if(last&&last.style==='ghost'&&bs.length)bs[bs.length-1].click();
+      e.preventDefault();return;
+    }
+    if(sheetOpen()){closeSheet();e.preventDefault();return;}
+    if(settingsOpen()){closeSettings();e.preventDefault();return;}
+    if(typing){document.activeElement.blur();return;}
+    if(SUBPANELS.indexOf(U.tab)>=0){subBack();e.preventDefault();}
+    return;
+  }
+  if(mOpen||sheetOpen()||typing)return;
+  if(TAB_KEYS[e.key]){
+    if(settingsOpen())closeSettings();
+    if(U.tab!==TAB_KEYS[e.key])showPanel(TAB_KEYS[e.key]);
+    e.preventDefault();return;
+  }
+  if(e.key==='r'||e.key==='R'){if(settingsOpen())closeSettings();openReport();e.preventDefault();return;}
+  if(e.key===','){if(settingsOpen())closeSettings();else openSettings();e.preventDefault();}
+});
+
+/* ---------- a computer window rarely "hides", so sync when it gets focus ---------- */
+var FOCUS_SYNC=0;
+window.addEventListener('focus',function(){
+  if(!connected()||Q.outbox.length||Date.now()-FOCUS_SYNC<20000)return;
+  FOCUS_SYNC=Date.now();sync();
+});
+
+/* ---------- install as an app (Chrome, Edge) / Add to Dock (Safari) ---------- */
+var INSTALL_EV=null;
+function standaloneNow(){var m=mqOf('(display-mode: standalone)');return !!(m&&m.matches)||navigator.standalone===true;}
+function safariMac(){var u=navigator.userAgent||'';return /Macintosh/.test(u)&&/Safari/.test(u)&&!/Chrome|Chromium|Edg|Firefox|OPR/.test(u)&&!(navigator.maxTouchPoints>1);}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();INSTALL_EV=e;renderSideFoot();});
+window.addEventListener('appinstalled',function(){INSTALL_EV=null;renderSideFoot();toast('Installed. Quest Board has its own window now.',true);});
+async function installApp(){
+  if(!INSTALL_EV){toast(safariMac()?'In Safari: File → Add to Dock.':'Use the install icon at the right end of the address bar.');return;}
+  var ev=INSTALL_EV;INSTALL_EV=null;
+  try{ev.prompt();await ev.userChoice;}catch(e){}
+  renderSideFoot();
+}
+function renderSideFoot(){
+  var el=document.getElementById('side-foot');if(!el)return;
+  var h='';
+  if(!standaloneNow()){
+    if(INSTALL_EV)h+='<button class="side-inst" data-a="install-app"><b>Install the app</b><span>Its own window and icon. Works offline.</span></button>';
+    else if(safariMac())h+='<div class="side-tip">Want it in your Dock? In Safari: <b>File → Add to Dock</b>.</div>';
+  }
+  h+='<div class="side-keys"><span><kbd>R</kbd> report</span><span><kbd>,</kbd> settings</span><span><kbd>Esc</kbd> close</span></div>';
+  el.innerHTML=h;
+}
+
+/* ---------- on a computer that isn't synced yet: one nudge on Today ---------- */
+function deskNudgeOff(){try{return localStorage.getItem('qb-desk-nudge')==='off';}catch(e){return false;}}
+function renderDeskBanner(){
+  var el=document.getElementById('desk-banner');if(!el)return;
+  if(!onComputer()||connected()||deskNudgeOff()){el.innerHTML='';return;}
+  el.innerHTML='<div class="desk-nudge"><div><b>Same board as your phone?</b>'+
+    '<span>This computer keeps its own copy. Connect the same Google Sheet you use on your phone and both stay in step.</span></div>'+
+    '<div class="dn-acts"><button class="btn sm" data-a="desk-connect">Connect</button><button class="btn2 sm" data-a="desk-nudge-off">Not now</button></div></div>';
+}
+setTimeout(function(){layoutToday();renderSideFoot();},0);
+function deskConnect(){
+  openSettings();
+  var d=document.getElementById('sect-sheet');if(d){d.open=true;setTimeout(function(){var i=document.getElementById('sh-url');if(i)try{i.focus();}catch(e){}},320);}
+}
+
 /* ---------- focus cards ----------
    Card rules (every card in the app follows these):
    1. Header: title, then any badges, then at most one icon control on the right.
@@ -4288,7 +4517,7 @@ function backupNagHTML(){
     (Q.lastOk?ago(Q.lastOk):'you connected')+'</b>. '+esc(Q.lastErr||'')+'</span>'+
     '<button class="btn sm" data-a="sheet-sync">Sync now</button></div>';
   return '<div class="nag"><span>'+(lb?'Last backup was <b>'+ago(lb)+'</b>.':'You haven’t saved a backup yet.')+
-    ' Everything lives on this phone only.</span>'+
+    ' Everything lives on this '+devWord()+' only.</span>'+
     '<button class="btn sm" data-a="export">Back up</button></div>';
 }
 
@@ -4485,7 +4714,7 @@ function shelfToggle(){
    marked stale and redraw the moment you open them, so a tap costs one tab's
    worth of work instead of the whole app's. */
 var PANELS={
-  focus:   function(){renderNowHead();renderReaddBanner();renderMonthBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
+  focus:   function(){renderNowHead();renderDeskBanner();renderReaddBanner();renderMonthBanner();renderBanner();renderHabits();renderAttention();renderToday();renderSlots();renderCloseout();},
   quests:  function(){renderCatSelect();renderGoals();},
   rewards: function(){renderChase();renderRewards();renderTrophies();},
   progress:function(){renderProfile();renderJourney();renderProfSeason();renderPlaybook();renderCleared();},   /* the last three fill hidden spots, kept for seasons you may already have */
@@ -5149,6 +5378,9 @@ document.addEventListener('click',function(e){
     renderPanel(U.tab);if(!ro)easeIn('.panel.on .row-detail[data-for="'+id+'"]');}
   else if(a==='open-report')openReport(el.getAttribute('data-c')||null,el.getAttribute('data-g')||null);
   else if(a==='sub-back')backSub();
+  else if(a==='install-app')installApp();
+  else if(a==='desk-connect')deskConnect();
+  else if(a==='desk-nudge-off'){try{localStorage.setItem('qb-desk-nudge','off');}catch(x){}renderDeskBanner();}
   else if(a==='sheet-close')closeSheet();
   else if(a==='open-ideas')openIdeas();
   else if(a==='goto-up')gotoUp(id);
@@ -5363,7 +5595,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='4.2';
+var APP_VERSION='4.3';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['rate','step','diffCurve','lastReview','reviewSnooze','identities','coolDays','letGo','ideasHidden'];
@@ -5648,12 +5880,13 @@ async function connectSheet(url,key){
         {label:'Cancel',style:'ghost',run:function(){Q.url='';Q.key='';saveQ();renderSheetSection();}}]);
     }else{
       openModal('This sheet already has a board',
-        'The sheet has '+sq+' quests and '+sr+' rewards. This phone has '+lq+' quests and '+lr+' rewards. Which one should win?',[
+        'The sheet has '+sq+' quests and '+sr+' rewards. This '+devWord()+' has '+lq+' quests and '+lr+' rewards. Which one should win?'+
+        (!S.log.length&&!S.redemptions.length?' Nothing has been logged on this '+devWord()+' yet, so you most likely want the sheet’s board.':''),[
         {label:'Use the sheet’s board',style:'pri',run:function(){
           snap();Q.outbox=[];Q.base={};fromData(d);Q.base=sigOf(toRows());
           Q.lastOk=Date.now();Q.lastErr='';saveQ();saveLocal();renderAll();UNDO=[];
           toast('Loaded the board from your sheet.');}},
-        {label:'Replace the sheet with this phone',style:'danger',run:function(){pushEverything('The sheet now matches this phone.');}},
+        {label:'Replace the sheet with this '+devWord(),style:'danger',run:function(){pushEverything('The sheet now matches this phone.');}},
         {label:'Cancel',style:'ghost',run:function(){Q.url='';Q.key='';saveQ();renderSheetSection();}}]);
     }
   }catch(e){
@@ -5675,7 +5908,7 @@ async function pushEverything(done){
 function disconnectSheet(){
   Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0};
   saveQ();renderSheetSection();renderSyncDot();renderProfile();
-  toast('Disconnected. Your data stays on this phone.');
+  toast('Disconnected. Your data stays on this '+devWord()+'.');
 }
 
 /* ---------- sync UI ---------- */
@@ -5709,7 +5942,7 @@ function renderSheetSection(){
   }
   var h='';
   if(st==='off'){
-    h+='<p class="sub" style="margin:0 0 12px;">Keeps your board in a Google Sheet so it survives a lost phone and you can see it on a computer. Set up the connector first (SETUP.md), then paste its link here.</p>'+
+    h+='<p class="sub" style="margin:0 0 12px;">Keeps your board in a Google Sheet so it survives a lost phone, and so your phone and computer share one board. Set up the connector first (SETUP.md), then paste its link here.</p>'+
        '<div class="f"><label for="sh-url">Web app link</label><input type="text" id="sh-url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" autocapitalize="off" spellcheck="false"></div>'+
        '<div class="f"><label for="sh-key">Passphrase</label><input type="text" id="sh-key" autocomplete="off" autocapitalize="off" spellcheck="false"></div>'+
        '<div class="f-acts"><button class="btn" data-a="sheet-connect">Connect</button></div>';
@@ -5731,7 +5964,7 @@ function renderSheetSection(){
   var bb=document.getElementById('backup-blurb');
   if(bb)bb.textContent=connected()?
     'Your Google Sheet is your backup now. A file copy is still handy before big changes.':
-    'Your data lives on this phone only. Save a copy every so often, or connect a Google Sheet.';
+    'Your data lives on this '+devWord()+' only. Save a copy every so often, or connect a Google Sheet.';
 }
 
 /* =====================================================================
@@ -6196,7 +6429,7 @@ window.__qb={pace:pace,periodNext:periodNext,weekStart:weekStart,lastPeriodResul
   sync:function(){return sync();},state:function(){return S;},openCase:function(c){openCase(c);},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
 function measureWallet(){
   var w=document.querySelector('.wallet');
-  if(w)document.documentElement.style.setProperty('--wh',w.offsetHeight+'px');
+  if(w)document.documentElement.style.setProperty('--wh',(isDesk()?0:w.offsetHeight)+'px');   /* on a computer the header lives in the sidebar */
 }
 window.addEventListener('resize',measureWallet);
 (async function(){
