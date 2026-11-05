@@ -3,7 +3,7 @@
    always tries the network first, so a new version on Netlify shows up on the
    next launch; the saved copy is only used when the network is slow or gone.
    Google Sheet requests are never touched here; the app's own sync handles those. */
-var CACHE = 'quest-board-4.3';
+var CACHE = 'quest-board-4.4';
 var PAGE = './';
 var EXTRAS = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
