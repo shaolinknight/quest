@@ -1718,6 +1718,10 @@ details>summary{min-height:32px;}
         <summary>Cloud sync<span id="sum-sheet"></span></summary>
         <div class="sect-body" id="sheet-body"></div>
       </details>
+      <details class="sect" id="sect-push">
+        <summary>Reminders<span id="sum-push"></span></summary>
+        <div class="sect-body" id="push-body"></div>
+      </details>
       <details class="sect" id="sect-look">
         <summary>Appearance<span id="sum-look"></span></summary>
         <div class="sect-body">
@@ -4811,6 +4815,7 @@ function keepSession(j){
   Q.sb={access:j.access_token,refresh:j.refresh_token,exp:Date.now()+((j.expires_in||3600)*1000),
         email:(j.user&&j.user.email)||old.email||'',uid:(j.user&&j.user.id)||old.uid||'',pending:!!old.pending};
   saveQ();
+  rtToken(j.access_token);
 }
 var REFRESHING=null;
 /* A sign-in lasts an hour; the refresh token renews it quietly. Only one
@@ -4825,7 +4830,7 @@ function sbToken(force){
       REFRESHING=null;
       if(e&&(e.status===400||e.status===401)){
         /* the login was revoked or expired: keep the email and queued changes, ask to sign in again */
-        Q.sb={email:Q.sb.email,uid:Q.sb.uid};saveQ();
+        Q.sb={email:Q.sb.email,uid:Q.sb.uid};saveQ();rtStop();
         throw {quiet:true,msg:'You were signed out. Sign in again in Settings → Cloud sync. Nothing waiting to sync is lost.'};
       }
       throw e;
@@ -4870,13 +4875,14 @@ async function sbSend(batch){
 }
 /* the whole board, in the order things were first saved, 1000 rows a page */
 async function sbPull(){
-  var d={},from=0,size=1000;
+  var d={},from=0,size=1000,cur=null;
   SB_KINDS.forEach(function(k){d[k]=[];});
   for(;;){
-    var r=await sbRest('qb_docs?select=kind,id,data&order=seq.asc',
+    var r=await sbRest('qb_docs?select=kind,id,data,updated_at&order=seq.asc',
       {headers:{'Range-Unit':'items','Range':from+'-'+(from+size-1)}});
     var rows=await r.json();
     rows.forEach(function(x){
+      cur=maxTs(cur,x.updated_at);
       if(!d[x.kind])return;
       if(x.kind==='milestones'){if(Array.isArray(x.data))d.milestones=d.milestones.concat(x.data);}
       else d[x.kind].push(x.data);
@@ -4884,6 +4890,7 @@ async function sbPull(){
     if(rows.length<size)break;
     from+=size;
   }
+  LAST_PULL_CUR=cur;
   return d;
 }
 function cloudErr(e){
@@ -4909,10 +4916,7 @@ async function sync(){
       saveQ();
     }
     if(pullBlocked()){PULL_WANTED=true;}
-    else{
-      var d=await sbPull();
-      if(!pullBlocked())applyPull(d);else PULL_WANTED=true;
-    }
+    else await cloudPull();
     Q.lastOk=Date.now();Q.lastErr='';
   }catch(e){
     Q.lastErr=cloudErr(e);
@@ -4920,6 +4924,7 @@ async function sync(){
     SYNCING=false;saveQ();renderSyncDot();renderSheetSection();versionLine();
   }
   if(Q.outbox.length&&!Q.lastErr)scheduleSync(800);
+  rtStart();
 }
 
 /* ---------- moving in ---------- */
@@ -4974,6 +4979,7 @@ function useCloudBoard(d){
   /* anything this device still hadn't sent goes on top, and is sent next */
   if(waiting.length){var R=toRows();applyOpsTo(R,waiting);fromData(rowsToData(R));}
   Q.outbox=[];Q.base=base;Q.url='';Q.key='';Q.sb.pending=false;Q.lastOk=Date.now();Q.lastErr='';
+  Q.cur=LAST_PULL_CUR;Q.fullAt=Date.now();rtStart();
   saveQ();saveLocal();queueChanges();UNDO=[];renderAll();
   toast('Loaded your board from the cloud.');
 }
@@ -4986,15 +4992,18 @@ async function cloudPushAll(done){
     for(var i=0;i<all.length;i+=400)
       await sbRest('qb_docs',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=minimal'},
         body:JSON.stringify(all.slice(i,i+400)),ms:60000});
-    Q.outbox=[];Q.base=sigOf(R);Q.url='';Q.key='';Q.sb.pending=false;Q.lastOk=Date.now();Q.lastErr='';saveQ();
+    Q.outbox=[];Q.base=sigOf(R);Q.url='';Q.key='';Q.sb.pending=false;Q.lastOk=Date.now();Q.lastErr='';
+    Q.cur=null;Q.fullAt=0;saveQ();rtStart();
     setSheetMsg('');toast(done,true);
   }catch(e){setSheetMsg(cloudErr(e));}
   renderSheetSection();renderSyncDot();renderProfile();versionLine();
 }
 function cloudCancel(){Q.sb=null;saveQ();setSheetMsg('');renderSheetSection();}
-function cloudSignOut(){
+async function cloudSignOut(){
+  rtStop();
+  try{await pushOff(true);}catch(e){}   /* no reminders for a board this device has left */
   Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0,sb:null};
-  saveQ();renderSheetSection();renderSyncDot();renderProfile();versionLine();
+  saveQ();renderSheetSection();renderPushSection();renderSyncDot();renderProfile();versionLine();
   toast('Signed out. Your board stays on this '+devWord()+'.');
 }
 
@@ -5024,7 +5033,8 @@ function renderSheetSection(){
        (Q.lastErr&&Q.sb&&Q.sb.email?'<p class="sub" style="margin:0 0 12px;color:var(--ember);">'+esc(Q.lastErr)+'</p>':'')+
        '<div class="f"><label for="cl-email">Email</label><input type="email" id="cl-email" autocomplete="username" autocapitalize="off" spellcheck="false" value="'+esc((Q.sb&&Q.sb.email)||'')+'"></div>'+
        '<div class="f"><label for="cl-pass">Password</label><input type="password" id="cl-pass" autocomplete="current-password"></div>'+
-       '<div class="f-acts"><button class="btn" data-a="cloud-signin">Sign in</button></div>';
+       '<div class="f-acts"><button class="btn" data-a="cloud-signin">Sign in</button>'+
+       '<button class="btn2" data-a="cloud-forgot">Forgot password?</button></div>';
   }
   if(SHEET_MSG)h+='<p class="sub" style="margin:10px 0 0;color:var(--gold);">'+esc(SHEET_MSG)+'</p>';
   /* don't wipe what you're typing */
@@ -5033,6 +5043,7 @@ function renderSheetSection(){
   body.innerHTML=h;
   if(uv&&document.getElementById('cl-email'))document.getElementById('cl-email').value=uv;
   if(kv&&document.getElementById('cl-pass'))document.getElementById('cl-pass').value=kv;
+  renderPushSection();
   var bb=document.getElementById('backup-blurb');
   if(bb)bb.textContent=cloudOn()?
     'Your board is backed up in the cloud. A file copy is still handy before big changes.':
@@ -5041,6 +5052,337 @@ function renderSheetSection(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&e.target&&(e.target.id==='cl-pass'||e.target.id==='cl-email')){
     e.preventDefault();var b=document.querySelector('[data-a="cloud-signin"]');if(b)b.click();}
+});
+
+/* ---------- 5.1: lighter syncing ----------
+   A full pull downloads the whole board. Most of the time only a handful of rows
+   changed, so sync asks for just the rows touched since the last pull (plus the
+   list of deleted rows), and patches the board on this device. A full pull still
+   runs on sign-in and every few days, so any drift heals itself. */
+var LAST_PULL_CUR=null,FULL_EVERY=3*864e5;
+function maxTs(a,b){return !a?b:!b?a:(Date.parse(a)>=Date.parse(b)?a:b);}
+async function sbPages(path,limit){
+  var out=[],from=0,size=1000;
+  for(;;){
+    var r=await sbRest(path,{headers:{'Range-Unit':'items','Range':from+'-'+(from+size-1)}});
+    var rows=await r.json();out=out.concat(rows);
+    if(rows.length<size||(limit&&out.length>=limit))break;
+    from+=size;
+  }
+  return out;
+}
+/* only what changed since `since` (10 seconds of overlap covers slow saves); null = too much, do a full pull */
+async function sbDelta(since){
+  var s=encodeURIComponent(new Date(Date.parse(since)-10000).toISOString());
+  var rows=await sbPages('qb_docs?select=kind,id,data,updated_at&updated_at=gt.'+s+'&order=seq.asc',3000);
+  if(rows.length>=3000)return null;
+  var gone=await sbPages('qb_deleted?select=kind,id,deleted_at&deleted_at=gt.'+s+'&order=deleted_at.asc');
+  return {rows:rows,gone:gone};
+}
+/* Lay the changes onto the cloud's board as this device last saw it (Q.base), never onto the
+   live board: the live board can hold edits not yet queued, and treating those as "already in
+   the cloud" would stop them from ever being sent. applyPull then puts the queue on top, exactly
+   as it does after a full pull. */
+function applyDelta(dl){
+  var L={},cur=Q.cur,ev={};
+  SB_KINDS.forEach(function(t){
+    L[t]={};var b=(Q.base&&Q.base[t])||{};
+    Object.keys(b).forEach(function(k){L[t][k]=JSON.parse(b[k]);});
+  });
+  dl.rows.forEach(function(x){cur=maxTs(cur,x.updated_at);ev[x.kind+'|'+x.id]={at:Date.parse(x.updated_at),t:x.kind,id:x.id,data:x.data};});
+  dl.gone.forEach(function(g){
+    cur=maxTs(cur,g.deleted_at);
+    var k=g.kind+'|'+g.id,e=ev[k],at=Date.parse(g.deleted_at);
+    if(!e||at>e.at)ev[k]={at:at,t:g.kind,id:g.id,gone:true};   /* deleted after its last save */
+  });
+  var n=0;
+  Object.keys(ev).forEach(function(k){
+    var e=ev[k];
+    if(!L[e.t])return;
+    if(e.gone){if(e.id in L[e.t]){delete L[e.t][e.id];n++;}}
+    else if(JSON.stringify(L[e.t][e.id])!==JSON.stringify(e.data)){L[e.t][e.id]=e.data;n++;}   /* echoes of this device's own saves change nothing */
+  });
+  return {data:rowsToData(L),cur:cur,n:n};
+}
+async function cloudPull(){
+  var full=!Q.cur||!Q.base||!Q.fullAt||Date.now()-Q.fullAt>FULL_EVERY,dl=null,d;
+  if(!full){dl=await sbDelta(Q.cur);if(!dl)full=true;}
+  if(full)d=await sbPull();
+  if(pullBlocked()){PULL_WANTED=true;return;}   /* mid-edit: try again when the dialog closes */
+  if(full){applyPull(d);Q.cur=LAST_PULL_CUR;Q.fullAt=Date.now();}
+  else{var a=applyDelta(dl);if(a.n)applyPull(a.data);Q.cur=a.cur;}
+}
+
+/* ---------- 5.1: instant sync between devices ----------
+   An open line to Supabase (a websocket). When a row of yours changes anywhere,
+   Supabase says so and this device pulls the change within a second. It only runs
+   while the app is on screen; the 90-second check stays as a backup. */
+var RT={ws:null,hb:null,tries:0,timer:null,joined:false,poke:null,ref:0,joinRef:null};
+var RT_TOPIC='realtime:quest-board';
+function rtWanted(){return cloudOn()&&!!(Q.sb&&Q.sb.uid)&&document.visibilityState==='visible'&&typeof WebSocket!=='undefined';}
+function rtSend(topic,event,payload){
+  if(!RT.ws||RT.ws.readyState!==1)return null;
+  var ref=String(++RT.ref);
+  try{RT.ws.send(JSON.stringify({topic:topic,event:event,payload:payload,ref:ref}));}catch(e){}
+  return ref;
+}
+function rtStart(){
+  if(!rtWanted()||RT.ws)return;
+  clearTimeout(RT.timer);
+  sbToken(false).then(function(tok){
+    if(!rtWanted()||RT.ws)return;
+    var ws;
+    try{ws=new WebSocket(SB_URL.replace(/^http/,'ws')+'/realtime/v1/websocket?apikey='+encodeURIComponent(SB_KEY)+'&vsn=1.0.0');}
+    catch(e){rtRetry();return;}
+    RT.ws=ws;RT.joined=false;
+    ws.onopen=function(){
+      RT.joinRef=rtSend(RT_TOPIC,'phx_join',{access_token:tok,config:{broadcast:{self:false},presence:{key:''},private:false,
+        postgres_changes:[{event:'*',schema:'public',table:'qb_docs',filter:'user_id=eq.'+Q.sb.uid},
+                          {event:'INSERT',schema:'public',table:'qb_deleted',filter:'user_id=eq.'+Q.sb.uid}]}});
+      clearInterval(RT.hb);RT.hb=setInterval(function(){rtSend('phoenix','heartbeat',{});},25000);
+    };
+    ws.onmessage=function(m){
+      var x;try{x=JSON.parse(m.data);}catch(e){return;}
+      if(x.topic!==RT_TOPIC)return;
+      if(x.event==='phx_reply'&&x.ref===RT.joinRef){
+        if(x.payload&&x.payload.status==='ok'){RT.joined=true;RT.tries=0;rtPoke();}   /* catch up on anything missed while away */
+        else rtDrop();
+      }
+      else if(x.event==='postgres_changes')rtPoke();
+      else if(x.event==='phx_error'||x.event==='phx_close'||(x.event==='system'&&x.payload&&x.payload.status==='error'))rtDrop();
+    };
+    ws.onclose=function(){if(RT.ws!==ws)return;rtClean();if(rtWanted())rtRetry();};
+    ws.onerror=function(){};
+  },function(){});
+}
+function rtClean(){clearInterval(RT.hb);RT.hb=null;RT.ws=null;RT.joined=false;}
+function rtDrop(){var w=RT.ws;rtClean();try{if(w){w.onclose=null;w.close();}}catch(e){}if(rtWanted())rtRetry();}
+function rtStop(){clearTimeout(RT.timer);clearTimeout(RT.poke);var w=RT.ws;rtClean();RT.tries=0;try{if(w){w.onclose=null;w.close();}}catch(e){}}
+function rtRetry(){clearTimeout(RT.timer);RT.timer=setTimeout(rtStart,Math.min(60000,2000*Math.pow(2,RT.tries++)));}
+/* several changes usually arrive together (a vote touches the quest and the history): one pull for all of them */
+function rtPoke(){
+  clearTimeout(RT.poke);
+  RT.poke=setTimeout(function(){if(SYNCING)rtPoke();else sync();},700);
+}
+function rtToken(tok){if(RT.joined)rtSend(RT_TOPIC,'access_token',{access_token:tok});}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible')rtStart();else rtStop();
+});
+
+/* ---------- 5.1: forgot password ---------- */
+function appUrl(){return location.origin+location.pathname;}
+async function cloudForgot(email){
+  email=String(email||'').trim();
+  if(!/.+@.+/.test(email)){
+    setSheetMsg('Type your email above, then tap Forgot password.');
+    var u=document.getElementById('cl-email');if(u)try{u.focus();}catch(e){}
+    return;
+  }
+  setSheetMsg('Sending the email…');
+  try{
+    var r=await withTimeout(fetch(SB_URL+'/auth/v1/recover?redirect_to='+encodeURIComponent(appUrl()),{method:'POST',
+      headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:email})}),20000);
+    if(r.status===429)throw {quiet:true,msg:'Too many emails in a short time. Wait an hour, then try again.'};
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    setSheetMsg('Check your email for a link to set a new password. If it isn’t there in a few minutes, look in spam.');
+  }catch(e){setSheetMsg(cloudErr(e));}
+}
+/* the email link comes back here with the sign-in after the # */
+function readAuthHash(){
+  var h=String(location.hash||'').replace(/^#/,'');
+  if(!/(^|&)(access_token|error|error_code)=/.test(h))return;
+  var p={};
+  h.split('&').forEach(function(kv){
+    var i=kv.indexOf('=');if(i<0)return;
+    try{p[decodeURIComponent(kv.slice(0,i))]=decodeURIComponent(kv.slice(i+1).replace(/\+/g,' '));}catch(e){}
+  });
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  if(p.error||p.error_code){
+    var old=/expired|invalid|otp/i.test((p.error_code||'')+' '+(p.error_description||''));
+    openModal('That link didn’t work',(old?'The link has expired or was already used.':(p.error_description||'Supabase turned it down.'))+
+      ' Ask for a new one: Settings → Cloud sync → Forgot password.',[{label:'OK',style:'pri'}]);
+    return;
+  }
+  if(p.type!=='recovery'||!p.access_token)return;
+  askNewPassword(p,'');
+}
+window.addEventListener('hashchange',readAuthHash);   /* the link opened in a tab that already had the app */
+function askNewPassword(p,note){
+  openModal('Set a new password',(note?note+' ':'')+'It’s the same login for Quest Board and Sunday Table. At least 6 characters.',[
+    {label:'Save password',style:'pri',keepOpen:true,run:function(v){saveNewPassword(p,String(v.pw||''));}},
+    {label:'Cancel',style:'ghost'}],
+    {html:'<div class="f"><label for="np-pass">New password</label><input type="password" name="pw" id="np-pass" autocomplete="new-password"></div>',focus:true});
+}
+async function saveNewPassword(p,pw){
+  var msg=document.getElementById('modal-m');
+  if(pw.length<6){if(msg)msg.textContent='That’s too short. Use at least 6 characters.';return;}
+  if(msg)msg.textContent='Saving…';
+  try{
+    var r=await withTimeout(fetch(SB_URL+'/auth/v1/user',{method:'PUT',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+p.access_token,'Content-Type':'application/json'},body:JSON.stringify({password:pw})}),20000);
+    var j=null;try{j=await r.json();}catch(e){}
+    if(!r.ok){
+      var why=(j&&(j.msg||j.error_description||j.message))||('HTTP '+r.status);
+      if(r.status===401||r.status===403){closeModal();openModal('That link has expired','Ask for a new one: Settings → Cloud sync → Forgot password.',[{label:'OK',style:'pri'}]);return;}
+      if(msg)msg.textContent=/same|different/i.test(why)?'That’s your current password. Pick a new one, or just sign in with it.':why;
+      return;
+    }
+    closeModal();
+    var user=j&&j.id?j:null,email=(user&&user.email)||'';
+    /* this device was already this board: stay signed in and carry on */
+    if(user&&Q.sb&&Q.sb.uid===user.id&&Q.base&&!sheetOn()){
+      Q.sb={email:email,uid:user.id,pending:false};
+      keepSession({access_token:p.access_token,refresh_token:p.refresh_token,expires_in:+p.expires_in||3600,user:user});
+      Q.lastErr='';await sync();renderProfile();
+      toast('Password changed. You’re signed in.');
+      return;
+    }
+    /* a fresh copy (often the browser, not the Home Screen app): don't move boards around here, just say what to do */
+    Q.sb={email:email};saveQ();
+    openModal('Password changed','Sign in with your new password'+(email?' ('+email+')':'')+' in Settings → Cloud sync'+
+      (onComputer()?'.':', in the Quest Board app on your Home Screen if that’s where you use it.'),
+      [{label:'OK',style:'pri',run:function(){openSettings();setSheetMsg('');}}]);
+  }catch(e){if(msg)msg.textContent=cloudErr(e);}
+}
+
+/* ---------- 5.1: evening reminders (push notifications) ----------
+   The phone is signed up with Apple's (or Google's) push service, and that address is
+   kept in Supabase. Every 15 minutes Supabase checks whose evening time has come and,
+   if today isn't closed out or tomorrow isn't planned, sends one notification. */
+var VAPID_PUB='BGQGEjbX8_ZKKFEky8Ewqgom5FQRw_fJmCm7pvYe-ERue4bKP1-GpBFBDYVM_1xUzD0tTwkhMiZaxSy1rdOjD_E';
+var PUSH_KEY='quest-board-push',PUSH_MSG='',PUSH_SUB=undefined;
+function pushPrefs(){try{return JSON.parse(localStorage.getItem(PUSH_KEY)||'null')||{};}catch(e){return {};}}
+function savePushPrefs(p){try{if(p)localStorage.setItem(PUSH_KEY,JSON.stringify(p));else localStorage.removeItem(PUSH_KEY);}catch(e){}}
+function pushTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'America/Denver';}catch(e){return 'America/Denver';}}
+function isAppleMobile(){return /iPhone|iPad|iPod/i.test(navigator.userAgent||'')||(/Macintosh/.test(navigator.userAgent||'')&&navigator.maxTouchPoints>1);}
+function pushSupport(){
+  if(!('serviceWorker' in navigator))return 'none';
+  if(!('PushManager' in window)||!('Notification' in window))return isAppleMobile()&&!standaloneNow()?'homescreen':'none';
+  return 'ok';
+}
+function b64ToBytes(s){
+  s=(s+'===='.slice((s.length%4)||4)).replace(/-/g,'+').replace(/_/g,'/');
+  var raw=atob(s),out=new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
+  return out;
+}
+async function pushReg(){return await withTimeout(navigator.serviceWorker.ready,8000);}
+async function pushCurrent(){
+  if(pushSupport()!=='ok')return null;
+  try{var reg=await pushReg();return await reg.pushManager.getSubscription();}catch(e){return null;}
+}
+function setPushMsg(m){PUSH_MSG=m;renderPushSection();}
+function timeLabel(hm){
+  var h=+hm.slice(0,2),m=hm.slice(3);
+  return (h%12||12)+(m==='00'?'':':'+m)+(h<12?' am':' pm');
+}
+async function pushOn(){
+  if(!cloudOn()){setPushMsg('Sign in under Cloud sync first.');return;}
+  setPushMsg('Asking for permission…');
+  try{
+    var perm=await Notification.requestPermission();
+    if(perm!=='granted'){setPushMsg(perm==='denied'?'':'Reminders need permission to show notifications.');return;}
+    var reg=await pushReg();
+    var sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(VAPID_PUB)});
+    var j=sub.toJSON(),pr=pushPrefs();
+    var row={endpoint:j.endpoint,user_id:Q.sb.uid,p256dh:j.keys.p256dh,auth:j.keys.auth,tz:pushTz(),
+             evening:pr.evening||'21:00',weekly_on:pr.weekly!==false,evening_on:true};
+    await sbRest('qb_push?on_conflict=endpoint',{method:'POST',
+      headers:{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([row])});
+    savePushPrefs({endpoint:j.endpoint,evening:row.evening,weekly:row.weekly_on,tz:row.tz});
+    PUSH_SUB=sub;setPushMsg('');
+    toast('Reminders on. You’ll hear from Quest Board at '+timeLabel(row.evening)+' if there’s something left.');
+  }catch(e){setPushMsg(cloudErr(e));}
+}
+async function pushChange(fields,quiet){
+  var pr=pushPrefs();if(!pr.endpoint)return;
+  try{
+    await sbRest('qb_push?endpoint=eq.'+encodeURIComponent(pr.endpoint),{method:'PATCH',
+      headers:{'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(fields)});
+    if('evening' in fields)pr.evening=fields.evening;
+    if('weekly_on' in fields)pr.weekly=fields.weekly_on;
+    if('tz' in fields)pr.tz=fields.tz;
+    savePushPrefs(pr);
+    if(!quiet)toast('Saved.');
+  }catch(e){if(!quiet)setPushMsg(cloudErr(e));}
+  renderPushSection();
+}
+async function pushOff(quiet){
+  var pr=pushPrefs(),sub=await pushCurrent();
+  try{if(sub)await sub.unsubscribe();}catch(e){}
+  try{if(pr.endpoint&&Q.sb&&Q.sb.refresh)await sbRest('qb_push?endpoint=eq.'+encodeURIComponent(pr.endpoint),{method:'DELETE',headers:{'Prefer':'return=minimal'}});}catch(e){}
+  savePushPrefs(null);PUSH_SUB=null;PUSH_MSG='';
+  renderPushSection();
+  if(!quiet)toast('Reminders off on this '+devWord()+'.');
+}
+async function pushTest(){
+  var pr=pushPrefs();if(!pr.endpoint)return;
+  setPushMsg('Sending…');
+  try{
+    var tok=await sbToken(false);
+    var r=await withTimeout(fetch(SB_URL+'/functions/v1/quest-board',{method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+tok,'Content-Type':'application/json'},
+      body:JSON.stringify({action:'test',endpoint:pr.endpoint})}),20000);
+    var j=null;try{j=await r.json();}catch(e){}
+    if(!j||!j.ok)throw {quiet:true,msg:(j&&j.error)||('The reminder service didn’t answer (HTTP '+r.status+').')};
+    setPushMsg('Sent. It should show up in a few seconds'+(isAppleMobile()?' (lock the phone or switch apps to see it).':'.'));
+  }catch(e){
+    if(e&&e.quiet&&/stopped accepting/.test(e.msg)){savePushPrefs(null);PUSH_SUB=null;}
+    setPushMsg(cloudErr(e));
+  }
+}
+/* travelling: keep the evening time in the zone you're in */
+function pushKeepTz(){
+  var pr=pushPrefs();
+  if(pr.endpoint&&cloudOn()&&pr.tz!==pushTz())pushChange({tz:pushTz()},true);
+}
+async function renderPushSection(){
+  var body=document.getElementById('push-body'),sum=document.getElementById('sum-push');
+  if(!body)return;
+  var sup=pushSupport(),pr=pushPrefs(),h='',s='';
+  if(sup==='homescreen'){
+    s='Home Screen app only';
+    h='<p class="sub" style="margin:0;">On iPhone, notifications only work in the Quest Board app on your Home Screen. In Safari tap Share → Add to Home Screen, open Quest Board from there, and turn reminders on in Settings.</p>';
+  }else if(sup!=='ok'){
+    s='Not available';
+    h='<p class="sub" style="margin:0;">This browser can’t show notifications from Quest Board.</p>';
+  }else if(!cloudOn()){
+    s='Sign in first';
+    h='<p class="sub" style="margin:0;">Reminders come from the cloud, so sign in under Cloud sync first.</p>';
+  }else if(Notification.permission==='denied'){
+    s='Blocked';
+    h='<p class="sub" style="margin:0;">Notifications are turned off for Quest Board. '+(isAppleMobile()?
+      'Turn them on in the iPhone Settings app → Notifications → Quest Board, then come back here.':
+      'Allow them in this browser’s site settings, then come back here.')+'</p>';
+  }else{
+    if(PUSH_SUB===undefined){PUSH_SUB=await pushCurrent();return renderPushSection();}
+    var on=!!(PUSH_SUB&&pr.endpoint&&PUSH_SUB.endpoint===pr.endpoint);
+    if(on){
+      s=timeLabel(pr.evening||'21:00');
+      var opts='';
+      for(var m=17*60;m<=23*60+30;m+=30){
+        var hm=('0'+Math.floor(m/60)).slice(-2)+':'+('0'+m%60).slice(-2);
+        opts+='<option value="'+hm+'"'+(hm===(pr.evening||'21:00')?' selected':'')+'>'+timeLabel(hm)+'</option>';
+      }
+      h='<p class="sub" style="margin:0 0 12px;">One nudge in the evening, only when there’s something left: closing out today or planning tomorrow. Nothing comes on days you’re already done.</p>'+
+        '<div class="f"><label for="push-time">Evening reminder at</label><select id="push-time">'+opts+'</select></div>'+
+        '<div class="f"><label class="check"><input type="checkbox" id="push-weekly"'+(pr.weekly!==false?' checked':'')+'> On Sundays, include the weekly check-in</label></div>'+
+        '<div class="f-acts"><button class="btn2" data-a="push-test">Send a test</button><button class="btn2" data-a="push-off">Turn off</button></div>';
+    }else{
+      s='Off';
+      h='<p class="sub" style="margin:0 0 12px;">Get a notification in the evening if today isn’t closed out or tomorrow isn’t planned. Nothing comes on days you’re already done. Each '+devWord()+' is turned on separately.</p>'+
+        '<div class="f-acts"><button class="btn" data-a="push-on">Turn on reminders</button></div>';
+    }
+  }
+  if(PUSH_MSG)h+='<p class="sub" style="margin:10px 0 0;color:var(--gold);">'+esc(PUSH_MSG)+'</p>';
+  if(body.getAttribute('data-h')!==h){body.innerHTML=h;body.setAttribute('data-h',h);}   /* unchanged: leave an open time picker alone */
+  if(sum)sum.textContent=s;
+}
+document.addEventListener('change',function(e){
+  var t=e.target;if(!t)return;
+  if(t.id==='push-time')pushChange({evening:t.value});
+  else if(t.id==='push-weekly')pushChange({weekly_on:!!t.checked});
 });
 
 /* ---------- focus cards ----------
@@ -5727,7 +6069,8 @@ document.addEventListener('visibilitychange',function(){
 });
 window.addEventListener('online',function(){if(connected())sync();});
 /* hand edits in the sheet show up within a minute or two while the app is open */
-setInterval(function(){if(connected()&&document.visibilityState==='visible'&&!Q.outbox.length)sync();},90000);
+setInterval(function(){if(connected()&&document.visibilityState==='visible'&&!Q.outbox.length&&
+  !(RT.joined&&Date.now()-(Q.lastOk||0)<600000))sync();},90000);
 /* left open over midnight on Sunday: habits reopen without a relaunch */
 setInterval(function(){
   if(document.visibilityState!=='visible'||pullBlocked())return;
@@ -5796,7 +6139,7 @@ var PANELS={
   caseid:  function(){renderCase();},
   month:   function(){renderMonth();},
   ideas:   function(){renderIdeas();},
-  profile: function(){renderProfile();renderSheetSection();renderCatEditor();renderStyles();renderLogos();
+  profile: function(){renderProfile();renderSheetSection();renderPushSection();renderCatEditor();renderStyles();renderLogos();
                       renderPalettes();renderSummaries();}
 };
 var STALE={};
@@ -6551,6 +6894,10 @@ document.addEventListener('click',function(e){
   else if(a==='sheet-sync'){Q.lastErr='';sync().then(function(){toast(Q.lastErr?Q.lastErr:'Synced.');renderProfile();});}
   else if(a==='sheet-off')danger(el,cloudOn()?cloudSignOut:disconnectSheet);
   else if(a==='cloud-signin')cloudSignIn(document.getElementById('cl-email').value,document.getElementById('cl-pass').value);
+  else if(a==='cloud-forgot')cloudForgot(document.getElementById('cl-email').value);
+  else if(a==='push-on')pushOn();
+  else if(a==='push-off')danger(el,function(){pushOff(false);});
+  else if(a==='push-test')pushTest();
   else if(a==='trend'){var tw=+el.getAttribute('data-w');TREND_SEL=TREND_SEL===tw?null:tw;renderTrends();}
   else if(a==='pb-all'){U.pbAll=!U.pbAll;renderPlaybook();}
   else if(a==='season-new')openSeasonForm(null);
@@ -6657,7 +7004,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='5.0';
+var APP_VERSION='5.1';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['plan','focusMax','rate','step','diffCurve','lastReview','reviewSnooze','reviewsDone','identities','coolDays','letGo','ideasHidden'];
@@ -7506,7 +7853,9 @@ window.addEventListener('resize',measureWallet);
   document.getElementById('app').classList.add('ready');
   measureWallet();
   renderAll();
+  readAuthHash();
   if(connected())sync();
+  pushKeepTz();
   registerOffline();
 })();
 })();

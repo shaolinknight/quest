@@ -2,8 +2,9 @@
    Keeps a copy of the app so it opens with no signal. When you're online it
    always tries the network first, so a new version shows up on the next
    launch; the saved copy is only used when the network is slow or gone.
-   Cloud sync requests (Supabase) are never touched here; the app handles those. */
-var CACHE = 'quest-board-5.0';
+   Cloud sync requests (Supabase) are never touched here; the app handles those.
+   It also shows the evening reminders, which arrive even when the app is closed. */
+var CACHE = 'quest-board-5.1';
 var PAGE = './';
 var EXTRAS = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
@@ -60,4 +61,23 @@ self.addEventListener('fetch', function (e) {
     }));
   }
   /* everything else (cloud sync with Supabase) goes straight to the network */
+});
+
+/* evening reminders from Supabase */
+self.addEventListener('push', function (e) {
+  var d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Quest Board', {
+    body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png',
+    tag: d.tag || 'quest-board', data: { url: d.url || './' }
+  }));
+});
+/* tapping it opens Quest Board (or brings it forward if it's already open) */
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  var url = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+    for (var i = 0; i < list.length; i++) { if ('focus' in list[i]) return list[i].focus(); }
+    return self.clients.openWindow ? self.clients.openWindow(url) : null;
+  }));
 });
