@@ -285,7 +285,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
 .f2{display:flex;gap:10px;}
 .f2>div{flex:1;}
 label{display:block;font-size:.75rem;font-weight:700;color:var(--dim);margin-bottom:5px;}
-input[type=text],input[type=number],input[type=date],select{width:100%;font-family:inherit;font-size:.92rem;padding:9px 10px;
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],select{width:100%;font-family:inherit;font-size:.92rem;padding:9px 10px;
   border:1px solid var(--edge);border-radius:10px;background:var(--void);color:var(--chalk);}
 select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);
   background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
@@ -1419,7 +1419,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 
 /* ===================== 4.5 polish ===================== */
 /* iPhone zooms the whole page when a field under 16px gets focus; keep every field at 16 */
-input[type=text],input[type=number],input[type=date],input[type=url],input[type=search],input:not([type]),select,textarea{font-size:16px!important;}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=url],input[type=search],input:not([type]),select,textarea{font-size:16px!important;}
 input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);flex-shrink:0;}
 /* palette cards: name and description on their own lines */
 .pal-n,.pal-d{display:block;}
@@ -1715,7 +1715,7 @@ details>summary{min-height:32px;}
     <div id="backup-nag"></div>
     <div class="settings">
       <details class="sect" id="sect-sheet">
-        <summary>Google Sheet<span id="sum-sheet"></span></summary>
+        <summary>Cloud sync<span id="sum-sheet"></span></summary>
         <div class="sect-body" id="sheet-body"></div>
       </details>
       <details class="sect" id="sect-look">
@@ -4110,13 +4110,13 @@ function renderDeskBanner(){
   var el=document.getElementById('desk-banner');if(!el)return;
   if(!onComputer()||connected()||deskNudgeOff()){el.innerHTML='';return;}
   el.innerHTML='<div class="desk-nudge"><div><b>Same board as your phone?</b>'+
-    '<span>This computer keeps its own copy. Connect the same Google Sheet you use on your phone and both stay in step.</span></div>'+
-    '<div class="dn-acts"><button class="btn sm" data-a="desk-connect">Connect</button><button class="btn2 sm" data-a="desk-nudge-off">Not now</button></div></div>';
+    '<span>This computer keeps its own copy until you sign in. Use the same login as on your phone and both stay in step.</span></div>'+
+    '<div class="dn-acts"><button class="btn sm" data-a="desk-connect">Sign in</button><button class="btn2 sm" data-a="desk-nudge-off">Not now</button></div></div>';
 }
 setTimeout(function(){layoutToday();renderSideFoot();},0);
 function deskConnect(){
   openSettings();
-  var d=document.getElementById('sect-sheet');if(d){d.open=true;setTimeout(function(){var i=document.getElementById('sh-url');if(i)try{i.focus();}catch(e){}},320);}
+  var d=document.getElementById('sect-sheet');if(d){d.open=true;setTimeout(function(){var i=document.getElementById('cl-email');if(i)try{i.focus();}catch(e){}},320);}
 }
 
 
@@ -4777,6 +4777,272 @@ function motionMode(){
   var m=mqOf('(prefers-reduced-motion: reduce)');return m&&m.matches?'calm':'full';
 }
 
+
+/* =====================================================================
+   5.0 — cloud sync through Supabase (replaces the Google Sheet)
+   Same idea as before: this device's copy saves instantly, changes queue
+   in Q.outbox, sync() sends them and pulls the whole board back. Only the
+   transport changed. Each quest, milestone list, reward, trophy, history
+   entry, close-out, season and setting is one row in the qb_docs table,
+   and only your login can read or write your rows.
+   Same Supabase project and login as Sunday Table.
+   ===================================================================== */
+var SB_URL='https://drkddavnbumydkjcigmt.supabase.co';
+var SB_KEY='sb_publishable_DWEQiBj8UJW4stsz97hyGQ_p1jD06SQ';
+var SB_KINDS=['quests','milestones','rewards','trophies','history','seasons','settings','journal'];
+
+/* signed in and past the "which board wins" question */
+function cloudOn(){return !!(Q.sb&&Q.sb.refresh&&!Q.sb.pending);}
+function sheetOn(){return !!(Q.url&&Q.key);}
+
+/* ---------- signing in, and staying signed in ---------- */
+async function sbAuth(grant,body){
+  var r=await withTimeout(fetch(SB_URL+'/auth/v1/token?grant_type='+grant,{method:'POST',
+    headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)}),20000);
+  var j=null;try{j=await r.json();}catch(e){}
+  if(!r.ok){
+    var err=new Error((j&&(j.error_description||j.msg||j.message))||('HTTP '+r.status));
+    err.status=r.status;throw err;
+  }
+  return j;
+}
+function keepSession(j){
+  var old=Q.sb||{};
+  Q.sb={access:j.access_token,refresh:j.refresh_token,exp:Date.now()+((j.expires_in||3600)*1000),
+        email:(j.user&&j.user.email)||old.email||'',uid:(j.user&&j.user.id)||old.uid||'',pending:!!old.pending};
+  saveQ();
+}
+var REFRESHING=null;
+/* A sign-in lasts an hour; the refresh token renews it quietly. Only one
+   renewal runs at a time, because each one replaces the refresh token. */
+function sbToken(force){
+  if(!(Q.sb&&Q.sb.refresh))return Promise.reject({quiet:true,msg:'Signed out. Sign in again in Settings → Cloud sync.'});
+  if(!force&&Q.sb.access&&Date.now()<Q.sb.exp-60000)return Promise.resolve(Q.sb.access);
+  if(!REFRESHING){
+    REFRESHING=sbAuth('refresh_token',{refresh_token:Q.sb.refresh}).then(function(j){
+      REFRESHING=null;keepSession(j);return j.access_token;
+    },function(e){
+      REFRESHING=null;
+      if(e&&(e.status===400||e.status===401)){
+        /* the login was revoked or expired: keep the email and queued changes, ask to sign in again */
+        Q.sb={email:Q.sb.email,uid:Q.sb.uid};saveQ();
+        throw {quiet:true,msg:'You were signed out. Sign in again in Settings → Cloud sync. Nothing waiting to sync is lost.'};
+      }
+      throw e;
+    });
+  }
+  return REFRESHING;
+}
+
+/* ---------- the table ---------- */
+async function sbRest(path,opts,retried){
+  opts=opts||{};
+  var tok=await sbToken(false);
+  var h={'apikey':SB_KEY,'Authorization':'Bearer '+tok};
+  Object.keys(opts.headers||{}).forEach(function(k){h[k]=opts.headers[k];});
+  var r=await withTimeout(fetch(SB_URL+'/rest/v1/'+path,{method:opts.method||'GET',headers:h,body:opts.body}),opts.ms||25000);
+  if(r.status===401&&!retried){await sbToken(true);return sbRest(path,opts,true);}
+  if(!r.ok){
+    var t='';try{t=await r.text();}catch(e){}
+    var err=new Error('HTTP '+r.status+(t?' '+t.slice(0,160):''));err.status=r.status;throw err;
+  }
+  return r;
+}
+function sbIds(ids){
+  return '('+ids.map(function(i){return '"'+String(i).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"';}).join(',')+')';
+}
+/* one round of the queue: upserts in one request, deletes grouped by kind */
+async function sbSend(batch){
+  var puts=[],dels={};
+  batch.forEach(function(o){
+    if(o.kind==='del')(dels[o.t]=dels[o.t]||[]).push(o.k);
+    else puts.push({user_id:Q.sb.uid,kind:o.t,id:o.k,data:JSON.parse(o.json)});
+  });
+  if(puts.length)await sbRest('qb_docs?on_conflict=user_id,kind,id',{method:'POST',
+    headers:{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(puts)});
+  var ks=Object.keys(dels);
+  for(var i=0;i<ks.length;i++){
+    var ids=dels[ks[i]];
+    for(var j=0;j<ids.length;j+=80)
+      await sbRest('qb_docs?kind=eq.'+encodeURIComponent(ks[i])+'&id=in.'+encodeURIComponent(sbIds(ids.slice(j,j+80))),
+        {method:'DELETE',headers:{'Prefer':'return=minimal'}});
+  }
+}
+/* the whole board, in the order things were first saved, 1000 rows a page */
+async function sbPull(){
+  var d={},from=0,size=1000;
+  SB_KINDS.forEach(function(k){d[k]=[];});
+  for(;;){
+    var r=await sbRest('qb_docs?select=kind,id,data&order=seq.asc',
+      {headers:{'Range-Unit':'items','Range':from+'-'+(from+size-1)}});
+    var rows=await r.json();
+    rows.forEach(function(x){
+      if(!d[x.kind])return;
+      if(x.kind==='milestones'){if(Array.isArray(x.data))d.milestones=d.milestones.concat(x.data);}
+      else d[x.kind].push(x.data);
+    });
+    if(rows.length<size)break;
+    from+=size;
+  }
+  return d;
+}
+function cloudErr(e){
+  if(e&&e.quiet)return e.msg;
+  var m=String(e&&e.message||e||'');
+  if(e&&(e.status===401||e.status===403))return 'Supabase didn’t accept your login. Sign out and in again.';
+  if(/timeout/.test(m))return 'Supabase took too long to answer. If it keeps happening, check that the project isn’t paused at supabase.com.';
+  if(/fetch|network|load/i.test(m))return 'Can’t reach Supabase right now.';
+  return m||'Sync failed.';
+}
+
+/* ---------- sync: cloud when signed in, the old sheet until then ---------- */
+async function sync(){
+  if(!cloudOn())return sheetOn()?sheetSync():undefined;
+  if(SYNCING)return;
+  SYNCING=true;renderSyncDot();
+  try{
+    while(Q.outbox.length){
+      var batch=Q.outbox.slice(0,150);
+      await sbSend(batch);
+      var sent={};batch.forEach(function(o){sent[o.seq]=1;});
+      Q.outbox=Q.outbox.filter(function(o){return !sent[o.seq];});
+      saveQ();
+    }
+    if(pullBlocked()){PULL_WANTED=true;}
+    else{
+      var d=await sbPull();
+      if(!pullBlocked())applyPull(d);else PULL_WANTED=true;
+    }
+    Q.lastOk=Date.now();Q.lastErr='';
+  }catch(e){
+    Q.lastErr=cloudErr(e);
+  }finally{
+    SYNCING=false;saveQ();renderSyncDot();renderSheetSection();versionLine();
+  }
+  if(Q.outbox.length&&!Q.lastErr)scheduleSync(800);
+}
+
+/* ---------- moving in ---------- */
+async function cloudSignIn(email,pw){
+  email=String(email||'').trim();pw=String(pw||'');
+  if(!/.+@.+/.test(email)){toast('Type your email.');return;}
+  if(!pw){toast('Type your password.');return;}
+  setSheetMsg('Signing in…');
+  var j;
+  try{j=await sbAuth('password',{email:email,password:pw});}
+  catch(e){
+    setSheetMsg(e&&e.status===400?'That email and password didn’t match. It’s the same login as Sunday Table.':cloudErr(e));
+    return;
+  }
+  var prev=Q.sb||{},again=prev.uid&&j.user&&prev.uid===j.user.id&&Q.base&&!sheetOn();
+  Q.sb={email:email,uid:j.user&&j.user.id,pending:!again};
+  keepSession(j);
+  var pi=document.getElementById('cl-pass');if(pi)pi.value='';
+  if(again){
+    /* signed back in after being signed out: carry on where it left off */
+    setSheetMsg('');Q.lastErr='';await sync();toast('Signed in. Back in sync.');renderProfile();return;
+  }
+  /* coming from the Google Sheet: one last pull, so nothing from another device is left behind */
+  if(sheetOn()){setSheetMsg('Picking up the latest from your Google Sheet…');try{await sheetSync();}catch(e){}}
+  setSheetMsg('Looking for your board…');
+  var d;
+  try{d=await sbPull();}
+  catch(e){Q.sb=null;saveQ();setSheetMsg(cloudErr(e));return;}
+  setSheetMsg('');
+  var cq=d.quests.length,cr=d.rewards.length,lq=S.goals.length,lr=S.rewards.length;
+  if(!cq&&!cr){
+    openModal('Move your board to the cloud?',
+      lq+' quests, '+lr+' rewards, '+S.redemptions.length+' trophies, '+S.log.length+' history entries and '+
+      (S.journal||[]).length+' close-outs go into Supabase. After that, every device you sign in on shares this board.'+
+      (sheetOn()?' Your Google Sheet stays as it is, but nothing reads it any more.':''),[
+      {label:'Move it',style:'pri',run:function(){cloudPushAll('Moved. Your board lives in the cloud now.');}},
+      {label:'Cancel',style:'ghost',run:cloudCancel}]);
+  }else{
+    openModal('Your cloud board is waiting',
+      'The cloud has '+cq+' quests and '+cr+' rewards. This '+devWord()+' has '+lq+' quests and '+lr+' rewards. Which one should win?'+
+      (!S.log.length&&!S.redemptions.length?' Nothing has been logged on this '+devWord()+' yet, so you most likely want the cloud board.':''),[
+      {label:'Use the cloud board',style:'pri',run:function(){useCloudBoard(d);}},
+      {label:'Replace the cloud with this '+devWord(),style:'danger',run:function(){cloudPushAll('The cloud now matches this '+devWord()+'.');}},
+      {label:'Cancel',style:'ghost',run:cloudCancel}]);
+  }
+}
+function useCloudBoard(d){
+  snap();
+  var waiting=Q.outbox.slice();
+  fromData(d);
+  var base=sigOf(toRows());
+  /* anything this device still hadn't sent goes on top, and is sent next */
+  if(waiting.length){var R=toRows();applyOpsTo(R,waiting);fromData(rowsToData(R));}
+  Q.outbox=[];Q.base=base;Q.url='';Q.key='';Q.sb.pending=false;Q.lastOk=Date.now();Q.lastErr='';
+  saveQ();saveLocal();queueChanges();UNDO=[];renderAll();
+  toast('Loaded your board from the cloud.');
+}
+async function cloudPushAll(done){
+  setSheetMsg('Copying…');
+  var R=toRows(),all=[];
+  Object.keys(R).forEach(function(t){Object.keys(R[t]).forEach(function(k){all.push({user_id:Q.sb.uid,kind:t,id:k,data:R[t][k]});});});
+  try{
+    await sbRest('qb_docs?kind=in.'+encodeURIComponent('('+SB_KINDS.join(',')+')'),{method:'DELETE',headers:{'Prefer':'return=minimal'}});
+    for(var i=0;i<all.length;i+=400)
+      await sbRest('qb_docs',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify(all.slice(i,i+400)),ms:60000});
+    Q.outbox=[];Q.base=sigOf(R);Q.url='';Q.key='';Q.sb.pending=false;Q.lastOk=Date.now();Q.lastErr='';saveQ();
+    setSheetMsg('');toast(done,true);
+  }catch(e){setSheetMsg(cloudErr(e));}
+  renderSheetSection();renderSyncDot();renderProfile();versionLine();
+}
+function cloudCancel(){Q.sb=null;saveQ();setSheetMsg('');renderSheetSection();}
+function cloudSignOut(){
+  Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0,sb:null};
+  saveQ();renderSheetSection();renderSyncDot();renderProfile();versionLine();
+  toast('Signed out. Your board stays on this '+devWord()+'.');
+}
+
+/* ---------- Settings → Cloud sync ---------- */
+function renderSheetSection(){
+  var body=document.getElementById('sheet-body'),sum=document.getElementById('sum-sheet');
+  if(!body)return;
+  var st=syncState();
+  if(sum){
+    sum.textContent=cloudOn()?(st==='err'?'Can’t sync':Q.outbox.length?Q.outbox.length+' waiting':'Synced '+sinceText(Q.lastOk||Date.now())):
+      sheetOn()?'Move to the cloud':'Not signed in';
+    sum.style.color=st==='err'||(!cloudOn()&&sheetOn())?'var(--ember)':'';
+  }
+  var h='';
+  if(cloudOn()){
+    h+='<div class="kv"><span>Signed in as</span><b>'+esc(Q.sb.email||'you')+'</b></div>'+
+       '<div class="kv"><span>Last synced</span><b>'+(Q.lastOk?sinceText(Q.lastOk):'not yet')+'</b></div>'+
+       '<div class="kv"><span>Waiting to send</span><b>'+Q.outbox.length+'</b></div>';
+    if(Q.lastErr)h+='<p class="sub" style="margin:8px 0 0;color:var(--ember);">'+esc(Q.lastErr)+'</p>';
+    h+='<div class="f-acts"><button class="btn2" data-a="sheet-sync">Sync now</button>'+
+       '<button class="btn2" data-a="sheet-off">Sign out</button></div>';
+  }else{
+    h+='<p class="sub" style="margin:0 0 12px;">'+(sheetOn()?
+        'Quest Board now syncs through Supabase instead of your Google Sheet. Sign in to move your board over. Until then it keeps using the sheet.':
+        'Keeps your board safe in the cloud, so it survives a lost phone and every device you sign in on shares one board.')+
+       ' Use the same email and password as Sunday Table.</p>'+
+       (Q.lastErr&&Q.sb&&Q.sb.email?'<p class="sub" style="margin:0 0 12px;color:var(--ember);">'+esc(Q.lastErr)+'</p>':'')+
+       '<div class="f"><label for="cl-email">Email</label><input type="email" id="cl-email" autocomplete="username" autocapitalize="off" spellcheck="false" value="'+esc((Q.sb&&Q.sb.email)||'')+'"></div>'+
+       '<div class="f"><label for="cl-pass">Password</label><input type="password" id="cl-pass" autocomplete="current-password"></div>'+
+       '<div class="f-acts"><button class="btn" data-a="cloud-signin">Sign in</button></div>';
+  }
+  if(SHEET_MSG)h+='<p class="sub" style="margin:10px 0 0;color:var(--gold);">'+esc(SHEET_MSG)+'</p>';
+  /* don't wipe what you're typing */
+  var u=document.getElementById('cl-email'),k=document.getElementById('cl-pass');
+  var uv=u?u.value:'',kv=k?k.value:'';
+  body.innerHTML=h;
+  if(uv&&document.getElementById('cl-email'))document.getElementById('cl-email').value=uv;
+  if(kv&&document.getElementById('cl-pass'))document.getElementById('cl-pass').value=kv;
+  var bb=document.getElementById('backup-blurb');
+  if(bb)bb.textContent=cloudOn()?
+    'Your board is backed up in the cloud. A file copy is still handy before big changes.':
+    'Your data lives on this '+devWord()+' only. Save a copy every so often, or sign in to Cloud sync.';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target&&(e.target.id==='cl-pass'||e.target.id==='cl-email')){
+    e.preventDefault();var b=document.querySelector('[data-a="cloud-signin"]');if(b)b.click();}
+});
+
 /* ---------- focus cards ----------
    Card rules (every card in the app follows these):
    1. Header: title, then any badges, then at most one icon control on the right.
@@ -5320,7 +5586,7 @@ function backupDue(){
 function backupNagHTML(){
   if(!backupDue())return '';
   var lb=S.settings.lastBackup;
-  if(connected())return '<div class="nag"><span>Your Google Sheet hasn\u2019t synced since <b>'+
+  if(connected())return '<div class="nag"><span>Your board hasn\u2019t synced since <b>'+
     (Q.lastOk?ago(Q.lastOk):'you connected')+'</b>. '+esc(Q.lastErr||'')+'</span>'+
     '<button class="btn sm" data-a="sheet-sync">Sync now</button></div>';
   return '<div class="nag"><span>'+(lb?'Last backup was <b>'+ago(lb)+'</b>.':'You haven’t saved a backup yet.')+
@@ -6279,11 +6545,12 @@ document.addEventListener('click',function(e){
   else if(a==='save-settings')saveSettings();
   else if(a==='reset')danger(el,function(){
     if(!connected())return resetAll();
-    openModal('Reset the sheet too?','You\u2019re connected, so this also clears every tab in your Google Sheet and puts the starter set back.',[
+    openModal('Reset the cloud too?','You\u2019re signed in, so this also clears your board in the cloud on every device and puts the starter set back.',[
       {label:'Reset everything',style:'danger',run:resetAll},{label:'Cancel',style:'ghost'}]);});
   else if(a==='sheet-connect')connectSheet(document.getElementById('sh-url').value,document.getElementById('sh-key').value);
   else if(a==='sheet-sync'){Q.lastErr='';sync().then(function(){toast(Q.lastErr?Q.lastErr:'Synced.');renderProfile();});}
-  else if(a==='sheet-off')danger(el,disconnectSheet);
+  else if(a==='sheet-off')danger(el,cloudOn()?cloudSignOut:disconnectSheet);
+  else if(a==='cloud-signin')cloudSignIn(document.getElementById('cl-email').value,document.getElementById('cl-pass').value);
   else if(a==='trend'){var tw=+el.getAttribute('data-w');TREND_SEL=TREND_SEL===tw?null:tw;renderTrends();}
   else if(a==='pb-all'){U.pbAll=!U.pbAll;renderPlaybook();}
   else if(a==='season-new')openSeasonForm(null);
@@ -6390,11 +6657,11 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='4.6';
+var APP_VERSION='5.0';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['plan','focusMax','rate','step','diffCurve','lastReview','reviewSnooze','reviewsDone','identities','coolDays','letGo','ideasHidden'];
-var Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0};
+var Q={url:'',key:'',outbox:[],base:null,seq:0,lastOk:0,lastErr:'',sheet:'',v:0,sb:null};
 var SYNCING=false,SYNC_T=null,PULL_WANTED=false;
 
 async function loadQ(){
@@ -6402,7 +6669,7 @@ async function loadQ(){
   if(!Array.isArray(Q.outbox))Q.outbox=[];
 }
 function saveQ(){try{STORE.set(SYNC_KEY,JSON.stringify(Q),false);}catch(e){}}
-function connected(){return !!(Q.url&&Q.key);}
+function connected(){return cloudOn()||sheetOn();}
 
 /* ---------- S <-> sheet rows ---------- */
 function tsOf(v){if(!v)return null;if(typeof v==='number')return v;var t=Date.parse(v);return isNaN(t)?null:t;}
@@ -6528,7 +6795,8 @@ function fromData(d){
 
 /* ---------- queue ---------- */
 function queueChanges(){
-  if(!connected()||!Q.base)return;
+  /* keep queueing while signed out of the cloud too, so nothing is lost before you sign back in */
+  if(!(connected()||(Q.sb&&Q.sb.uid&&!Q.sb.pending))||!Q.base)return;
   var cur=sigOf(toRows()),n=0;
   Object.keys(cur).forEach(function(t){
     var b=Q.base[t]||{},c=cur[t];
@@ -6594,8 +6862,8 @@ function pullBlocked(){
 }
 function scheduleSync(ms){clearTimeout(SYNC_T);SYNC_T=setTimeout(function(){sync();},ms||0);}
 
-async function sync(){
-  if(!connected()||SYNCING)return;
+async function sheetSync(){
+  if(!sheetOn()||SYNCING)return;
   SYNCING=true;renderSyncDot();
   var res=null;
   try{
@@ -6726,7 +6994,7 @@ function renderSyncDot(){
   var d=document.getElementById('syncdot');if(!d)return;
   d.className='syncdot '+({off:'',ok:'ok',wait:'wait',err:'err'})[syncState()];
 }
-function renderSheetSection(){
+function renderSheetSectionOld(){
   var body=document.getElementById('sheet-body'),sum=document.getElementById('sum-sheet');
   if(!body)return;
   var st=syncState();
@@ -7175,7 +7443,7 @@ function reviewExtrasHTML(){
 function versionLine(){
   var el=document.getElementById('version-line');
   var off=('serviceWorker' in navigator)&&navigator.serviceWorker.controller;
-  if(el)el.textContent='Quest Board '+APP_VERSION+(connected()?' · sheet connector v'+(Q.v||'?'):'')+
+  if(el)el.textContent='Quest Board '+APP_VERSION+(cloudOn()?' · cloud sync':sheetOn()?' · sheet connector v'+(Q.v||'?'):'')+
     (oldInstall()?' · old home screen icon':'')+
     (off?' · works offline':'');
 }
@@ -7201,11 +7469,11 @@ function renderReaddBanner(){
 }
 function readdHow(){
   openModal('Re-add Quest Board',
-    '1. Check the gear shows a green dot, so everything is in your sheet. (Gear \u2192 Backups \u2192 Save a backup file, for extra safety.)\n'+
-    '2. Copy your sheet link and passphrase somewhere handy.\n'+
+    '1. Check the gear shows a green dot, so everything is in the cloud. (Gear \u2192 Backups \u2192 Save a backup file, for extra safety.)\n'+
+    '2. Make sure you know your login (the same email and password as Sunday Table).\n'+
     '3. Delete Quest Board from your home screen.\n'+
     '4. In Safari, open your Quest Board link \u2192 Share \u2192 Add to Home Screen.\n'+
-    '5. Open the new icon \u2192 gear \u2192 Google Sheet \u2192 Connect \u2192 Use the sheet\u2019s board.',
+    '5. Open the new icon \u2192 gear \u2192 Cloud sync \u2192 Sign in \u2192 Use the cloud board.',
     [{label:'Got it',style:'pri'}]);
 }
 function registerOffline(){

@@ -1,9 +1,9 @@
 /* Quest Board — offline support.
    Keeps a copy of the app so it opens with no signal. When you're online it
-   always tries the network first, so a new version on Netlify shows up on the
-   next launch; the saved copy is only used when the network is slow or gone.
-   Google Sheet requests are never touched here; the app's own sync handles those. */
-var CACHE = 'quest-board-4.6';
+   always tries the network first, so a new version shows up on the next
+   launch; the saved copy is only used when the network is slow or gone.
+   Cloud sync requests (Supabase) are never touched here; the app handles those. */
+var CACHE = 'quest-board-5.0';
 var PAGE = './';
 var EXTRAS = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
@@ -59,5 +59,5 @@ self.addEventListener('fetch', function (e) {
       });
     }));
   }
-  /* everything else (the Google Sheet connector) goes straight to the network */
+  /* everything else (cloud sync with Supabase) goes straight to the network */
 });
