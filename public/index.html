@@ -82,7 +82,7 @@ body{font-family:var(--fbody);color:var(--chalk);font-size:15px;line-height:1.5;
 #app.ready~.tabbar{display:block;}
 .tabbar-in{display:flex;max-width:600px;margin:0 auto;}
 .tab{flex:1;background:none;border:none;color:var(--dimmer);font-family:inherit;
-  font-size:.7rem;font-weight:600;padding:6px 4px 4px;cursor:pointer;
+  font-size:.75rem;font-weight:600;padding:6px 4px 4px;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;}
 .tab svg{width:23px;height:23px;display:block;}
 .tab.on{color:var(--gold);}
@@ -109,7 +109,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
 .slot.empty{border-style:dashed;background:none;color:var(--dimmer);text-align:center;padding:13px;font-size:.8rem;}
 .slot-name{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;
   margin:0 0 6px;line-height:1.25;word-break:break-word;}
-.lvbadge{display:inline-block;font-size:.7rem;font-weight:700;color:var(--gold);
+.lvbadge{display:inline-block;font-size:.75rem;font-weight:700;color:var(--gold);
   border:1px solid var(--gold-dim);border-radius:6px;padding:1px 6px;margin-left:7px;
   vertical-align:middle;letter-spacing:0.04em;white-space:nowrap;}
 .lvbadge.cleared{color:var(--jade);border-color:var(--jade);}
@@ -117,7 +117,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
 .pips{color:var(--gold);letter-spacing:1.5px;}
 .dot{color:var(--dimmer);}
 .worth{color:var(--gold);font-weight:600;}
-.mult{color:var(--gold);font-weight:700;font-size:.7rem;border:1px solid var(--gold-dim);
+.mult{color:var(--gold);font-weight:700;font-size:.75rem;border:1px solid var(--gold-dim);
   border-radius:6px;padding:0 5px;line-height:1.5;}
 .locked{font-size:.8rem;color:var(--dimmer);margin-top:9px;font-style:italic;}
 
@@ -212,7 +212,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
   border-right:1px solid var(--edge);color:var(--chalk);font-family:inherit;font-size:.86rem;text-align:center;padding:8px 2px;}
 
 .chase{border:1px solid var(--gold-dim);border-radius:10px;background:var(--panel-2);padding:13px 14px;margin-bottom:20px;}
-.chase-h{font-size:.7rem;font-weight:700;color:var(--gold-dim);letter-spacing:0.08em;margin-bottom:10px;}
+.chase-h{font-size:.75rem;font-weight:700;color:var(--gold-dim);letter-spacing:0.08em;margin-bottom:10px;}
 .chase-r{margin-bottom:12px;}
 .chase-r:last-child{margin-bottom:0;}
 .chase-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:.86rem;}
@@ -231,7 +231,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
 .row-main{flex:1;min-width:0;}
 .row-name{font-weight:600;word-break:break-word;line-height:1.3;}
 .row-name.off{color:var(--dim);font-weight:500;}
-.flag{font-size:.7rem;font-weight:700;color:var(--gold);}
+.flag{font-size:.75rem;font-weight:700;color:var(--gold);}
 .flag.held{color:var(--jade);}
 .row-meta{font-size:.75rem;color:var(--dimmer);margin-top:3px;line-height:1.4;}
 .row-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
@@ -271,7 +271,7 @@ h2{font-family:var(--fdisp);font-weight:600;font-size:1.1rem;margin:0;}
 .shelf-h.first{margin-top:0;}
 .shelf-n{font-family:var(--fdisp);font-weight:600;font-size:.92rem;
   color:var(--chalk);min-width:0;overflow-wrap:anywhere;}
-.shelf-l{font-size:.7rem;font-weight:700;color:var(--gold-dim);white-space:nowrap;}
+.shelf-l{font-size:.75rem;font-weight:700;color:var(--gold-dim);white-space:nowrap;}
 
 .got{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--edge-soft);align-items:baseline;}
 .got:last-child{border-bottom:none;}
@@ -303,14 +303,14 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .srow2 input{flex:1;font-size:.86rem;}
 .crow{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
 .crow .num{width:18px;color:var(--dimmer);font-size:.8rem;flex-shrink:0;}
-.crow .cct{font-size:.7rem;color:var(--dimmer);width:62px;text-align:right;flex-shrink:0;}
+.crow .cct{font-size:.75rem;color:var(--dimmer);width:62px;text-align:right;flex-shrink:0;}
 
 .pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px;}
 .pstat{border:1px solid var(--edge-soft);border-radius:10px;padding:11px 10px;background:var(--panel);}
 .pstat{display:flex;flex-direction:column;justify-content:flex-start;}
 .pstat b{display:block;font-family:var(--fdisp);font-size:1.35rem;
   font-weight:800;color:var(--gold);line-height:1.1;letter-spacing:-0.02em;overflow-wrap:anywhere;}
-.pstat span{display:block;font-size:.7rem;color:var(--dimmer);margin-top:4px;line-height:1.25;}
+.pstat span{display:block;font-size:.75rem;color:var(--dimmer);margin-top:4px;line-height:1.25;}
 .brk{margin-bottom:6px;}
 .brk h3{font-family:var(--fdisp);font-size:.92rem;margin:0 0 12px;color:var(--dim);font-weight:600;}
 .brk-r{margin-bottom:10px;}
@@ -324,7 +324,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   align-items:center;gap:6px;}
 .logo-o.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);}
 .logo-o svg{width:34px;height:34px;display:block;}
-.logo-n{font-size:.7rem;color:var(--dim);font-weight:600;}
+.logo-n{font-size:.75rem;color:var(--dim);font-weight:600;}
 .logo-o.on .logo-n{color:var(--gold);}
 
 .styles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
@@ -332,10 +332,10 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   cursor:pointer;font-family:inherit;color:var(--chalk);text-align:left;}
 .sty.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);}
 .sty-n{font-size:1rem;font-weight:700;line-height:1.2;display:block;}
-.sty-d{font-size:.7rem;color:var(--dimmer);margin-top:4px;display:block;line-height:1.3;}
+.sty-d{font-size:.75rem;color:var(--dimmer);margin-top:4px;display:block;line-height:1.3;}
 .sty-p{display:block;height:16px;border-radius:6px;margin-top:8px;border:1px solid var(--edge-soft);}
 
-.pal-h{font-size:.7rem;font-weight:700;color:var(--gold-dim);letter-spacing:0.07em;
+.pal-h{font-size:.75rem;font-weight:700;color:var(--gold-dim);letter-spacing:0.07em;
   text-transform:uppercase;margin:2px 0 7px;}
 .pal-h+.pals{margin-bottom:16px;}
 .pals{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
@@ -347,7 +347,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .pal-sw{display:flex;gap:4px;margin-bottom:7px;}
 .pal-sw i{width:17px;height:17px;border-radius:6px;display:block;box-shadow:inset 0 0 0 1px rgba(128,128,128,.28);}
 .pal-n{font-size:.8rem;font-weight:700;line-height:1.2;}
-.pal-d{font-size:.7rem;color:var(--dimmer);margin-top:3px;line-height:1.35;}
+.pal-d{font-size:.75rem;color:var(--dimmer);margin-top:3px;line-height:1.35;}
 
 .note{border:1px dashed var(--edge);border-radius:10px;padding:16px;color:var(--dim);font-size:.86rem;}
 .vault{margin-top:30px;padding-top:18px;border-top:1px solid var(--edge-soft);}
@@ -401,7 +401,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .nextline{display:block;width:100%;text-align:left;background:var(--panel-2);border:1px dashed var(--edge);
   border-radius:10px;padding:7px 10px;margin-top:10px;font-family:inherit;font-size:.8rem;color:var(--chalk);
   cursor:pointer;line-height:1.35;}
-.nextline b{color:var(--gold);font-size:.7rem;letter-spacing:0.05em;margin-right:6px;}
+.nextline b{color:var(--gold);font-size:.75rem;letter-spacing:0.05em;margin-right:6px;}
 .row-next{font-size:.75rem;color:var(--dim);margin-top:3px;}
 .row-next b{color:var(--gold-dim);font-weight:700;}
 .search{margin-bottom:10px;}
@@ -448,7 +448,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .syncdot.ok{display:block;background:var(--jade);}
 .syncdot.wait{display:block;background:var(--gold);}
 .syncdot.err{display:block;background:var(--ember);}
-.version{text-align:center;font-size:.7rem;color:var(--dimmer);margin:22px 0 4px;}
+.version{text-align:center;font-size:.75rem;color:var(--dimmer);margin:22px 0 4px;}
 
 .card{background:var(--panel);border:1px solid var(--edge-soft);border-radius:10px;padding:13px;margin-bottom:12px;}
 .card h3{font-family:var(--fdisp);font-weight:600;font-size:1rem;margin:0 0 10px;color:var(--chalk);}
@@ -477,21 +477,21 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .trend-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
 .trend-stats div{background:var(--panel-2);border-radius:10px;padding:9px;}
 .trend-stats b{display:block;font-family:var(--fdisp);font-weight:800;font-size:1.1rem;color:var(--gold);line-height:1.1;}
-.trend-stats span{display:block;font-size:.7rem;color:var(--dimmer);margin-top:3px;line-height:1.25;}
+.trend-stats span{display:block;font-size:.75rem;color:var(--dimmer);margin-top:3px;line-height:1.25;}
 .chart{position:relative;height:132px;display:flex;align-items:flex-end;gap:2px;padding-top:22px;
   padding-right:30px;border-bottom:1px solid var(--edge);}
 .chart .gl{position:absolute;left:0;right:0;border-top:1px dashed var(--edge-soft);pointer-events:none;}
-.chart .gl span{position:absolute;right:0;top:-6px;font-size:.7rem;color:var(--dimmer);line-height:1;}
+.chart .gl span{position:absolute;right:0;top:-6px;font-size:.75rem;color:var(--dimmer);line-height:1;}
 .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
   position:relative;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;}
 .col i{display:block;width:72%;max-width:22px;min-height:0;background:var(--gold);border-radius:6px 4px 0 0;}
 .col.now i{box-shadow:0 0 0 2px var(--panel),0 0 0 3px var(--gold);}
 .col.on i{box-shadow:0 0 0 2px var(--panel),0 0 0 3px var(--chalk);}
-.col em{position:absolute;bottom:calc(var(--h) + 4px);font-style:normal;font-size:.7rem;font-weight:700;
+.col em{position:absolute;bottom:calc(var(--h) + 4px);font-style:normal;font-size:.75rem;font-weight:700;
   color:var(--chalk);white-space:nowrap;display:none;}
 .col.lab em,.col.on em{display:block;}
 .chart-x{display:flex;gap:2px;margin-top:5px;padding-right:30px;}
-.chart-x span{flex:1;text-align:center;font-size:.7rem;color:var(--dimmer);white-space:nowrap;overflow:visible;}
+.chart-x span{flex:1;text-align:center;font-size:.75rem;color:var(--dimmer);white-space:nowrap;overflow:visible;}
 .mom{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;padding:7px 0;border-top:1px solid var(--edge-soft);}
 .mom span{color:var(--dim);}
 .mom .up{color:var(--jade);font-weight:700;}
@@ -507,11 +507,11 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   color:var(--gold);position:relative;}
 .trophy .ph img{width:100%;height:100%;object-fit:cover;display:block;}
 .trophy .ph svg{width:42%;height:42%;opacity:.8;}
-.trophy .ph .tag{position:absolute;left:7px;top:7px;font-size:.7rem;font-weight:700;letter-spacing:0.05em;
+.trophy .ph .tag{position:absolute;left:7px;top:7px;font-size:.75rem;font-weight:700;letter-spacing:0.05em;
   background:var(--gold);color:var(--btnfg);border-radius:6px;padding:2px 6px;}
 .trophy .tx{padding:9px 10px 10px;}
 .trophy .tx b{display:block;font-size:.86rem;font-weight:600;line-height:1.25;overflow-wrap:anywhere;}
-.trophy .tx span{display:block;font-size:.7rem;color:var(--dim);margin-top:3px;}
+.trophy .tx span{display:block;font-size:.75rem;color:var(--dim);margin-top:3px;}
 .trophy .tx span.todo{color:var(--gold);font-weight:600;}
 .tphoto{width:100%;border-radius:10px;margin:0 0 12px;display:block;max-height:260px;object-fit:cover;}
 
@@ -537,7 +537,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .pb-row{padding:9px 0;border-top:1px solid var(--edge-soft);}
 .pb-row:first-of-type{border-top:none;}
 .pb-row b{font-size:.86rem;font-weight:600;}
-.pb-row span{font-size:.7rem;color:var(--dimmer);margin-left:6px;}
+.pb-row span{font-size:.75rem;color:var(--dimmer);margin-left:6px;}
 .pb-row .quote{font-size:.86rem;color:var(--chalk);}
 
 .toast{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--gold);color:var(--btnfg);
@@ -579,12 +579,12 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 
 /* one badge style */
 .pill{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:999px;
-  font-family:var(--fbody);font-size:.7rem;font-weight:700;letter-spacing:0;white-space:nowrap;
+  font-family:var(--fbody);font-size:.75rem;font-weight:700;letter-spacing:0;white-space:nowrap;
   color:var(--dim);background:var(--panel-2);border:1px solid var(--edge);vertical-align:middle;}
 .pill.on{color:var(--gold);border-color:var(--gold-dim);}
 .pill.ok{color:var(--jade);border-color:var(--jade);background:none;}
 .row-name{display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
-.trophy .ph .tag{letter-spacing:0;font-size:.7rem;border-radius:999px;padding:2px 8px;}
+.trophy .ph .tag{letter-spacing:0;font-size:.75rem;border-radius:999px;padding:2px 8px;}
 
 /* icon control in a header */
 .ico{flex-shrink:0;width:36px;height:36px;margin:-6px -8px 0 0;border:none;background:none;border-radius:var(--r-ctl);
@@ -636,14 +636,14 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .cslot.late{border-color:color-mix(in srgb,var(--ember) 55%,var(--edge));}
 /* 2.2: pace, schedules, why */
 .pace{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin-top:8px;font-size:var(--t-meta);color:var(--dim);line-height:1.35;}
-.pace-k{font-weight:700;font-size:.7rem;padding:2px 8px;border-radius:999px;border:1px solid var(--edge);color:var(--chalk);white-space:nowrap;}
+.pace-k{font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:999px;border:1px solid var(--edge);color:var(--chalk);white-space:nowrap;}
 .pace.ok .pace-k{color:var(--jade);border-color:var(--jade);}
 .pace.warn .pace-k{color:var(--gold);border-color:var(--gold-dim);}
 .pace.bad .pace-k{color:var(--ember);border-color:var(--ember);}
 .c-sub{font-size:var(--t-meta);color:var(--dim);font-style:italic;margin:-2px 0 6px;overflow-wrap:anywhere;}
 .whyline{margin-top:8px;font-size:var(--t-meta);color:var(--chalk);line-height:1.4;padding:8px 10px;border-radius:var(--r-ctl);
   background:var(--panel-2);border-left:3px solid var(--ember);overflow-wrap:anywhere;}
-.whyline b{color:var(--ember);font-size:.7rem;margin-right:6px;}
+.whyline b{color:var(--ember);font-size:.75rem;margin-right:6px;}
 .pdone{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:var(--r-ctl);
   border:1px solid var(--jade);background:color-mix(in srgb,var(--jade) 10%,var(--panel));}
 .pdone .box{background:var(--jade);border-color:var(--jade);display:flex;align-items:center;justify-content:center;}
@@ -681,7 +681,7 @@ input:disabled,select:disabled{opacity:.45;}
 
 /* chips with a count */
 .chip{min-height:34px;}
-.chip .cn{display:inline-block;min-width:16px;margin-left:4px;font-size:.7rem;font-weight:700;color:var(--dimmer);}
+.chip .cn{display:inline-block;min-width:16px;margin-left:4px;font-size:.75rem;font-weight:700;color:var(--dimmer);}
 .chip.on .cn{color:var(--gold);}
 #focus-chips{margin-top:-4px;margin-bottom:14px;}
 /* chip rows scroll sideways instead of wrapping onto a second line */
@@ -720,13 +720,13 @@ input:disabled,select:disabled{opacity:.45;}
   font-family:inherit;color:var(--chalk);cursor:pointer;}
 .tile.ready{border-color:var(--jade);}
 .t-n{font-size:.8rem;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.t-v{font-size:.7rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-v{font-size:.75rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tile.ready .t-v{color:var(--jade);font-weight:700;}
 .top.line{padding:4px 10px;gap:0;}
 .tline{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;background:none;border:none;
   border-top:1px solid var(--edge-soft);padding:0 2px;font-family:inherit;color:var(--chalk);cursor:pointer;text-align:left;}
 .tline:first-child{border-top:none;}
-.tl-k{flex-shrink:0;width:48px;font-size:.7rem;font-weight:700;color:var(--dimmer);}
+.tl-k{flex-shrink:0;width:48px;font-size:.75rem;font-weight:700;color:var(--dimmer);}
 .tl-n{flex:1;min-width:0;font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tline .mbar{flex-shrink:0;width:56px;}
 .tl-v{flex-shrink:0;font-size:.75rem;color:var(--dim);white-space:nowrap;}
@@ -836,7 +836,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .cal i.cf{background:none;border:1px dashed var(--edge-soft);}
 .cal i.t{outline:2px solid var(--chalk);outline-offset:1px;}
 .cal i.j{box-shadow:inset 0 0 0 2px var(--panel);}
-.cal-key{display:flex;justify-content:space-between;align-items:center;font-size:.7rem;color:var(--dimmer);margin:8px 0 12px;}
+.cal-key{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--dimmer);margin:8px 0 12px;}
 .cal-scale{display:flex;align-items:center;gap:4px;}
 .cal-scale i{width:10px;height:10px;}
 .jcal .pstats{margin:0;}
@@ -850,7 +850,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .jid .id-bar{margin:8px 0 0;}
 .jr{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-top:1px solid var(--edge-soft);}
 .jr:first-of-type{border-top:none;padding-top:0;}
-.jr-d{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);}
+.jr-d{font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);}
 .jr-t{font-size:1rem;line-height:1.4;color:var(--chalk);overflow-wrap:anywhere;}
 .letgo{display:flex;flex-direction:column;gap:2px;border-color:color-mix(in srgb,var(--jade) 45%,var(--edge-soft));}
 .letgo b{color:var(--jade);}
@@ -868,7 +868,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .cool-r .f-acts{margin-top:8px;}
 .ptsline .chev,.openslots .chev{transform:rotate(-45deg);width:7px;height:7px;}
 .picks-hint{font-size:var(--t-meta);color:var(--dim);margin:-4px 0 0;}
-.trophy .eb{display:block;font-size:.7rem;color:var(--dim);margin-top:3px;line-height:1.3;}
+.trophy .eb{display:block;font-size:.75rem;color:var(--dim);margin-top:3px;line-height:1.3;}
 
 /* =================== 3.1 — usability pass =================== */
 #now-head{margin:0 0 20px;}
@@ -883,7 +883,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .votes{align-items:center;margin-top:10px;padding:0;border:none;background:none;gap:10px;}
 .vdots{max-width:none;padding:0;gap:4px;flex-wrap:nowrap;align-items:center;}
 .vdots i{width:10px;height:10px;}
-.vdots em{font-style:normal;font-size:.7rem;color:var(--dim);margin-left:2px;}
+.vdots em{font-style:normal;font-size:.75rem;color:var(--dim);margin-left:2px;}
 .vtxt{font-size:var(--t-meta);}
 .cs-reason.soft{color:var(--dim);font-weight:600;}
 #closeout-top .closeout{margin-top:0;border-color:var(--gold-dim);}
@@ -977,7 +977,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .rep-chips{margin-bottom:12px;}
 .idchip.on{background:var(--gold);color:var(--btnfg);border-color:var(--gold);}
 .idchip.on .iddot{box-shadow:0 0 0 2px var(--btnfg);}
-.rep-grp{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
+.rep-grp{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
 .rep-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;width:100%;text-align:left;padding:11px 12px;margin-bottom:6px;
   background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--c);border-radius:var(--r-card);font-family:inherit;color:var(--chalk);cursor:pointer;}
 .rr-n{font-weight:600;font-size:.92rem;overflow-wrap:anywhere;}
@@ -1011,7 +1011,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 /* case file */
 .case-hero{padding:18px 16px 14px;border-radius:var(--r-card);border:1px solid var(--edge-soft);margin-bottom:14px;
   background:linear-gradient(160deg,color-mix(in srgb,var(--c,var(--gold)) 18%,var(--panel)),var(--panel) 75%);}
-.ch-k{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
+.ch-k{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
 .ch-t{font-family:var(--fdisp);font-weight:600;font-size:2rem;line-height:1.1;margin-top:4px;color:var(--chalk);}
 .ch-l{font-style:italic;font-size:1.1rem;margin-top:6px;color:var(--chalk);}
 .case-hero .id-bar{margin:14px 0 6px;}
@@ -1049,7 +1049,7 @@ h2{font-weight:600;font-size:1.2rem;letter-spacing:-0.005em;}
 .mid-c{font-size:.86rem;margin-top:6px;}
 .mid-w{font-style:italic;margin-top:8px;font-size:1rem;}
 .mid .link{font-size:var(--t-meta);margin-top:6px;padding:4px 0;}
-.eb2{display:block;font-size:.7rem;color:var(--dim);font-weight:400;}
+.eb2{display:block;font-size:.75rem;color:var(--dim);font-weight:400;}
 #month-banner .rbanner{margin-bottom:16px;}
 
 /* =================== 3.6 =================== */
@@ -1118,7 +1118,7 @@ body.sheet-open{overflow:hidden;}
 .rw-bar{display:block;width:100%;max-width:180px;height:4px;border-radius:2px;background:var(--edge-soft);margin-top:5px;overflow:hidden;}
 .rw-bar i{display:block;height:100%;background:var(--gold);}
 .rw-togo{flex-shrink:0;text-align:right;font-weight:700;font-size:.92rem;color:var(--chalk);min-width:54px;}
-.rw-togo small{display:block;font-size:.7rem;font-weight:600;color:var(--dim);}
+.rw-togo small{display:block;font-size:.75rem;font-weight:600;color:var(--dim);}
 .shelf .rw .btn.redeem{min-height:34px;padding:0 12px;flex-shrink:0;}
 .shelf #reward-form{margin:0;border-radius:0;border-left:none;border-right:none;}
 .trophies:not(:empty){grid-template-columns:repeat(3,1fr);gap:8px;}
@@ -1171,11 +1171,11 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
 .idea-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
 .idea-main b{font-weight:600;font-size:.92rem;line-height:1.28;overflow-wrap:anywhere;}
 .idea .idea-why{margin:0;font-size:.8rem;line-height:1.3;}
-.idea .idea-meta{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:.7rem;color:var(--dimmer);}
-.idea .idea-meta .pill{font-size:.7rem;padding:1px 7px;}
+.idea .idea-meta{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:.75rem;color:var(--dimmer);}
+.idea .idea-meta .pill{font-size:.75rem;padding:1px 7px;}
 .idea-side{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
 .idea-add{min-height:32px;padding:0 14px;}
-.idea-no{background:none;border:none;padding:3px 0;font-family:inherit;font-size:.7rem;color:var(--dimmer);cursor:pointer;}
+.idea-no{background:none;border:none;padding:3px 0;font-family:inherit;font-size:.75rem;color:var(--dimmer);cursor:pointer;}
 .idea-side .idea-ok{font-size:.75rem;gap:6px;}
 .idea-side .idea-ok .co-tick{width:15px;height:15px;}
 .idea-side .btn2.sm{min-height:30px;padding:0 10px;font-size:.8rem;}
@@ -1187,19 +1187,19 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
   border-top:1px solid var(--edge-soft);font-family:inherit;text-align:left;cursor:pointer;color:var(--dim);}
 .up-ico{flex-shrink:0;width:7px;height:7px;border-left:2px solid var(--c);border-top:2px solid var(--c);transform:rotate(45deg);margin:3px 2px 0 1px;}
 .up-n{flex:1;min-width:0;font-size:.86rem;font-weight:600;color:var(--chalk);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.up-w{flex-shrink:0;font-size:.7rem;font-weight:600;color:var(--c);}
-.idea-sub{padding:7px 12px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
+.up-w{flex-shrink:0;font-size:.75rem;font-weight:600;color:var(--c);}
+.idea-sub{padding:7px 12px;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
   background:color-mix(in srgb,var(--c) 5%,var(--panel));border-top:1px solid var(--edge-soft);}
 .idea.stretch .pill{border-color:var(--c);color:var(--c);}
 .idea-sx{margin:-6px 0 14px;}
-.idea-full{font-size:.7rem;font-weight:700;color:var(--dim);white-space:nowrap;}
-.idea-cap{flex-basis:100%;font-style:normal;font-family:var(--fbody);font-size:.7rem;font-weight:600;color:var(--dim);margin:2px 0 0 15px;}
+.idea-full{font-size:.75rem;font-weight:700;color:var(--dim);white-space:nowrap;}
+.idea-cap{flex-basis:100%;font-style:normal;font-family:var(--fbody);font-size:.75rem;font-weight:600;color:var(--dim);margin:2px 0 0 15px;}
 .idea-h{flex-wrap:wrap;}
 .q-full{color:var(--ember);font-weight:700;}
 .case-q .cq-h{display:flex;justify-content:space-between;align-items:baseline;}
 .case-q .cq-h h3{margin:0;}
 .case-q .cq-h span{font-size:var(--t-meta);font-weight:700;color:var(--dim);}
-.cq-sub{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
+.cq-sub{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px;}
 .case-q .row.on{--c:inherit;}
 
 /* =================== 4.1 =================== */
@@ -1311,7 +1311,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
   .tab svg{width:20px;height:20px;}
   .tab:hover{background:var(--panel-2);color:var(--chalk);}
   .tab.on{background:var(--panel-2);color:var(--gold);}
-  .tab::after{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--dimmer);border:1px solid var(--edge-soft);border-radius:6px;padding:0 6px;line-height:1.6;}
+  .tab::after{margin-left:auto;font-size:.75rem;font-weight:700;color:var(--dimmer);border:1px solid var(--edge-soft);border-radius:6px;padding:0 6px;line-height:1.6;}
   .tab[data-tab="focus"]::after{content:"1";}.tab[data-tab="quests"]::after{content:"2";}
   .tab[data-tab="rewards"]::after{content:"3";}.tab[data-tab="progress"]::after{content:"4";}
   .fab{left:18px;right:auto;top:80px;bottom:auto;width:calc(var(--side) - 36px);height:44px;border-radius:10px;gap:8px;z-index:43;
@@ -1329,7 +1329,7 @@ body.typing .tabbar,body.typing .fab{display:none!important;}
   .side-inst b{display:block;font-size:.86rem;color:var(--gold);}
   .side-inst span{font-size:.75rem;color:var(--dim);}
   .side-tip{font-size:.8rem;color:var(--dim);line-height:1.4;}
-  .side-keys{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.7rem;color:var(--dimmer);}
+  .side-keys{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.75rem;color:var(--dimmer);}
   .side-keys kbd{font-family:inherit;font-weight:700;border:1px solid var(--edge-soft);border-radius:6px;padding:0 5px;margin-right:3px;color:var(--dim);}
 
   .toast{left:calc(50% + var(--side) / 2);bottom:28px;}
@@ -1515,7 +1515,7 @@ details>summary{min-height:32px;}
 .size-seg button{padding:9px 6px;border:1px solid var(--edge);border-radius:var(--r-ctl);background:var(--panel);color:var(--chalk);font-family:inherit;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:1px;}
 .size-seg button b{font-size:.92rem;}
-.size-seg button span{font-size:.7rem;color:var(--dim);}
+.size-seg button span{font-size:.75rem;color:var(--dim);}
 .size-seg button.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:color-mix(in srgb,var(--gold) 7%,var(--panel));}
 #g-size-custom{font-size:.75rem;color:var(--dim);margin-top:6px;}
 .more-opts{border-top:1px solid var(--edge-soft);margin-top:4px;padding-top:4px;}
@@ -1536,6 +1536,38 @@ details>summary{min-height:32px;}
   .sheet-bg{transition-property:opacity!important;}
   .fab.tuck{transform:none;opacity:1;pointer-events:auto;}
 }
+/* 5.2: keyboard up — dialogs and sheets fit above it */
+body.kb .modal{top:var(--vvt);bottom:auto;height:var(--vvh);align-items:center;padding:10px 16px;}
+body.kb .modal .sheet{max-height:calc(var(--vvh) - 20px);overflow-y:auto;-webkit-overflow-scrolling:touch;margin-bottom:0;}
+body.kb .rsheet{top:var(--vvt);bottom:auto;height:var(--vvh);}
+body.kb .rsheet .sheet-card{height:calc(var(--vvh) - 8px);padding-bottom:0;transition:none;}
+.kb-space{pointer-events:none;}
+/* 5.3: comfortable to tap, readable, calm */
+.btn,.btn2,.btn.sm,.btn2.sm{min-height:44px;}
+.gear{width:44px;height:44px;}
+.sheet-back,.sheet-x{width:44px;height:44px;}
+.stepper button{width:44px;min-height:44px;}
+.seg2 button{min-height:40px;}
+.rw-star{min-width:44px;min-height:44px;}
+.idchip,.link{position:relative;}
+.idchip::after{content:'';position:absolute;left:0;right:0;top:-7px;bottom:-7px;}
+.rep-st button{min-width:44px;}
+.rw-main{min-height:44px;justify-content:center;}
+.chase-r{min-height:44px;}
+.shelf .rw .btn.redeem{min-height:44px;}
+.link::after{content:'';position:absolute;left:-4px;right:-4px;top:-12px;bottom:-12px;}
+.chase-h,.shelf-l{color:var(--dim);}
+.toast{width:max-content;max-width:min(92vw,520px);}
+.plan-today.start .pt-q{font-size:.86rem;color:var(--dim);margin:-4px 0 2px;}
+.plan-today.start .pt-acts{display:flex;gap:8px;flex-wrap:wrap;}
+.moves-k{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:4px 2px 8px;}
+.co-votes{margin:12px 0 2px;}
+.co-votes .cv-k{font-size:.86rem;color:var(--dim);margin-bottom:8px;}
+.co-votes .cv-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.co-votes .idchip .iddot{margin-right:6px;}
+.rw-togo.rdy{color:var(--jade);}
+.rv-small{display:block;font-size:.8rem;margin-top:4px;}
+#p-focus{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
 </style>
 </head>
 <body>
@@ -1816,7 +1848,7 @@ details>summary{min-height:32px;}
 </div>
 
 
-  <button class="fab" id="fab" data-a="open-report" aria-label="Report progress">
+  <button class="fab" id="fab" data-a="open-report" aria-label="Log a vote">
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="fab-l">Report progress</span></button>
   <div id="setsheet" class="rsheet hide" aria-hidden="true">
     <div class="sheet-bg" data-a="settings-close"></div>
@@ -1834,7 +1866,7 @@ details>summary{min-height:32px;}
       <div class="sheet-grab" id="rs-grab"><span></span></div>
       <div class="sheet-head">
         <button class="sheet-back" id="rs-back" data-a="rep-change" aria-label="Back to quests"><span class="chev"></span></button>
-        <h2 id="rs-title">Report progress</h2>
+        <h2 id="rs-title">Log a vote</h2>
         <button class="sheet-x" data-a="sheet-close" aria-label="Close">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       </div>
@@ -1850,7 +1882,7 @@ details>summary{min-height:32px;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 21v-9"/><path d="M12 12c0-4 2.8-6.5 7-6.5 0 4-2.8 6.5-7 6.5z"/><path d="M12 14.5c0-3.2-2.3-5.3-6-5.3 0 3.2 2.3 5.3 6 5.3z"/></svg>
       <span>Becoming</span></button>
-    <button class="tab-add" data-a="open-report" aria-label="Report progress"><span class="ta-c">
+    <button class="tab-add" data-a="open-report" aria-label="Log a vote"><span class="ta-c">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></button>
     <button class="tab" data-tab="rewards">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1872,7 +1904,7 @@ details>summary{min-height:32px;}
   </div>
 </div>
 
-<div class="toast hide" id="toast"><span class="toast-x"><span id="toast-t"></span><span id="toast-w" class="hide"></span></span><button id="toast-u" class="hide">Undo</button></div>
+<div class="toast hide" id="toast" role="status" aria-live="polite"><span class="toast-x"><span id="toast-t"></span><span id="toast-w" class="hide"></span></span><button id="toast-u" class="hide">Undo</button></div>
 
 <script>
 (function(){
@@ -2902,9 +2934,7 @@ function renderNowHead(){
   var vs=voteStats(),today=vs.days[dayKeyOf(Date.now())]||[],tl=todayLine();
   var r=nearestReward(),rl='';
   var bal0=balance(),nReady=S.rewards.filter(function(x){return !x.coolUntil&&bal0>=costOf(x);}).length;
-  if(nReady)rl='<button class="now-rw ok" data-a="go-rewards"><span>Rewards ready to redeem</span><span class="chev"></span></button>';
-  else if(r){var gap=costOf(r)-bal0;
-    rl='<button class="now-rw" data-a="go-rewards"><span>'+nf(gap)+' to '+esc(r.name)+'</span><span class="chev"></span></button>';}
+  /* 5.3: rewards don't lead the morning; they show after milestones, on Rewards and in the check-in */
   var h='<div class="now-top"><span class="now-date">'+
         new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</span>'+rl+'</div>';
   if(tl)h+='<button class="now-line" data-a="next-line" aria-label="Show another identity">'+
@@ -2999,8 +3029,8 @@ function renderCloseout(){
     var st=journalStreak();
     h+='<div class="co-h"><span>Today, in your words</span><span class="co-ok"><i class="co-tick"></i>Saved</span></div>'+
        '<div class="co-t serif">'+esc(j.text)+'</div>'+
-       '<div class="co-foot"><span>'+(st>1?st+' days in a row you\u2019ve closed out':'Today is on the record')+'</span></div>'+
-       planHTML()+'<div class="co-acts"><button class="link" data-a="closeout-edit">Edit</button>'+pastBtn+'</div>'+catchupHTML();
+       '<div class="co-foot"><span>'+streakLine()+'</span></div>'+
+       closeoutVotesHTML(k)+planHTML()+'<div class="co-acts"><button class="link" data-a="closeout-edit">Edit entry</button>'+pastBtn+'</div>'+catchupHTML();
   }else{
     h+='<div class="co-h"><span>'+(late?'Close out today':'Before the day ends')+'</span></div>'+
        '<label class="co-q serif" for="co-in">What did you do today that the person you\u2019re becoming would do?</label>'+
@@ -3194,7 +3224,7 @@ function renderSheet(dir){
   if(!U.rep)repReset();
   var R=U.rep,g=R.gid?S.goals.find(function(x){return x.id===R.gid;}):null,h='';
   document.getElementById('rs-back').style.visibility=g?'visible':'hidden';
-  document.getElementById('rs-title').textContent=g?'What did you do?':'Report progress';
+  document.getElementById('rs-title').textContent='Log a vote';
   if(g){
     var nx=repNext(g);if(!nx)R.mode='note';
     h+='<div class="rep-card" style="--c:'+idColor(g.category)+'">'+
@@ -3212,9 +3242,9 @@ function renderSheet(dir){
         }else h+='<div class="rc-act"><i class="co-tick"></i>'+esc(nx.label)+'</div>';
       }else h+='<p class="sub rc-hint">For days you put in work that doesn\u2019t move a number yet. It still counts as a vote.</p>';
     }else h+='<p class="sub rc-hint">Nothing left to tick on this one, but the work still counts. Say what you did.</p>';
-    h+='<label class="rc-l" for="rep-note">'+(R.mode==='note'?'What did you do?':'What did you do? <span class="opt">(optional)</span>')+'</label>'+
-       '<textarea id="rep-note" rows="2" maxlength="280" placeholder="'+(R.mode==='note'?'e.g. Ran 4 miles easy':'This becomes evidence in your case file')+'"></textarea>'+
-       '<button class="btn rep-go" data-a="rep-go">Report</button></div>';
+    h+='<label class="rc-l" for="rep-note">'+(R.mode==='note'?'What did you do?':'Note <span class="opt">(optional)</span>')+'</label>'+
+       '<textarea id="rep-note" rows="2" maxlength="280" placeholder="'+(R.mode==='note'?'e.g. Ran 4 miles easy':'e.g. Sent it to Bloom')+'"></textarea>'+
+       '<button class="btn rep-go" data-a="rep-go">Log it'+(effortLeft(g)?' · +'+EFFORT_PTS+' pts':'')+'</button></div>';
   }else{
     h+='<p class="sub rep-intro">Anything you did, on any quest, in focus or not. It all counts as a vote.</p>'+
        '<div class="search"><input type="search" id="rep-q" placeholder="Search quests" autocomplete="off" value="'+esc(R.q)+'"></div>'+
@@ -3279,7 +3309,7 @@ async function repGo(){
     if(window.scrollTo)try{window.scrollTo({top:0,behavior:'smooth'});}catch(x){window.scrollTo(0,0);}
     setTimeout(playVote,120);
   });
-  toast('Reported \u00B7 a vote for '+idOf(g.category).title+(gained?' \u00B7 +'+nf(gained)+' pts':''),true);
+  toast('Logged \u00B7 a vote for '+idOf(g.category).title+(gained?' \u00B7 +'+nf(gained)+' pts':''),true);
   if(g.why)whyToast(g.why);
 }
 /* The new vote lands on Today: its dot pops in, the count ticks up, and any
@@ -3293,7 +3323,8 @@ function tween(el,from,to,ms,fmt){
 function playVote(){
   var A=U.voteAnim;U.voteAnim=null;if(!A)return;
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var v=document.querySelector('#now-head .votes');if(!v||reduce)return;
+  var v=document.querySelector('#now-head .votes');
+  if(!v||reduce){var bl=document.getElementById('bal');if(bl){bl.__v=balance();bl.textContent=nf(bl.__v);}return;}
   var dots=v.querySelectorAll('.vdots i');var nd=dots[dots.length-1];
   if(nd&&!nd.classList.contains('empty')){nd.classList.remove('vnew');void nd.offsetWidth;nd.classList.add('vnew');}
   var b=v.querySelector('.vtxt b'),to=(voteStats().days[dayKeyOf(Date.now())]||[]).length;
@@ -3343,7 +3374,7 @@ function caseQuestsHTML(c,id){
   if(!act.length)h+='<div class="rv-empty">Nothing in focus for '+esc(id.title)+' right now.</div>';
   act.forEach(function(g){h+=goalRow(g);});
   if(rest.length){h+='<div class="cq-sub">Everything else</div>';rest.forEach(function(g){h+=goalRow(g);});}
-  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Report progress</button>'+
+  h+='<div class="f-acts"><button class="btn sm" data-a="open-report" data-c="'+esc(c)+'">Log a vote</button>'+
      (all.length<MAXQ?'<button class="btn2 sm" data-a="new-goal" data-c="'+esc(c)+'">+ Add a quest</button>':'')+'</div></div>';
   return h;
 }
@@ -3776,7 +3807,7 @@ function rowDetailHTML(g){
   if(g.next||g.when)h+='<div class="rd-line"><b>'+(g.when?'Plan':'Next')+'</b> '+esc(nextText(g))+'</div>';
   if(g.why)h+='<div class="rd-why serif">“'+esc(g.why)+'”</div>';
   h+='<div class="rd-acts"><button class="btn2 sm" data-a="edit-goal" data-id="'+g.id+'">Edit</button>'+
-     '<button class="btn2 sm" data-a="open-report" data-g="'+g.id+'" data-c="'+esc(g.category)+'">Report progress</button></div>';
+     '<button class="btn2 sm" data-a="open-report" data-g="'+g.id+'" data-c="'+esc(g.category)+'">Log a vote</button></div>';
   return h+'</div>';
 }
 
@@ -3868,7 +3899,7 @@ function identityTileHTML(c,vs){
 /* ---------- Rewards: points live with what they buy ---------- */
 function pointsSummaryHTML(){
   var m0=new Date(Date.now());m0=new Date(m0.getFullYear(),m0.getMonth(),1).getTime();
-  var month=S.log.reduce(function(a,e){return a+(e.at>=m0&&e.pts>0?e.pts:0);},0);
+  var month=S.log.reduce(function(a,e){return a+(e.at>=m0&&e.pts>0?e.pts:0);},0)+effortOf(S.log.filter(function(e){return e.at>=m0;}));
   var lg=S.settings.letGo||{};
   return '<div class="ptsum"><div class="ps-big"><span class="ps-n">'+nf(balance())+'</span><span>points to spend</span></div>'+
     '<div class="ps-row"><span><b>+'+nf(month)+'</b> this month</span><span><b>'+nf(totalEarned())+'</b> earned</span><span><b>'+nf(totalSpent())+'</b> spent</span></div>'+
@@ -4526,7 +4557,7 @@ function planHTML(){
   if(p&&!U.planEdit){
     var pg=S.goals.find(function(x){return x.id===p.gid;});
     return '<div class="plan set"><div class="pl-k">Tomorrow I’ll</div><div class="pl-t serif">'+esc(p.step||'')+'</div>'+
-      '<div class="pl-q"><span>'+(pg?esc(pg.name):'')+'</span><button class="link" data-a="plan-edit">Change</button></div></div>';
+      '<div class="pl-q"><span>'+(pg?esc(pg.name):'')+'</span><button class="link" data-a="plan-edit">Edit plan</button></div></div>';
   }
   var sel=U.planPick||(p&&p.gid)||act[0].id;
   if(!act.some(function(x){return x.id===sel;}))sel=act[0].id;
@@ -4550,7 +4581,7 @@ async function savePlan(){
   if(!step){toast('Write one small step.');return;}
   snap();
   S.settings.plan={day:tomorrowKey(),gid:g.id,step:step,at:Date.now()};
-  g.next=step;
+  g.next=step;g.nextAt=Date.now();
   U.planPick=null;U.planDraft=null;U.planEdit=false;
   if(inp&&inp.blur)inp.blur();
   await save();renderPanel(U.tab);
@@ -4648,7 +4679,7 @@ function renderReview(){
     '<div class="rv-steps" aria-label="Step '+step+' of 3">'+[1,2,3].map(function(i){return '<i class="'+(i===step?'on':i<step?'done':'')+'"></i>';}).join('')+
     '<span>Step '+step+' of 3</span></div>';
   if(step===1){
-    var wk=weekLog(),pts=wk.reduce(function(a,e){return a+e.pts;},0),days={};
+    var wk=weekLog(),pts=wk.reduce(function(a,e){return a+e.pts;},0)+effortOf(wk),days={};
     wk.forEach(function(e){days[dayKeyOf(e.at)]=1;});
     h+='<h3 class="rv-q serif">What moved this week</h3><p class="sub">'+fmt(Date.now()-6*DAY)+' – '+fmt(Date.now())+'</p>'+
        '<div class="pstats"><div class="pstat"><b>'+wk.length+'</b><span>'+(wk.length===1?'vote':'votes')+'</span></div>'+
@@ -4680,7 +4711,8 @@ function renderReview(){
     act.slice().sort(function(a,b){return lastMove(a)-lastMove(b);}).forEach(function(g){
       var off=!!U.rvBench[g.id],idle=Math.floor((Date.now()-lastMove(g))/DAY),p=pace(g);
       var tag=behind(g)?'<span class="rv-tag bad">'+esc(p.label)+'</span> ':idle>=7?'<span class="rv-tag warn">Quiet '+idle+' days</span> ':'';
-      h+='<div class="rv-row'+(off?' off':'')+'" style="--c:'+idColor(g.category)+'"><div class="l"><b>'+esc(g.name)+'</b><span>'+tag+esc(idOf(g.category).title)+' · moved '+ago(lastMove(g))+'</span></div>'+
+      h+='<div class="rv-row'+(off?' off':'')+'" style="--c:'+idColor(g.category)+'"><div class="l"><b>'+esc(g.name)+'</b><span>'+tag+esc(idOf(g.category).title)+' · moved '+ago(lastMove(g))+'</span>'+
+         (idle>=7&&!off?'<button class="link rv-small" data-a="rv-smaller" data-id="'+g.id+'">Make the next step smaller</button>':'')+'</div>'+
          '<div class="r seg"><button class="'+(off?'':'on')+'" data-a="rv-keep" data-id="'+g.id+'" aria-pressed="'+!off+'">Keep</button>'+
          '<button class="'+(off?'on':'')+'" data-a="rv-bench" data-id="'+g.id+'" aria-pressed="'+off+'">Bench</button></div></div>';
     });
@@ -4726,7 +4758,7 @@ async function rvFinish(){
 function act46(a,el,id){
   if(a==='plan-pick'){var inp=document.getElementById('plan-step');U.planPick=id;U.planDraft=null;renderCloseout();return true;}
   if(a==='plan-save'){savePlan();return true;}
-  if(a==='plan-edit'){U.planEdit=true;renderCloseout();return true;}
+  if(a==='plan-edit'){U.planEdit=true;renderCloseout();focusEnd(document.getElementById('plan-step'));return true;}
   if(a==='plan-cancel'){U.planEdit=false;U.planPick=null;U.planDraft=null;renderCloseout();return true;}
   if(a==='moves-more'){U.movesMore=!U.movesMore;renderMoves();return true;}
   if(a==='trim-pick'){U.keep=U.keep||{};
@@ -4898,7 +4930,7 @@ function cloudErr(e){
   var m=String(e&&e.message||e||'');
   if(e&&(e.status===401||e.status===403))return 'Supabase didn’t accept your login. Sign out and in again.';
   if(/timeout/.test(m))return 'Supabase took too long to answer. If it keeps happening, check that the project isn’t paused at supabase.com.';
-  if(/fetch|network|load/i.test(m))return 'Can’t reach Supabase right now.';
+  if(/fetch|network|load/i.test(m)||(typeof navigator!=='undefined'&&navigator.onLine===false))return OFFLINE_MSG;
   return m||'Sync failed.';
 }
 
@@ -5013,7 +5045,7 @@ function renderSheetSection(){
   if(!body)return;
   var st=syncState();
   if(sum){
-    sum.textContent=cloudOn()?(st==='err'?'Can’t sync':Q.outbox.length?Q.outbox.length+' waiting':'Synced '+sinceText(Q.lastOk||Date.now())):
+    sum.textContent=cloudOn()?(isOfflineErr()?'Offline':st==='err'?'Can’t sync':Q.outbox.length?'Sending…':'Synced '+sinceText(Q.lastOk||Date.now())):
       sheetOn()?'Move to the cloud':'Not signed in';
     sum.style.color=st==='err'||(!cloudOn()&&sheetOn())?'var(--ember)':'';
   }
@@ -5021,8 +5053,8 @@ function renderSheetSection(){
   if(cloudOn()){
     h+='<div class="kv"><span>Signed in as</span><b>'+esc(Q.sb.email||'you')+'</b></div>'+
        '<div class="kv"><span>Last synced</span><b>'+(Q.lastOk?sinceText(Q.lastOk):'not yet')+'</b></div>'+
-       '<div class="kv"><span>Waiting to send</span><b>'+Q.outbox.length+'</b></div>';
-    if(Q.lastErr)h+='<p class="sub" style="margin:8px 0 0;color:var(--ember);">'+esc(Q.lastErr)+'</p>';
+       '<div class="kv"><span>Changes waiting to send</span><b>'+(Q.outbox.length?'Yes':'None')+'</b></div>';
+    if(Q.lastErr)h+='<p class="sub" style="margin:8px 0 0;'+(isOfflineErr()?'':'color:var(--ember);')+'">'+esc(Q.lastErr)+'</p>';
     h+='<div class="f-acts"><button class="btn2" data-a="sheet-sync">Sync now</button>'+
        '<button class="btn2" data-a="sheet-off">Sign out</button></div>';
   }else{
@@ -5384,6 +5416,361 @@ document.addEventListener('change',function(e){
   if(t.id==='push-time')pushChange({evening:t.value});
   else if(t.id==='push-weekly')pushChange({weekly_on:!!t.checked});
 });
+
+/* ---------- 5.2: what you're typing stays in view ----------
+   When a box gets the cursor, wait for the keyboard to finish opening, then scroll
+   so the box, its question and its Save button sit between the header and the
+   keyboard. Works on the page, inside the bottom sheets, and in pop-up dialogs
+   (which shrink to fit above the keyboard). */
+var KB={field:null,t0:0,timers:[],moved:false};
+function vvBox(){
+  var vv=window.visualViewport,ih=window.innerHeight;
+  if(!vv)return {top:0,bottom:ih,kb:0};
+  return {top:vv.offsetTop,bottom:vv.offsetTop+vv.height,kb:Math.max(0,Math.round(ih-vv.height))};
+}
+/* keyboard up: overlays shrink to the part of the screen you can still see */
+function kbLayout(){
+  var b=vvBox(),root=document.documentElement,on=b.kb>80&&isField(document.activeElement);
+  document.body.classList.toggle('kb',on);
+  root.style.setProperty('--vvt',Math.round(b.top)+'px');
+  root.style.setProperty('--vvh',Math.round(b.bottom-b.top)+'px');
+  root.style.setProperty('--kbh',(on?b.kb:0)+'px');
+}
+function scrollerOf(el){
+  for(var p=el.parentElement;p&&p!==document.body;p=p.parentElement){
+    var oy=getComputedStyle(p).overflowY;
+    if((oy==='auto'||oy==='scroll')&&p.scrollHeight>p.clientHeight+2)return p;
+  }
+  return null;   /* the page itself */
+}
+/* the parts worth keeping on screen, most important last: the card's heading, the question, the box, its buttons */
+function editParts(el){
+  var blk=el.closest('.closeout,.plan,.rep-card,.f,.sheet,.rv-step,.review,.stepper')||el.parentElement;
+  var lab=(el.id&&document.querySelector('label[for="'+el.id+'"]'))||null;
+  if(lab&&!blk.contains(lab)&&!lab.contains(el))lab=null;
+  var fr=el.getBoundingClientRect(),acts=null;
+  var scope=el.closest('.closeout,.plan,.form,.rep-card,.sheet,.sheet-body,.review,.card')||blk;
+  var list=scope.querySelectorAll('.f-acts,.co-acts,#modal-opts,.rep-go,.rv-acts');
+  for(var i=0;i<list.length;i++){
+    var r=list[i].getBoundingClientRect();
+    if(r.height&&r.top>=fr.bottom-2&&r.top-fr.bottom<220){acts=r;break;}
+  }
+  var top=Math.min(fr.top,lab?lab.getBoundingClientRect().top:fr.top);
+  /* a closeout or plan card: try to keep its "Catching up · last night" line too */
+  var card=el.closest('.closeout,.plan,.rep-card');
+  return {card:card?card.getBoundingClientRect().top:top,label:top,field:fr.top,fieldBottom:fr.bottom,bottom:acts?acts.bottom:fr.bottom};
+}
+function keepInView(el,smooth){
+  if(!el||!el.isConnected||el!==document.activeElement)return;
+  if(el.closest('.modal')||el.type==='file')return;   /* dialogs are moved by kbLayout instead */
+  var b=vvBox(),sc=scrollerOf(el),pad=14,top=b.top,bottom=b.bottom;
+  if(sc){var sr=sc.getBoundingClientRect();top=Math.max(top,sr.top);bottom=Math.min(bottom,sr.bottom);}
+  else{
+    var w=document.querySelector('.wallet');
+    if(w&&getComputedStyle(w).position!=='static'){var wr=w.getBoundingClientRect();if(wr.bottom>top&&wr.top<=top+4)top=wr.bottom;}
+    if(!document.body.classList.contains('typing')){var tb=document.querySelector('.tabbar');if(tb){var tr=tb.getBoundingClientRect();if(tr.height&&tr.top<bottom)bottom=tr.top;}}
+  }
+  var room=bottom-top-2*pad;if(room<40)return;
+  var p=editParts(el),want=null;
+  /* the most that fits, in this order */
+  [[p.card,p.bottom],[p.label,p.bottom],[p.field,p.bottom],[p.label,p.fieldBottom],[p.field,p.fieldBottom]].some(function(c){
+    if(c[1]-c[0]<=room){want=c;return true;}return false;});
+  if(!want)want=[p.field,p.field+room];
+  var d=0;
+  if(want[0]<top+pad)d=want[0]-(top+pad);                 /* hidden under the header: scroll up */
+  else if(want[1]>bottom-pad)d=want[1]-(bottom-pad);      /* behind the keyboard: scroll down */
+  if(Math.abs(d)<4)return;
+  kbSpace(sc,d);
+  var opt={top:d,behavior:smooth?'smooth':'auto'};
+  try{if(sc)sc.scrollBy(opt);else window.scrollBy(opt);}catch(e){if(sc)sc.scrollTop+=d;else window.scrollTo(0,window.pageYOffset+d);}
+  KB.moved=true;
+}
+/* near the bottom of the page there may be nothing left to scroll: make room the size of the keyboard */
+function kbSpace(sc,d){
+  if(d<=0)return;
+  var host=sc||document.body,sp=host.querySelector(':scope > .kb-space');
+  var max=sc?sc.scrollHeight-sc.clientHeight-sc.scrollTop:document.documentElement.scrollHeight-window.innerHeight-window.pageYOffset;
+  if(max>=d)return;
+  if(!sp){sp=document.createElement('div');sp.className='kb-space';sp.setAttribute('aria-hidden','true');host.appendChild(sp);}
+  sp.style.height=Math.ceil(d-max+vvBox().kb+20)+'px';
+}
+function kbSpaceClear(){document.querySelectorAll('.kb-space').forEach(function(s){s.remove();});}
+function kbWatch(el){
+  KB.field=el;KB.t0=Date.now();KB.moved=false;
+  KB.timers.forEach(clearTimeout);
+  /* now, once the keyboard is usually up, and once more after it settles */
+  requestAnimationFrame(function(){kbLayout();keepInView(el,false);});
+  KB.timers=[350,700].map(function(ms){return setTimeout(function(){kbLayout();keepInView(el,true);},ms);});
+}
+document.addEventListener('focusin',function(e){
+  if(!isField(e.target)||e.target.tagName==='SELECT')return;
+  kbWatch(e.target);
+});
+document.addEventListener('focusout',function(){
+  setTimeout(function(){
+    if(isField(document.activeElement))return;
+    KB.field=null;KB.timers.forEach(clearTimeout);
+    kbLayout();
+    /* take the extra room away once the keyboard is gone */
+    setTimeout(function(){if(!isField(document.activeElement))kbSpaceClear();},400);
+  },60);
+});
+if(window.visualViewport){
+  var KB_RT=null;
+  var kbOnResize=function(){
+    kbLayout();
+    clearTimeout(KB_RT);
+    /* the keyboard is opening or changing size (e.g. the suggestions bar): re-check while the edit is fresh */
+    KB_RT=setTimeout(function(){if(KB.field&&Date.now()-KB.t0<2500)keepInView(KB.field,true);},80);
+  };
+  window.visualViewport.addEventListener('resize',kbOnResize);
+  window.visualViewport.addEventListener('scroll',kbLayout);
+}
+/* put the cursor at the end of what's already written */
+function focusEnd(el){
+  if(!el||!el.focus)return;
+  el.focus();
+  try{var n=el.value.length;el.setSelectionRange(n,n);}catch(e){}
+}
+
+/* ================= 5.3: focus and follow-through ================= */
+
+/* ---------- points for effort ----------
+   The first vote on each quest each day earns EFFORT_PTS, from the day this
+   release first opened (so past points don't change). Worked out from the
+   history every time, so undoing a vote takes its points back with it. */
+var EFFORT_PTS=5,EFC={sig:''};
+function effortFrom(){return +S.settings.effortFrom||0;}
+function effortOf(list){
+  var from=effortFrom(),seen={},n=0;if(!from)return 0;
+  list.forEach(function(e){
+    if(!isVote(e)||e.at<from)return;
+    var k=e.gid+'|'+dayKeyOf(e.at);if(seen[k])return;seen[k]=1;n++;
+  });
+  return n*EFFORT_PTS;
+}
+function effortPoints(){
+  var sig=logSig()+':'+effortFrom();
+  if(EFC.sig!==sig)EFC={sig:sig,v:effortOf(S.log)};
+  return EFC.v;
+}
+/* does this quest still have today's effort points to give? */
+function effortLeft(g){
+  if(!effortFrom())return false;
+  var k=dayKeyOf(Date.now());
+  return !S.log.some(function(e){return e.gid===g.id&&isVote(e)&&dayKeyOf(e.at)===k;});
+}
+function totalEarned(){
+  if(MEMO&&MEMO.earned!==undefined)return MEMO.earned;
+  var v=S.goals.reduce(function(a,g){return a+earnedFrom(g);},0)+effortPoints();
+  if(MEMO)MEMO.earned=v;return v;
+}
+
+/* ---------- one streak, and it forgives ----------
+   A day counts if you voted or closed out. One missed day in any 7 doesn't
+   break it; two do. The same number shows on Today and on Journey. */
+function shownUpDays(){
+  var days={},vs=voteStats().days;
+  Object.keys(vs).forEach(function(k){days[k]=1;});
+  (S.journal||[]).forEach(function(j){days[dayKeyOf(j.day)]=1;});
+  return days;
+}
+function runFrom(days,startTs){
+  /* walk back from startTs (noon, so daylight-saving never skips a day);
+     a single missed day is forgiven when the day before it counts and no
+     other day was forgiven in the 7 days after it */
+  var n=0,d=dayStart(startTs)+12*3600000,lastFree=null;
+  for(var i=0;i<4000;i++){
+    if(days[dayKeyOf(d)]){n++;d-=DAY;continue;}
+    var prev=d-DAY;
+    if(days[dayKeyOf(prev)]&&(lastFree===null||lastFree-d>=7*DAY)){lastFree=d;d=prev;continue;}
+    break;
+  }
+  return n;
+}
+function streaks(){
+  var days=shownUpDays(),t=dayStart(Date.now());
+  /* today doesn't break a streak until it's over */
+  var cur=runFrom(days,days[dayKeyOf(t)]?t:t-DAY);
+  var best=cur;
+  Object.keys(days).forEach(function(k){
+    var p=k.split('-'),ts=new Date(+p[0],+p[1]-1,+p[2]).getTime();
+    var nx=new Date(ts+36*3600000);
+    if(days[dayKeyOf(nx.getTime())])return;   /* only measure from the end of each run */
+    var r=runFrom(days,ts);if(r>best)best=r;
+  });
+  var last28=0;for(var i=0;i<28;i++)if(days[dayKeyOf(t-i*DAY)])last28++;
+  return {cur:cur,best:best,last28:last28};
+}
+function streakLine(){
+  var s=streaks().cur;
+  return s>1?s+'-day streak':'Today is on the record';
+}
+
+/* ---------- next steps go stale ----------
+   A step written weeks ago is usually not the step any more, so it isn't
+   offered again after STEP_FRESH days; you're asked for a fresh one. */
+var STEP_FRESH=14*DAY;
+function stepFresh(g){
+  if(!g||!g.next)return false;
+  var at=g.nextAt||lastMove(g)||0;
+  return Date.now()-at<STEP_FRESH;
+}
+function defaultStep(g){
+  if(!g)return '';
+  if(g.next&&stepFresh(g))return g.next;
+  if(g.type==='steps'&&g.steps&&g.steps.length){var i=stepOpenIndex(g);if(i<g.steps.length)return g.steps[i].name;}
+  return '';
+}
+var WHEN=[['morning','In the morning'],['midday','At midday'],['afterwork','After work'],['evening','In the evening']];
+function whenWord(w){var x=WHEN.find(function(p){return p[0]===w;});return x?x[1].toLowerCase():'';}
+
+/* ---------- Today: start here ----------
+   The first card is always one quest and one small step: last night's plan,
+   or the quest that most needs you with its next step. One tap to log it. */
+function startHereHTML(g,p){
+  var done=movedToday(g),step=p?p.step:(stepFresh(g)?g.next:''),idle=Math.floor((Date.now()-lastMove(g))/DAY);
+  var k=done?'<i class="co-tick"></i>Done. '+(p?'You said you would':'Nice work'):p?'You said you’d'+(p.when?' · '+esc(whenWord(p.when)):''):'Start here';
+  var h='<div class="plan-today start'+(done?' done':'')+'" style="--c:'+idColor(g.category)+'">'+
+    '<div class="pt-k">'+k+'</div>';
+  if(step)h+='<div class="pt-t serif">'+esc(step)+'</div><div class="pt-q">'+esc(g.name)+'</div>';
+  else h+='<div class="pt-t serif">'+esc(g.name)+'</div>'+
+    '<div class="pt-q">'+(idle>=7?'Quiet '+idle+' days. ':'')+'What’s the smallest step you could take today?</div>';
+  if(!done){
+    h+='<div class="pt-acts">'+(step?
+      '<button class="btn" data-a="open-report" data-g="'+g.id+'">Log it'+(effortLeft(g)?' · +'+EFFORT_PTS:'')+'</button>'+
+      '<button class="btn2" data-a="fm-step" data-id="'+g.id+'">'+(idle>=7?'Make it smaller':'Edit step')+'</button>':
+      '<button class="btn" data-a="fm-step" data-id="'+g.id+'">Pick a step</button>'+
+      '<button class="btn2" data-a="open-report" data-g="'+g.id+'">I already did</button>')+'</div>';
+  }
+  return h+'</div>';
+}
+function renderMoves(){
+  parkForm('goal-form','goal-form-home');
+  var el=document.getElementById('slots');if(!el)return;
+  var act=focusList(),max=focusMax(),h='';
+  var hd=document.querySelector('#p-focus .sec-h h2');if(hd)hd.textContent='Next moves';
+  var cb=document.getElementById('compact-btn');if(cb){cb.style.display='none';cb.textContent=S.settings.compact?'Expand all':'Compact view';}
+  var full=S.settings.compact===false;
+  if(act.length>max){el.innerHTML=trimHTML(act,max);reDockGoal();return;}
+  if(!act.length){
+    el.innerHTML='<button class="idc-empty" data-a="go-quests"><span>Nothing in focus yet. Pick up to '+max+' quests on Becoming.</span>'+
+      '<span class="pick">Pick<span class="chev"></span></span></button>';
+    reDockGoal();return;
+  }
+  var p=planFor(todayK()),pg=p&&act.find(function(g){return g.id===p.gid;});
+  var rest=act.filter(function(g){return !pg||g.id!==pg.id;}).sort(function(a,b){return moveScore(b)-moveScore(a);});
+  /* no plan for today: the quest that most needs you leads */
+  var lead=pg||rest.shift();
+  h+=startHereHTML(lead,pg?p:null);
+  var n=full?99:2,top=rest.slice(0,n),more=rest.slice(n);
+  if(top.length)h+='<div class="moves-k">Also in focus</div>';
+  top.forEach(function(g){h+=moveRowHTML(g,full);});
+  if(more.length){
+    h+='<button class="moves-more" data-a="moves-more" aria-expanded="'+(!!U.movesMore)+'"><span>'+(U.movesMore?'Show less':'More in focus')+
+       '</span><span class="mm-n">'+(U.movesMore?'':more.length)+'</span><span class="chev"></span></button>';
+    if(U.movesMore)more.forEach(function(g){h+=moveRowHTML(g);});
+  }
+  el.innerHTML=h;
+  reDockGoal();
+}
+function moveReason(g){
+  if(g.period||movedToday(g))return null;
+  var p=pace(g);if(p&&(p.cls==='bad'||p.cls==='warn'))return null;
+  var idle=Math.floor((Date.now()-lastMove(g))/DAY);
+  return idle>=7?'Quiet '+idle+' days':null;
+}
+/* "Pick a step" / "Make it smaller": one small step, and when */
+function askStep(gid,forToday){
+  var g=S.goals.find(function(x){return x.id===gid;});if(!g)return;
+  var idle=Math.floor((Date.now()-lastMove(g))/DAY),cur=stepFresh(g)?g.next:'';
+  var p=planFor(todayK()),w=(p&&p.gid===gid&&p.when)||'';
+  openModal(idle>=7?'Make it smaller':'Today’s step',
+    (idle>=7?esc(g.name)+' has been quiet '+idle+' days. Pick a version so small it’s easy to start: two minutes is fine.':
+      'One small step on '+esc(g.name)+'.'),
+    [{label:'Set',style:'pri',keepOpen:true,run:function(v){
+        var s=String(v.step||'').trim(),m=document.getElementById('modal-m');
+        if(!s){if(m)m.textContent='Write one small step.';return;}
+        closeModal();setStep(g,s,v.when||'',forToday);}},
+     {label:'Cancel',style:'ghost'}],
+    {html:'<div class="f"><label for="st-step">Step</label><input type="text" id="st-step" name="step" maxlength="120" autocomplete="off" placeholder="e.g. Open the Bloom posting" value="'+esc(cur)+'"></div>'+
+      (forToday?'<div class="f"><label for="st-when">When</label><select id="st-when" name="when"><option value="">Any time today</option>'+
+        WHEN.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===w?' selected':'')+'>'+x[1]+'</option>';}).join('')+'</select></div>':''),
+     focus:true});
+}
+async function setStep(g,step,when,forToday){
+  snap();
+  g.next=step;g.nextAt=Date.now();
+  if(forToday)S.settings.plan={day:todayK(),gid:g.id,step:step,when:when||'',at:Date.now()};
+  await save();renderPanel(U.tab);
+  toast(forToday?'Set. Start with “'+step+'”'+(when?' '+whenWord(when):'')+'.':'Step saved.',true);
+}
+
+/* ---------- a close-out can count as votes ----------
+   What you wrote tonight is evidence; one tap per quest turns it into a vote,
+   so the day's tally and points include it. No guessing from the text. */
+function closeoutVotesHTML(k){
+  if(k!==dayKeyOf(Date.now()))return '';
+  var act=focusList().filter(function(g){return !movedToday(g);});
+  if(!act.length)return '';
+  return '<div class="co-votes"><div class="cv-k">Count any of it as a vote?</div><div class="cv-chips">'+
+    act.map(function(g){return '<button class="idchip" data-a="co-vote" data-id="'+g.id+'" style="--c:'+idColor(g.category)+'">'+
+      '<i class="iddot" style="background:'+idColor(g.category)+'"></i>'+esc(g.name)+'</button>';}).join('')+'</div></div>';
+}
+async function closeoutVote(gid){
+  var g=S.goals.find(function(x){return x.id===gid;}),j=journalFor(dayKeyOf(Date.now()));if(!g||!j)return;
+  if(movedToday(g))return;
+  var b0=balance();
+  snap();
+  S.log.push({id:uid(),at:Date.now(),gid:g.id,name:g.name,cat:g.category,pts:0,clear:false,note:j.text});
+  g.touchedAt=Date.now();NOTE_VER++;
+  await save();
+  STALE.focus=1;STALE.quests=1;STALE.progress=1;
+  renderPanel(U.tab);
+  var gained=Math.max(0,balance()-b0),bl=document.getElementById('bal');if(bl){bl.__v=balance();bl.textContent=nf(bl.__v);}
+  toast('Counted · a vote for '+idOf(g.category).title+(gained?' · +'+nf(gained)+' pts':''),true);
+}
+
+/* ---------- once, after updating: what changed, and one choice ---------- */
+function welcome53(){
+  if(S.settings.effortFrom)return;
+  S.settings.effortFrom=dayStart(Date.now());
+  var rate=+S.settings.rate||1;
+  save();renderAll();
+  if(rate>=2){toast('New: the first vote on each quest each day earns '+EFFORT_PTS+' points.');return;}
+  openModal('Votes now earn points',
+    'The first vote on each quest each day earns '+EFFORT_PTS+' points, so steady days pay off, not just finished milestones. '+
+    'To keep rewards worth waiting for, they can cost 2 points per dollar instead of 1: a $185 reward then takes about a month of steady days. '+
+    'You can change this later in Settings → Economy.',
+    [{label:'2 points per dollar',style:'pri',run:async function(){snap();S.settings.rate=2;await save();renderAll();toast('Rewards now cost 2 points per dollar.');}},
+     {label:'Keep 1 point per dollar',style:'ghost'}]);
+}
+
+/* ---------- a new device asks before starting a second board ---------- */
+var NEWDEV_KEY='quest-board-newdev';
+function newDeviceCheck(){
+  try{if(localStorage.getItem(NEWDEV_KEY))return false;}catch(e){return false;}
+  if(connected()||(S.log&&S.log.length)||(S.journal&&S.journal.length))return false;
+  try{localStorage.setItem(NEWDEV_KEY,'1');}catch(e){}
+  openModal('Welcome to Quest Board',
+    'Already use it on another device? Sign in to bring your board here. Starting fresh gives this device its own empty board.',
+    [{label:'Sign in',style:'pri',run:function(){openSettings();var d=document.getElementById('sect-sheet');if(d)d.open=true;
+        setTimeout(function(){var e=document.getElementById('cl-email');if(e)try{e.focus();}catch(x){}},350);}},
+     {label:'Start fresh',style:'ghost'}]);
+  return true;
+}
+
+/* ---------- offline isn't an error ---------- */
+var OFFLINE_MSG='You’re offline. Everything is saved on this device and sends when you’re back.';
+function isOfflineErr(){return Q.lastErr===OFFLINE_MSG;}
+window.addEventListener('online',function(){if(isOfflineErr()&&connected())sync();});
+/* every save refreshes the points pill: effort points can now arrive from any vote, not just finished milestones */
+async function save(){
+  try{queueChanges();}catch(e){console.error(e);}
+  var r=await saveLocal();
+  try{if(!MEMO)renderWallet();}catch(e){}
+  return r;
+}
 
 /* ---------- focus cards ----------
    Card rules (every card in the app follows these):
@@ -5819,7 +6206,8 @@ function rewardRow(r,bal){
       '<span class="rw-meta">$'+nf(r.price)+' \u00B7 '+nf(cost)+' pts</span>'+
       (r.pinned&&!can?'<span class="rw-bar"><i style="width:'+pct+'%"></i></span>':'')+
     '</button>'+
-    (can?'<button class="btn sm redeem live" data-a="redeem" data-id="'+r.id+'">Redeem</button>':
+    (can&&r.pinned?'<button class="btn sm redeem live" data-a="redeem" data-id="'+r.id+'">Redeem</button>':
+     can?'<span class="rw-togo rdy">Ready<small>chase to redeem</small></span>':
          '<span class="rw-togo">'+nf(cost-bal)+'<small>to go</small></span>')+
     '</div>';
 }
@@ -6717,6 +7105,7 @@ document.addEventListener('click',function(e){
     var tn=tab.getAttribute('data-tab');
     tabBounce(tab);
     if(U.tab===tn){if(window.scrollTo)try{window.scrollTo({top:0,behavior:'smooth'});}catch(x){}return;}
+    var tt0=document.getElementById('toast');if(tt0&&!tt0.classList.contains('hide'))toastHide(tt0,'fade');
     tabLeave();showPanel(tn);tabArrive(tn);
     return;}
   var chip=e.target.closest('.chip');
@@ -6823,9 +7212,9 @@ document.addEventListener('click',function(e){
   else if(a==='go-quests')showPanel('quests');
   else if(a==='closeout-save')saveCloseout();
   else if(a==='co-catch'){U.coDay=el.getAttribute('data-k');U.closeEdit=false;var cx=document.getElementById('co-in');if(cx)cx.value='';
-    renderCloseout();easeIn('.closeout');var cy=document.getElementById('co-in');if(cy&&cy.focus)cy.focus();}
+    renderCloseout();focusEnd(document.getElementById('co-in'));}
   else if(a==='co-catch-cancel'){U.coDay=null;var cz=document.getElementById('co-in');if(cz)cz.value='';renderCloseout();}
-  else if(a==='closeout-edit'){U.closeEdit=true;renderCloseout();var ci=document.getElementById('co-in');if(ci&&ci.focus)ci.focus();}
+  else if(a==='closeout-edit'){U.closeEdit=true;renderCloseout();focusEnd(document.getElementById('co-in'));}
   else if(a==='closeout-cancel'){U.closeEdit=false;var cj=document.getElementById('co-in');if(cj)cj.value='';renderCloseout();}
   else if(a==='journal-all'){U.jAll=!U.jAll;renderJourney();}
   else if(a==='jw-kind'){U.jKind=el.getAttribute('data-k');U.jAll=false;renderJourney();}
@@ -6895,6 +7284,9 @@ document.addEventListener('click',function(e){
   else if(a==='sheet-off')danger(el,cloudOn()?cloudSignOut:disconnectSheet);
   else if(a==='cloud-signin')cloudSignIn(document.getElementById('cl-email').value,document.getElementById('cl-pass').value);
   else if(a==='cloud-forgot')cloudForgot(document.getElementById('cl-email').value);
+  else if(a==='fm-step')askStep(el.getAttribute('data-id'),true);
+  else if(a==='rv-smaller')askStep(el.getAttribute('data-id'),false);
+  else if(a==='co-vote')closeoutVote(el.getAttribute('data-id'));
   else if(a==='push-on')pushOn();
   else if(a==='push-off')danger(el,function(){pushOff(false);});
   else if(a==='push-test')pushTest();
@@ -7004,7 +7396,7 @@ function rewardHint(){
    queues the differences in Q.outbox. sync() sends the queue, then pulls
    the sheet back so hand edits made in the sheet show up here too.
    ===================================================================== */
-var APP_VERSION='5.1';
+var APP_VERSION='5.3';
 var NEED_CONNECTOR=4;
 var SYNC_KEY='quest-board-sync';
 var SYNC_SETTINGS=['plan','focusMax','rate','step','diffCurve','lastReview','reviewSnooze','reviewsDone','identities','coolDays','letGo','ideasHidden'];
@@ -7333,8 +7725,8 @@ function sinceText(ts){
 }
 function syncState(){
   if(!connected())return 'off';
-  if(Q.lastErr)return 'err';
-  if(SYNCING||Q.outbox.length)return 'wait';
+  if(Q.lastErr&&!isOfflineErr())return 'err';
+  if(SYNCING||Q.outbox.length||isOfflineErr())return 'wait';
   return 'ok';
 }
 function renderSyncDot(){
@@ -7359,8 +7751,8 @@ function renderSheetSectionOld(){
   }else{
     h+='<div class="kv"><span>Sheet</span><b>'+esc(Q.sheet||'Connected')+'</b></div>'+
        '<div class="kv"><span>Last synced</span><b>'+(Q.lastOk?sinceText(Q.lastOk):'not yet')+'</b></div>'+
-       '<div class="kv"><span>Waiting to send</span><b>'+Q.outbox.length+'</b></div>';
-    if(Q.lastErr)h+='<p class="sub" style="margin:8px 0 0;color:var(--ember);">'+esc(Q.lastErr)+'</p>';
+       '<div class="kv"><span>Changes waiting to send</span><b>'+(Q.outbox.length?'Yes':'None')+'</b></div>';
+    if(Q.lastErr)h+='<p class="sub" style="margin:8px 0 0;'+(isOfflineErr()?'':'color:var(--ember);')+'">'+esc(Q.lastErr)+'</p>';
     h+='<div class="f-acts"><button class="btn2" data-a="sheet-sync">Sync now</button>'+
        '<button class="btn2" data-a="sheet-off">Disconnect</button></div>';
   }
@@ -7836,7 +8228,7 @@ function registerOffline(){
 
 /* read-only hooks for the test harness */
 window.__qb={pace:pace,periodNext:periodNext,weekStart:weekStart,lastPeriodResult:lastPeriodResult,
-  sync:function(){return sync();},state:function(){return S;},openCase:function(c){openCase(c);},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
+  sync:function(){return sync();},state:function(){return S;},balance:function(){return balance();},openCase:function(c){openCase(c);},render:function(){renderAll();},goal:function(n){return S.goals.find(function(g){return g.name===n;});}};
 function measureWallet(){
   var w=document.querySelector('.wallet');
   if(w)document.documentElement.style.setProperty('--wh',(isDesk()?0:w.offsetHeight)+'px');   /* on a computer the header lives in the sidebar */
@@ -7854,6 +8246,7 @@ window.addEventListener('resize',measureWallet);
   measureWallet();
   renderAll();
   readAuthHash();
+  if(!newDeviceCheck())welcome53();
   if(connected())sync();
   pushKeepTz();
   registerOffline();

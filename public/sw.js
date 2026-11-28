@@ -4,7 +4,7 @@
    launch; the saved copy is only used when the network is slow or gone.
    Cloud sync requests (Supabase) are never touched here; the app handles those.
    It also shows the evening reminders, which arrive even when the app is closed. */
-var CACHE = 'quest-board-5.1';
+var CACHE = 'quest-board-5.3';
 var PAGE = './';
 var EXTRAS = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
